@@ -1,0 +1,11 @@
+/home/miguelcs/Files/repos/orgs/ziv-language/ziv/zivc/build/CMakeFiles/intrinsics_gen.dir
+/home/miguelcs/Files/repos/orgs/ziv-language/ziv/zivc/build/CMakeFiles/omp_gen.dir
+/home/miguelcs/Files/repos/orgs/ziv-language/ziv/zivc/build/CMakeFiles/acc_gen.dir
+/home/miguelcs/Files/repos/orgs/ziv-language/ziv/zivc/build/CMakeFiles/RISCVTargetParserTableGen.dir
+/home/miguelcs/Files/repos/orgs/ziv-language/ziv/zivc/build/CMakeFiles/mlir-tablegen-targets.dir
+/home/miguelcs/Files/repos/orgs/ziv-language/ziv/zivc/build/CMakeFiles/mlir-headers.dir
+/home/miguelcs/Files/repos/orgs/ziv-language/ziv/zivc/build/CMakeFiles/mlir-generic-headers.dir
+/home/miguelcs/Files/repos/orgs/ziv-language/ziv/zivc/build/CMakeFiles/mlir-doc.dir
+/home/miguelcs/Files/repos/orgs/ziv-language/ziv/zivc/build/CMakeFiles/ziv_compiler.dir
+/home/miguelcs/Files/repos/orgs/ziv-language/ziv/zivc/build/CMakeFiles/edit_cache.dir
+/home/miguelcs/Files/repos/orgs/ziv-language/ziv/zivc/build/CMakeFiles/rebuild_cache.dir
