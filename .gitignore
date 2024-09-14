@@ -34,3 +34,4 @@
 # Build
 build/
 **/build/
+**/.cache/
