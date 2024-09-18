@@ -34,3 +34,6 @@
 # Build
 build/
 **/build/
+
+# Editors
+.vscode/
