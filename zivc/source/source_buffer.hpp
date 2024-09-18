@@ -18,16 +18,16 @@ namespace ziv {
 class SourceBuffer {
 public:
     
-    static auto from_stdin() -> std::optional<SourceBuffer>;
+    static std::optional<SourceBuffer> from_stdin();
 
-    static auto from_file(
+    static std::optional<SourceBuffer> from_file(
         llvm::vfs::FileSystem &fs, llvm::StringRef filename
-    ) -> std::optional<SourceBuffer>;
+    );
 
     SourceBuffer() = delete;
 
-    auto get_filename() const -> llvm::StringRef { return filename_; };
-    auto get_text() const -> llvm::StringRef { return buffer_->getBuffer(); };
+    llvm::StringRef get_filename() const { return filename_; };
+    llvm::StringRef get_text() const { return buffer_->getBuffer(); };
 
 private:
 
@@ -43,12 +43,12 @@ private:
     std::unique_ptr<llvm::MemoryBuffer> buffer_;
 
     // Private helper function to create the buffer
-    static auto from_memory_buffer(
+    static std::optional<SourceBuffer> from_memory_buffer(
         llvm::ErrorOr<std::unique_ptr<llvm::MemoryBuffer>> buffer,
         llvm::StringRef filename
-    ) -> std::optional<SourceBuffer>;
+    );
 };
 
 } // namespace ziv
 
-#endif // SOURCE_BUFFER_HPP
+#endif // SOURCE_BUFFER_HPPac
