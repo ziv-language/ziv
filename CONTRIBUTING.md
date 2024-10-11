@@ -1,7 +1,7 @@
 <!--
-Part of the Ziv Programming Language, under the Apache License v2.0.
+Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
 See /LICENSE for license details.
-SPDX-License-Identifier: Apache-2.0
+SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 -->
 
 # Contributing to Ziv
@@ -34,13 +34,13 @@ Below are the guidelines we follow to ensure contributions are streamlined, orga
 - **Collaboration**: Encourage collaboration by asking questions and discussing your approach before diving into significant tasks.
 
 - **Code Quality**: Always prioritize writing clean, maintainable, and well-documented code over quick fixes.
-    
+
 
 ## Branching and Issues
 
 - **Branch Names**: Each feature or fix should be created on its own branch, named after the feature or type of contribution (e.g., `feat/add-parser`, `fix/lexer-bug`, `docs/readme-update`).
 
-- **Issues**: Every contribution should have an associated issue. If the issue does not exist, please create one before starting your work. Issues are categorized by type: 
+- **Issues**: Every contribution should have an associated issue. If the issue does not exist, please create one before starting your work. Issues are categorized by type:
     - `feat`: New features
     - `fix`: Bug fixes
     - `docs`: Documentation updates
@@ -109,10 +109,10 @@ Fixes #123
     - Variables, functions, and namespaces use snake_case.
     - Classes and structs use PascalCase.
     - Filenames use underscores (`snake_case`).
-    
+
 - **Avoid `typedef` and `auto`**: Use explicit type declarations whenever possible to improve code readability.
 
-- **Namespace Use**: 
+- **Namespace Use**:
     - Place your code inside a namespace whenever possible.
     - Do not use a `using-directive` to import entire namespaces globally.
 
@@ -148,9 +148,9 @@ Fixes #123
 
     ```markdown
     <!--
-    Part of the Ziv Programming Language, under the Apache License v2.0.
+    Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
     See /LICENSE for license details.
-    SPDX-License-Identifier: Apache-2.0
+    SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
     -->
     ```
 
@@ -168,7 +168,7 @@ Fixes #123
 
 ## Style Guidelines for Documentation
 
-- Ensure clarity, conciseness, and consistency when writing documentation. 
+- Ensure clarity, conciseness, and consistency when writing documentation.
 - Use meaningful titles for each section and organize information logically.
 
 ## Contribution Philosophy
@@ -178,7 +178,7 @@ Fixes #123
 - **Collaboration**: Open dialogue and teamwork are the keys to success. Don’t hesitate to reach out to maintainers or the community with questions or ideas.
 
 - **Quality over Quantity**: It's better to make fewer, higher-quality contributions than to contribute large amounts of low-quality code. Each small, focused change should improve the project in a meaningful way.
-    
+
 ## Code of Conduct
 
 Please review our [Code of Conduct](CODE_OF_CONDUCT.md) to understand the standards of behavior we expect from contributors.

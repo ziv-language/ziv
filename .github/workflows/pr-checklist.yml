@@ -1,0 +1,30 @@
+# Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+# See /LICENSE for license details.
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+name: PR Checklist Validation
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, ready_for_review]
+
+jobs:
+  checklist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+
+      - name: Validate PR checklist
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const body = context.payload.pull_request.body;
+            const checkboxes = body.match(/-\s\[(x| )\]/g);
+            const uncheckedBoxes = checkboxes.filter(c => c.includes('[ ]')).length;
+
+            if (uncheckedBoxes > 0) {
+              core.setFailed(`There are ${uncheckedBoxes} unchecked checkboxes. All must be completed.`);
+            } else {
+              console.log("All checkboxes are checked. Proceed with merging.");
+            }

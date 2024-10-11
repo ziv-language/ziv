@@ -1,6 +1,6 @@
-# Part of the Ziv Programming Language, under the Apache License v2.0.
+# Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
 # See /LICENSE for license details.
-# SPDX-License-Identifier: Apache-2.0
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 name: "\U0001f680 Feature Request"
 description: "Suggest a new feature or improvement for Ziv"
@@ -12,7 +12,7 @@ body:
     attributes:
       value: |
         Thanks for suggesting a new feature! Please fill out the information below.
-  
+
   - type: input
     id: feature-title
     attributes:
@@ -48,4 +48,3 @@ body:
       placeholder: "Links, images, or additional info"
     validations:
       required: false
-

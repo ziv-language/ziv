@@ -1,7 +1,7 @@
 <!--
-Part of the Ziv Programming Language, under the Apache License v2.0.
+Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
 See /LICENSE for license details.
-SPDX-License-Identifier: Apache-2.0
+SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 -->
 
 # The Ziv Programming Language
@@ -52,4 +52,3 @@ This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE
 ---
 
 Thank you for your interest in Ziv! We hope you find it as exciting as we do. Feel free to reach out with any questions or suggestions in the [Discussions](https://github.com/ziv-language/ziv/discussions) section.
-

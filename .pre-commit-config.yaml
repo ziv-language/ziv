@@ -1,0 +1,23 @@
+# Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+# See /LICENSE for license details.
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+default_language_version:
+  python: python3
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+    - id: check-added-large-files
+    - id: check-case-conflict
+    - id: check-executables-have-shebangs
+    - id: check-merge-conflict
+    - id: check-symlinks
+    - id: check-yaml
+    - id: detect-private-key
+    - id: double-quote-string-fixer
+    - id: end-of-file-fixer
+    - id: requirements-txt-fixer
+    - id: trailing-whitespace
+      args: [--markdown-linebreak-ext=md]
