@@ -1,0 +1,51 @@
+# Part of the Ziv Programming Language, under the Apache License v2.0.
+# See /LICENSE for license details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: "\U0001f680 Feature Request"
+description: "Suggest a new feature or improvement for Ziv"
+title: "feat: [SHORT SUMMARY OF FEATURE]"
+labels: ["feat"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please fill out the information below.
+  
+  - type: input
+    id: feature-title
+    attributes:
+      label: Feature Title
+      description: Briefly summarize the feature you're requesting.
+      placeholder: "Short feature description"
+    validations:
+      required: true
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: A clear and detailed description of the feature request.
+      placeholder: "Provide as much detail as possible"
+    validations:
+      required: true
+
+  - type: textarea
+    id: importance
+    attributes:
+      label: Why is this feature important?
+      description: Explain why this feature will benefit the language.
+      placeholder: "Explain why the feature is useful"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other relevant context or information here.
+      placeholder: "Links, images, or additional info"
+    validations:
+      required: false
+

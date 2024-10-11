@@ -1,0 +1,50 @@
+# Part of the Ziv Programming Language, under the Apache License v2.0.
+# See /LICENSE for license details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: "🔧 CI Issue"
+description: "Report issues or suggest improvements in Continuous Integration"
+title: "ci: [SHORT DESCRIPTION OF CI ISSUE]"
+labels: ["ci"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please provide details about the CI issue or improvement you're suggesting.
+
+  - type: textarea
+    id: ci-issue-description
+    attributes:
+      label: CI Issue Description
+      description: What part of CI is failing or needs improvement?
+      placeholder: "Explain the issue"
+    validations:
+      required: true
+
+  - type: input
+    id: ci-tool
+    attributes:
+      label: CI Tool
+      description: Which tool or part of the CI pipeline is involved?
+      placeholder: "e.g. GitHub Actions, CircleCI"
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-changes
+    attributes:
+      label: Proposed Changes
+      description: Suggest any changes or fixes for the CI issue.
+      placeholder: "Proposed fixes"
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any relevant context or logs.
+      placeholder: "Optional"
+    validations:
+      required: false

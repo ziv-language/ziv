@@ -1,0 +1,9 @@
+# Part of the Ziv Programming Language, under the Apache License v2.0.
+# See /LICENSE for license details.
+# SPDX-License-Identifier: Apache-2.0
+
+blank_issues_enabled: true
+contact_links:
+  - name: I have a question about Ziv
+    url: https://github.com/ziv-language/ziv/discussions/
+    about: Ask questions about Ziv in the discussions section.

@@ -1,0 +1,71 @@
+# Part of the Ziv Programming Language, under the Apache License v2.0.
+# See /LICENSE for license details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: "🐞 Bug Report"
+description: "Report a bug or unexpected behavior"
+title: "fix: [SHORT DESCRIPTION OF THE BUG]"
+labels: ["bug"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please fill out this form to help us investigate the bug.
+
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch if we need more info?
+      placeholder: "Optional email or GitHub username"
+    validations:
+      required: false
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: What happened?
+      description: Describe the issue and expected behavior.
+      placeholder: "Describe the bug and what you expected to happen"
+    validations:
+      required: true
+
+  - type: input
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Provide step-by-step instructions to reproduce the bug.
+      placeholder: "1. Step one\n2. Step two"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: version
+    attributes:
+      label: Ziv Version
+      description: What version of Ziv are you using?
+      options:
+        - 0.1.0
+        - Latest (main branch)
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Copy and paste any relevant logs. This will be formatted as code.
+      render: shell
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: code-of-conduct
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/ziv-language/ziv/blob/main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

@@ -1,0 +1,41 @@
+# Part of the Ziv Programming Language, under the Apache License v2.0.
+# See /LICENSE for license details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: "📚 Documentation Issue"
+description: "Report an issue or suggest improvements in documentation"
+title: "docs: [SHORT DESCRIPTION OF THE ISSUE]"
+labels: ["docs"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please provide information to help us improve the documentation.
+
+  - type: input
+    id: doc-section
+    attributes:
+      label: Documentation Section
+      description: Which part of the documentation is this related to?
+      placeholder: "e.g. API, setup guide"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description of the issue
+      description: Describe the issue with the documentation or the changes you're suggesting.
+      placeholder: "Explain the issue or suggest improvements"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any relevant links or screenshots.
+      placeholder: "Optional"
+    validations:
+      required: false

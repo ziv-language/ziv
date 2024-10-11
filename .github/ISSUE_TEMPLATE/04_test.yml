@@ -1,0 +1,41 @@
+# Part of the Ziv Programming Language, under the Apache License v2.0.
+# See /LICENSE for license details.
+# SPDX-License-Identifier: Apache-2.0
+
+name: "\U0001f9ea Test Improvement"
+description: "Suggest or report test-related improvements"
+title: "test: [SHORT SUMMARY OF TEST IMPROVEMENT]"
+labels: ["test"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please provide information about test improvements or new tests.
+
+  - type: textarea
+    id: test-improvement
+    attributes:
+      label: Description of Test Improvement
+      description: What improvements or tests are you suggesting?
+      placeholder: "Explain the purpose of the test"
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-it-covers
+    attributes:
+      label: What does this test cover?
+      description: Describe the area of the code this test will cover or improve.
+      placeholder: "What is being tested"
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any relevant information or screenshots.
+      placeholder: "Optional"
+    validations:
+      required: false
