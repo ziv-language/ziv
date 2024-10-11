@@ -5,7 +5,7 @@
 
 Please confirm that you have completed the following tasks by checking the boxes:
 
-- [ ] I have read and followed the project's [contribution guidelines](./).
+- [ ] I have read and followed the project's [contribution guidelines](../CONTRIBUTING.md).
 - [ ] My code follows the style guidelines of this project.
 - [ ] I have performed a self-review of my code.
 - [ ] I have added tests that prove my fix is effective or that my feature works.
