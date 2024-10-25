@@ -7,6 +7,11 @@ file(GLOB_RECURSE COMMAND_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/command/*.hpp"
 )
 
+file(GLOB_RECURSE TOOLCHAIN_SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/toolchain/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/toolchain/*.hpp"
+)
+
 file(GLOB_RECURSE MAIN_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp"
@@ -15,6 +20,7 @@ file(GLOB_RECURSE MAIN_SOURCES
 # Add them to parent scope
 set(ZIVC_SOURCES
     ${COMMAND_SOURCES}
+    ${TOOLCHAIN_SOURCES}
     ${MAIN_SOURCES}
     PARENT_SCOPE
 )
@@ -22,4 +28,6 @@ set(ZIVC_SOURCES
 # Add include directories
 target_include_directories(zivc PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/command
+    ${CMAKE_CURRENT_SOURCE_DIR}/toolchain
 )

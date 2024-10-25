@@ -4,15 +4,17 @@
 
 #include "driver.hpp"
 #include "commands/source_command.hpp"
+#include "commands/lex_command.hpp"
 
-namespace ziv::toolchain::driver {
+namespace ziv::cli::toolchain {
 
-    Driver::Driver() {
+    ToolchainDriver::ToolchainDriver() {
         // Register commands
         commands_["source"] = std::make_unique<SourceCommand>();
+        commands_["token"] = std::make_unique<TokenCommand>();
     }
 
-    void Driver::run(const std::string &command, const std::string &arg) {
+    void ToolchainDriver::run(const std::string &command, const std::string &arg) {
         auto it = commands_.find(command);
         if (it == commands_.end()) {
             llvm::errs() << "Unknown command: " << command << "\n";
@@ -21,4 +23,5 @@ namespace ziv::toolchain::driver {
 
         it->second->execute(arg);
     }
-} // namespace ziv::toolchain::driver
+
+} // namespace ziv::cli::toolchain

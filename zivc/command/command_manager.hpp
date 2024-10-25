@@ -15,8 +15,9 @@ class CommandManager {
 
     private:
         void handle_source(const std::string &filename);
+        void handle_token(const std::string &token);
 };
 
-} // namespace ziv::zivc::command
+} // namespace ziv::cli::command
 
 #endif // ZIV_COMMAND_MANAGER_HPP

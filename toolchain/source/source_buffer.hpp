@@ -25,7 +25,7 @@ namespace ziv::toolchain::source {
         SourceBuffer() = delete; // No default constructor
 
         llvm::StringRef get_filename() const { return filename_; };
-        llvm::StringRef get_content() const { return buffer_->getBuffer(); };
+        llvm::StringRef get_contents() const { return buffer_->getBuffer(); };
         // Returns true if the source buffer was loaded from a regular file
         bool is_regular_file() const { return is_regular_file_; };
 

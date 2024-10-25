@@ -1,0 +1,90 @@
+// Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+// See /LICENSE for license details.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+#ifndef ZIV_TOKEN
+#define ZIV_TOKEN(NAME)
+#endif
+
+#ifndef ZIV_SYMBOL_TOKEN
+#define ZIV_SYMBOL_TOKEN(NAME, VALUE) ZIV_TOKEN(NAME)
+#endif
+
+#ifndef ZIV_KEYWORD_TOKEN
+#define ZIV_KEYWORD_TOKEN(NAME, VALUE) ZIV_TOKEN(NAME)
+#endif
+
+// Symbols (operators and punctuation)
+ZIV_SYMBOL_TOKEN(Arrow, "->")
+ZIV_SYMBOL_TOKEN(DoubleDot, "..")
+ZIV_SYMBOL_TOKEN(DoubleArrow, ">>")
+ZIV_SYMBOL_TOKEN(DoubleEquals, "==")
+ZIV_SYMBOL_TOKEN(Plus, "+")
+ZIV_SYMBOL_TOKEN(Minus, "-")
+ZIV_SYMBOL_TOKEN(Star, "*")
+ZIV_SYMBOL_TOKEN(Slash, "/")
+ZIV_SYMBOL_TOKEN(Equals, "=")
+ZIV_SYMBOL_TOKEN(Pipe, "|")
+ZIV_SYMBOL_TOKEN(Bang, "!")
+ZIV_SYMBOL_TOKEN(Dot, ".")
+
+// Delimiters
+ZIV_SYMBOL_TOKEN(LParen, "(")
+ZIV_SYMBOL_TOKEN(RParen, ")")
+ZIV_SYMBOL_TOKEN(LBrace, "{")
+ZIV_SYMBOL_TOKEN(RBrace, "}")
+ZIV_SYMBOL_TOKEN(LBracket, "[")
+ZIV_SYMBOL_TOKEN(RBracket, "]")
+ZIV_SYMBOL_TOKEN(Comma, ",")
+ZIV_SYMBOL_TOKEN(Colon, ":")
+ZIV_SYMBOL_TOKEN(Semicolon, ";")
+
+
+// Keywords
+ZIV_KEYWORD_TOKEN(Fn, "fn")
+ZIV_KEYWORD_TOKEN(Class, "class")
+ZIV_KEYWORD_TOKEN(Interface, "interface")
+ZIV_KEYWORD_TOKEN(Module, "module")
+ZIV_KEYWORD_TOKEN(Import, "import")
+ZIV_KEYWORD_TOKEN(If, "if")
+ZIV_KEYWORD_TOKEN(Else, "else")
+ZIV_KEYWORD_TOKEN(For, "for")
+ZIV_KEYWORD_TOKEN(While, "while")
+ZIV_KEYWORD_TOKEN(Return, "return")
+ZIV_KEYWORD_TOKEN(Match, "match")
+ZIV_KEYWORD_TOKEN(Case, "case")
+ZIV_KEYWORD_TOKEN(Async, "async")
+ZIV_KEYWORD_TOKEN(Await, "await")
+ZIV_KEYWORD_TOKEN(Public, "public")
+ZIV_KEYWORD_TOKEN(Private, "private")
+ZIV_KEYWORD_TOKEN(Protected, "protected")
+ZIV_KEYWORD_TOKEN(Static, "static")
+ZIV_KEYWORD_TOKEN(Abstract, "abstract")
+ZIV_KEYWORD_TOKEN(Test, "test")
+ZIV_KEYWORD_TOKEN(Type, "type")
+ZIV_KEYWORD_TOKEN(As, "as")
+ZIV_KEYWORD_TOKEN(Version, "version")
+ZIV_KEYWORD_TOKEN(Spawn, "spawn")
+ZIV_KEYWORD_TOKEN(Parallel, "parallel")
+ZIV_KEYWORD_TOKEN(End, "end")
+
+// Literals
+ZIV_TOKEN(IntLiteral)
+ZIV_TOKEN(FloatLiteral)
+ZIV_TOKEN(StringLiteral)
+ZIV_TOKEN(CharLiteral)
+ZIV_TOKEN(True)
+ZIV_TOKEN(False)
+
+// Identifiers
+ZIV_TOKEN(Identifier)
+
+// Special tokens
+ZIV_TOKEN(Comment)
+ZIV_TOKEN(Decorator)
+ZIV_TOKEN(Error)
+ZIV_TOKEN(Eof)
+
+#undef ZIV_SYMBOL_TOKEN
+#undef ZIV_KEYWORD_TOKEN
+#undef ZIV_TOKEN
