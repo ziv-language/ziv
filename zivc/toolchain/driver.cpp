@@ -11,7 +11,6 @@ namespace ziv::cli::toolchain {
     ToolchainDriver::ToolchainDriver() {
         // Register commands
         commands_["source"] = std::make_unique<SourceCommand>();
-        commands_["token"] = std::make_unique<TokenCommand>();
         commands_["lexer"] = std::make_unique<LexerCommand>();
     }
 
