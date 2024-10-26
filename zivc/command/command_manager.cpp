@@ -18,22 +18,23 @@ namespace ziv::cli::command {
 
     static llvm::cl::SubCommand toolchain_command("toolchain", "Run the toolchain driver");
 
-    static llvm::cl::opt<std::string> source_command(
+    static llvm::cl::opt<bool> source_command(
         "source",
         llvm::cl::desc("Review the source buffer"),
-        llvm::cl::value_desc("filename")
+        llvm::cl::sub(toolchain_command)
     );
 
-    static llvm::cl::opt<std::string> token_command(
-        "token",
-        llvm::cl::desc("Review the token buffer"),
-        llvm::cl::value_desc("token")
-    );
-
-    static llvm::cl::opt<std::string> lexer_command(
+    static llvm::cl::opt<bool> lexer_command(
         "lexer",
         llvm::cl::desc("Review the lexer buffer"),
-        llvm::cl::value_desc("filename")
+        llvm::cl::sub(toolchain_command)
+    );
+
+    static llvm::cl::opt<std::string> input_file(
+        llvm::cl::Positional,
+        llvm::cl::desc("<input file>"),
+        llvm::cl::sub(toolchain_command),
+        llvm::cl::Required
     );
 
     void CommandManager::execute(int argc, char **argv) {
@@ -41,14 +42,11 @@ namespace ziv::cli::command {
         llvm::cl::ParseCommandLineOptions(argc, argv, about.c_str());
 
         if (toolchain_command) {
-            if (!source_command.getValue().empty()) {
-                handle_source(source_command);
+            if (source_command) {
+                handle_source(input_file);
             }
-            if (!token_command.getValue().empty()) {
-                handle_token(token_command);
-            }
-            if (!lexer_command.getValue().empty()) {
-                handle_lexer(lexer_command);
+            if (lexer_command) {
+                handle_lexer(input_file);
             }
         } else {
             llvm::errs() << "Error: No command specified\n";
@@ -60,14 +58,9 @@ namespace ziv::cli::command {
         driver.run("source", filename);
     }
 
-    void CommandManager::handle_token(const std::string &token) {
-        ziv::cli::toolchain::ToolchainDriver driver;
-        driver.run("token", token);
-    }
-
     void CommandManager::handle_lexer(const std::string &filename) {
         ziv::cli::toolchain::ToolchainDriver driver;
         driver.run("lexer", filename);
     }
 
-} // namespace ziv::command
+} // namespace ziv::cli::command

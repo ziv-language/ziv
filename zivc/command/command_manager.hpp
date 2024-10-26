@@ -15,7 +15,6 @@ class CommandManager {
 
     private:
         void handle_source(const std::string &filename);
-        void handle_token(const std::string &token);
         void handle_lexer(const std::string &filename);
 };
 
