@@ -1,0 +1,5 @@
+# hello.ziv
+
+fn main() -> void {
+    print("Hello, World!")
+}

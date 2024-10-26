@@ -7,6 +7,9 @@
 
 #include "zivc/toolchain/command.hpp"
 #include "toolchain/lex/token_kind.hpp"
+#include "toolchain/lex/lexer.hpp"
+#include "toolchain/lex/token_buffer.hpp"
+#include "toolchain/source/source_buffer.hpp"
 #include "llvm/Support/raw_ostream.h"
 
 namespace ziv::cli::toolchain {
@@ -32,6 +35,12 @@ namespace ziv::cli::toolchain {
             };
 
     };
+
+    class LexerCommand : public Command {
+        public:
+            void execute(const std::string &args) override;
+    };
+
 } // namespace ziv::cli::toolchain
 
 #endif // ZIV_TOOLCHAIN_LEX_COMMAND_HPP

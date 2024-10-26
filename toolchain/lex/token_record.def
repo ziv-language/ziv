@@ -84,6 +84,7 @@ ZIV_TOKEN(Comment)
 ZIV_TOKEN(Decorator)
 ZIV_TOKEN(Error)
 ZIV_TOKEN(Eof)
+ZIV_TOKEN(Unknown)
 
 #undef ZIV_SYMBOL_TOKEN
 #undef ZIV_KEYWORD_TOKEN

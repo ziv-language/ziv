@@ -30,6 +30,12 @@ namespace ziv::cli::command {
         llvm::cl::value_desc("token")
     );
 
+    static llvm::cl::opt<std::string> lexer_command(
+        "lexer",
+        llvm::cl::desc("Review the lexer buffer"),
+        llvm::cl::value_desc("filename")
+    );
+
     void CommandManager::execute(int argc, char **argv) {
         std::string about = "Ziv Programming Language";
         llvm::cl::ParseCommandLineOptions(argc, argv, about.c_str());
@@ -40,6 +46,9 @@ namespace ziv::cli::command {
             }
             if (!token_command.getValue().empty()) {
                 handle_token(token_command);
+            }
+            if (!lexer_command.getValue().empty()) {
+                handle_lexer(lexer_command);
             }
         } else {
             llvm::errs() << "Error: No command specified\n";
@@ -54,6 +63,11 @@ namespace ziv::cli::command {
     void CommandManager::handle_token(const std::string &token) {
         ziv::cli::toolchain::ToolchainDriver driver;
         driver.run("token", token);
+    }
+
+    void CommandManager::handle_lexer(const std::string &filename) {
+        ziv::cli::toolchain::ToolchainDriver driver;
+        driver.run("lexer", filename);
     }
 
 } // namespace ziv::command

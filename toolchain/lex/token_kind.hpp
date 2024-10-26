@@ -42,6 +42,11 @@ class TokenKind {
             return kind != other.kind;
         }
 
+        // Returns the kind of the token as an integer.
+        constexpr operator int() const {
+            return static_cast<int>(kind);
+        }
+
         llvm::StringRef get_name() const;
 
         bool is_symbol() const;
@@ -55,9 +60,6 @@ class TokenKind {
         // - `TokenKind::l_paren` -> "("
         // - `TokenKind::r_paren` -> ")"
         llvm::StringRef get_spelling() const;
-
-        // Returns the kind of the token as an integer.
-        constexpr operator int() const;
 
     private:
         constexpr TokenKind(KindEnum kind): kind(kind) {}

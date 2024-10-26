@@ -38,6 +38,7 @@ bool TokenKind::is_keyword() const {
 }
 
 llvm::StringRef TokenKind::get_spelling() const {
+
     static constexpr llvm::StringLiteral spellings[] = {
         #define ZIV_TOKEN(NAME) #NAME,
         #define ZIV_SYMBOL_TOKEN(NAME, VALUE) VALUE,
@@ -45,10 +46,6 @@ llvm::StringRef TokenKind::get_spelling() const {
         #include "token_record.def"
     };
     return spellings[static_cast<int>(kind)];
-}
-
-constexpr TokenKind::operator int() const {
-    return static_cast<int>(kind);
 }
 
 } // namespace ziv::toolchain::lex
