@@ -2,15 +2,18 @@
 // See /LICENSE for license details.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
-#include "lex_command.hpp"
+#include "parser_command.hpp"
 #include "toolchain/parser/parser.hpp"
 #include "toolchain/ast/tree.hpp"
+#include "toolchain/ast/printer.hpp"
+#include "llvm/Support/raw_ostream.h"
+#include "llvm/Support/VirtualFileSystem.h"
 
 namespace ziv::cli::toolchain {
 
-    void LexerCommand::execute(const std::string &arg) {
+void ParserCommand::execute(const std::string &args) {
         llvm::vfs::FileSystem &fs = *llvm::vfs::getRealFileSystem();
-        auto source = ziv::toolchain::source::SourceBuffer::from_file(fs, arg);
+        auto source = ziv::toolchain::source::SourceBuffer::from_file(fs, args);
         ziv::toolchain::lex::TokenBuffer buffer;
         ziv::toolchain::lex::Lexer lexer(*source, buffer);
 
@@ -18,13 +21,13 @@ namespace ziv::cli::toolchain {
 
         const auto& tokens = lexer.get_tokens();
 
-        for (const auto& token : tokens) {
-            llvm::outs() << "Token: " << token.get_spelling()
-                            << " (kind: " << static_cast<int>(token.get_kind())
-                            << ", line: " << token.get_line()
-                            << ", column: " << token.get_column()
-                            << ", name: " << token.get_name() << ")\n";
-        }
-    };
+        ziv::toolchain::ast::AST ast;
+        ziv::toolchain::parser::Parser parser(tokens, ast);
+
+        parser.parse(); // Parse the token buffer
+
+        ziv::toolchain::ast::Printer printer(ast);
+        printer.print(llvm::outs());
+    }
 
 } // namespace ziv::cli::toolchain

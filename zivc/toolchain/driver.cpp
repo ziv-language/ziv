@@ -5,13 +5,15 @@
 #include "driver.hpp"
 #include "commands/source_command.hpp"
 #include "commands/lex_command.hpp"
+#include "commands/parser_command.hpp"
 
 namespace ziv::cli::toolchain {
 
     ToolchainDriver::ToolchainDriver() {
-        // Register commands
+        // registry commands
         commands_["source"] = std::make_unique<SourceCommand>();
         commands_["lexer"] = std::make_unique<LexerCommand>();
+        commands_["parser"] = std::make_unique<ParserCommand>();
     }
 
     void ToolchainDriver::run(const std::string &command, const std::string &arg) {

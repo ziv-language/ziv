@@ -16,6 +16,7 @@ class CommandManager {
     private:
         void handle_source(const std::string &filename);
         void handle_lexer(const std::string &filename);
+        void handle_parser(const std::string &filename);
 };
 
 } // namespace ziv::cli::command

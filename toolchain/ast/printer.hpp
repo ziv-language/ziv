@@ -17,23 +17,55 @@ namespace ziv::toolchain::ast {
             Printer(const AST& ast): ast_(ast) {}
 
             void print(llvm::raw_ostream& os) const {
+                os << "[\n";
                 print_node(os, ast_.get_root(), 0);
+                os << "]\n";
             }
-
-            // get_kind_name is a static function that returns the name of the node kind
             static const llvm::StringRef get_kind_name(NodeKind kind);
 
         private:
             void print_node(llvm::raw_ostream& os, AST::Node node, size_t indent) const {
+                const auto& children = ast_.get_children(node);
+                bool has_children = !children.empty();
+
+                // Print indentation
                 for (size_t i = 0; i < indent; ++i) {
                     os << "  ";
                 }
 
-                os << get_kind_name(ast_.get_kind(node)) << " ("
-                    << ast_.get_spelling(node) << ")\n";
+                // Start node
+                os << "{node_index: " << node.get_index()
+                   << ", kind: '" << get_kind_name(ast_.get_kind(node))
+                   << "', line: " << ast_.get_line(node)
+                   << ", column: " << ast_.get_token(node).get_column()
+                   << ", token: '" << ast_.get_token(node).get_spelling()
+                   << "', value: '" << ast_.get_token(node).get_name()
+                   << "', text: '" << ast_.get_spelling(node) << "'";
 
-                for (const auto& child : ast_.get_children(node)) {
-                    print_node(os, child, indent + 1);
+                // Handle children if any
+                if (has_children) {
+                    os << ", children: [\n";
+
+                    bool first = true;
+                    for (const auto& child : children) {
+                        if (!first) {
+                            os << ",\n";
+                        }
+                        print_node(os, child, indent + 1);
+                        first = false;
+                    }
+
+                    os << "\n";
+                    for (size_t i = 0; i < indent; ++i) {
+                        os << "  ";
+                    }
+                    os << "]}";
+                } else {
+                    os << "}";
+                }
+
+                if (indent == 0) {
+                    os << ",\n";
                 }
             }
 

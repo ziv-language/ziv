@@ -2,6 +2,7 @@
 // See /LICENSE for license details.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
+
 #include "printer.hpp"
 #include <map>
 
@@ -19,7 +20,10 @@ namespace ziv::toolchain::ast {
             {NodeKind::TypeSpec(), "TypeSpec"},
             {NodeKind::FunctionDecl(), "FunctionDecl"},
             {NodeKind::FunctionBody(), "FunctionBody"},
+            {NodeKind::FunctionSignature(), "FunctionSignature"},
             {NodeKind::ParameterList(), "ParameterList"},
+            {NodeKind::Parameter(), "Parameter"},
+            {NodeKind::ParameterType(), "ParameterType"},
             {NodeKind::ReturnType(), "ReturnType"},
             {NodeKind::FunctionCall(), "FunctionCall"},
             {NodeKind::FunctionName(), "FunctionName"},
@@ -38,7 +42,6 @@ namespace ziv::toolchain::ast {
             {NodeKind::ReturnValue(), "ReturnValue"},
             {NodeKind::StatementList(), "StatementList"},
             {NodeKind::CodeBlock(), "CodeBlock"},
-            {NodeKind::PrimitiveType(), "PrimitiveType"},
             {NodeKind::ArithmeticOp(), "ArithmeticOp"},
             {NodeKind::ComparisonOp(), "ComparisonOp"},
             {NodeKind::LogicalOp(), "LogicalOp"},
@@ -52,11 +55,18 @@ namespace ziv::toolchain::ast {
             {NodeKind::ModuleAlias(), "ModuleAlias"},
             {NodeKind::ModuleImportItem(), "ModuleImportItem"},
             {NodeKind::TryBlock(), "TryBlock"},
-            {NodeKind::BinaryExpression(), "BinaryExpression"},
-            {NodeKind::UnaryExpression(), "UnaryExpression"},
-            {NodeKind::LiteralExpression(), "LiteralExpression"},
+            {NodeKind::BinaryExpr(), "BinaryExpr"},
+            {NodeKind::UnaryExpr(), "UnaryExpr"},
+            {NodeKind::LiteralExpr(), "LiteralExpr"},
             {NodeKind::FileEnd(), "FileEnd"},
             {NodeKind::Invalid(), "Invalid"},
+
+            // Types
+            {NodeKind::IdentifierExpr(), "IdentifierExpr"},
+            {NodeKind::IntegerType(), "IntegerType"},
+            {NodeKind::FloatType(), "FloatType"},
+            {NodeKind::BoolType(), "BoolType"},
+            {NodeKind::StringType(), "StringType"},
         };
 
         auto it = kind_names.find(kind);

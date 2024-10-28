@@ -27,6 +27,7 @@ ZIV_NODE_KIND(FunctionDecl)        // Complete function declaration with body
 ZIV_NODE_KIND(FunctionName)        // Function name
 ZIV_NODE_KIND(ParameterList)       // Function parameters
 ZIV_NODE_KIND(Parameter)           // Individual parameter
+ZIV_NODE_KIND(ParameterType)       // Parameter type
 ZIV_NODE_KIND(ReturnType)          // Function return type
 ZIV_NODE_KIND(FunctionBody)        // Function body block
 ZIV_NODE_KIND(FunctionCall)        // Function call
@@ -56,7 +57,10 @@ ZIV_NODE_KIND(ReturnStatement)     // Return statement
 ZIV_NODE_KIND(ReturnValue)         // Return value
 
 // Types
-ZIV_NODE_KIND(PrimitiveType)       // int, float, string, bool
+ZIV_NODE_KIND(IntegerType)         // Integer type
+ZIV_NODE_KIND(FloatType)           // Float type
+ZIV_NODE_KIND(StringType)          // String type
+ZIV_NODE_KIND(BoolType)            // Boolean type
 ZIV_NODE_KIND(ListType)            // List type
 ZIV_NODE_KIND(TupleType)           // Tuple type
 ZIV_NODE_KIND(DictionaryType)      // Dictionary type
@@ -83,10 +87,10 @@ ZIV_NODE_KIND(HandleError)         // Error handling with variable
 ZIV_NODE_KIND(ErrorVariable)       // Error variable in handle block
 
 // Expressions
-ZIV_NODE_KIND(BinaryExpression)    // Binary operations
-ZIV_NODE_KIND(UnaryExpression)     // Unary operations
-ZIV_NODE_KIND(GroupExpression)     // Parenthesized expressions
-ZIV_NODE_KIND(LiteralExpression)   // Literals (numbers, strings, etc.)
+ZIV_NODE_KIND(BinaryExpr)    // Binary operations
+ZIV_NODE_KIND(UnaryExpr)     // Unary operations
+ZIV_NODE_KIND(GroupExpr)     // Parenthesized expressions
+ZIV_NODE_KIND(LiteralExpr)   // Literals (numbers, strings, etc.)
 ZIV_NODE_KIND(IdentifierExpr)      // Variable/function identifiers
 ZIV_NODE_KIND(ListExpr)           // List expressions
 ZIV_NODE_KIND(TupleExpr)          // Tuple expressions

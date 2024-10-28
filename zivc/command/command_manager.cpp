@@ -30,6 +30,12 @@ namespace ziv::cli::command {
         llvm::cl::sub(toolchain_command)
     );
 
+    static llvm::cl::opt<bool> parser_command(
+        "dump-tree",
+        llvm::cl::desc("Dump the AST tree"),
+        llvm::cl::sub(toolchain_command)
+    );
+
     static llvm::cl::opt<std::string> input_file(
         llvm::cl::Positional,
         llvm::cl::desc("<input file>"),
@@ -48,6 +54,9 @@ namespace ziv::cli::command {
             if (lexer_command) {
                 handle_lexer(input_file);
             }
+            if (parser_command) {
+                handle_parser(input_file);
+            }
         } else {
             llvm::errs() << "Error: No command specified\n";
         }
@@ -61,6 +70,11 @@ namespace ziv::cli::command {
     void CommandManager::handle_lexer(const std::string &filename) {
         ziv::cli::toolchain::ToolchainDriver driver;
         driver.run("lexer", filename);
+    }
+
+    void CommandManager::handle_parser(const std::string &filename) {
+        ziv::cli::toolchain::ToolchainDriver driver;
+        driver.run("parser", filename);
     }
 
 } // namespace ziv::cli::command
