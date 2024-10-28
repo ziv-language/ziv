@@ -17,7 +17,7 @@ class TokenKind {
         #define ZIV_TOKEN(NAME) NAME,
         #define ZIV_SYMBOL_TOKEN(NAME, VALUE) NAME,
         #define ZIV_KEYWORD_TOKEN(NAME, VALUE) NAME,
-        #include "token_record.def"
+        #include "token_kind_registry.def"
     };
 
     public:
@@ -30,7 +30,7 @@ class TokenKind {
         #define ZIV_KEYWORD_TOKEN(NAME, VALUE) \
             static constexpr TokenKind NAME() { return TokenKind(KindEnum::NAME); }
 
-        #include "token_record.def"
+        #include "token_kind_registry.def"
 
         TokenKind() = delete;
 

@@ -12,7 +12,7 @@ llvm::StringRef TokenKind::get_name() const {
         #define ZIV_TOKEN(NAME) #NAME,
         #define ZIV_SYMBOL_TOKEN(NAME, VALUE) #NAME,
         #define ZIV_KEYWORD_TOKEN(NAME, VALUE) #NAME,
-        #include "token_record.def"
+        #include "token_kind_registry.def"
     };
     return names[static_cast<int>(kind)];
 }
@@ -22,7 +22,7 @@ bool TokenKind::is_symbol() const {
         #define ZIV_TOKEN(NAME) false,
         #define ZIV_SYMBOL_TOKEN(NAME, VALUE) true,
         #define ZIV_KEYWORD_TOKEN(NAME, VALUE) false,
-        #include "token_record.def"
+        #include "token_kind_registry.def"
     };
     return is_symbol[static_cast<int>(kind)];
 }
@@ -32,7 +32,7 @@ bool TokenKind::is_keyword() const {
         #define ZIV_TOKEN(NAME) false,
         #define ZIV_SYMBOL_TOKEN(NAME, VALUE) false,
         #define ZIV_KEYWORD_TOKEN(NAME, VALUE) true,
-        #include "token_record.def"
+        #include "token_kind_registry.def"
     };
     return is_keyword[static_cast<int>(kind)];
 }
@@ -43,7 +43,7 @@ llvm::StringRef TokenKind::get_spelling() const {
         #define ZIV_TOKEN(NAME) #NAME,
         #define ZIV_SYMBOL_TOKEN(NAME, VALUE) VALUE,
         #define ZIV_KEYWORD_TOKEN(NAME, VALUE) VALUE,
-        #include "token_record.def"
+        #include "token_kind_registry.def"
     };
     return spellings[static_cast<int>(kind)];
 }

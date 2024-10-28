@@ -5,6 +5,7 @@
 #ifndef ZIV_TOOLCHAIN_LEX_LEXER_HPP
 #define ZIV_TOOLCHAIN_LEX_LEXER_HPP
 
+#include <vector>
 #include <unordered_map>
 #include "toolchain/source/source_buffer.hpp"
 #include "toolchain/lex/token_buffer.hpp"
@@ -20,6 +21,11 @@ namespace ziv::toolchain::lex {
                 };
 
             void lex();
+
+            // Return tokens
+            const std::vector<TokenBuffer::Token>& get_tokens() const {
+                return buffer_.get_tokens();
+            }
 
         private:
             const ziv::toolchain::source::SourceBuffer &source_;
@@ -51,91 +57,9 @@ namespace ziv::toolchain::lex {
             bool is_identifier_start(char c) const;
             bool is_identifier_char(char c) const;
 
-            TokenKind lookup_keyword(const std::string& spelling) {
-                static const std::unordered_map<std::string, TokenKind> keyword_map = {
-                    // General Keywords
-                    {"fn", TokenKind::Fn()},
-                    {"class", TokenKind::Class()},
-                    {"interface", TokenKind::Interface()},
-                    {"module", TokenKind::Module()},
-                    {"import", TokenKind::Import()},
-                    {"if", TokenKind::If()},
-                    {"else", TokenKind::Else()},
-                    {"for", TokenKind::For()},
-                    {"in", TokenKind::In()},
-                    {"while", TokenKind::While()},
-                    {"break", TokenKind::Break()},
-                    {"continue", TokenKind::Continue()},
-                    {"do", TokenKind::Do()},
-                    {"return", TokenKind::Return()},
-                    // Logical Keywords
-                    {"and", TokenKind::And()},
-                    {"or", TokenKind::Or()},
-                    {"not", TokenKind::Not()},
-                    {"xor", TokenKind::Xor()},
-                    // Type Keywords
-                    {"int", TokenKind::Int()},
-                    {"float", TokenKind::Float()},
-                    {"bool", TokenKind::Bool()},
-                    {"char", TokenKind::Char()},
-                    {"string", TokenKind::String()},
-                    {"void", TokenKind::Void()},
-                    {"null", TokenKind::Null()},
-                    // Boolean Keywords
-                    {"true", TokenKind::True()},
-                    {"false", TokenKind::False()},
-                };
+            TokenKind lookup_keyword(const std::string& spelling);
 
-                auto it = keyword_map.find(spelling);
-                return it != keyword_map.end() ? it->second : TokenKind::Identifier();
-            };
-
-            TokenKind lookup_symbol(const std::string& spelling) {
-                static const std::unordered_map<std::string, TokenKind> symbol_map = {
-                    // Symbols
-                    {"->", TokenKind::Arrow()},
-                    {"..", TokenKind::DoubleDot()},
-                    {"==", TokenKind::DoubleEquals()},
-                    {"!=", TokenKind::NotEquals()},
-                    {"<=", TokenKind::LessEquals()},
-                    {">=", TokenKind::GreaterEquals()},
-                    {"+=", TokenKind::PlusEquals()},
-                    {"-=", TokenKind::MinusEquals()},
-                    {"*=", TokenKind::StarEquals()},
-                    {"/=", TokenKind::SlashEquals()},
-                    {"++", TokenKind::Increment()},
-                    {"--", TokenKind::Decrement()},
-                    {"<", TokenKind::Less()},
-                    {">", TokenKind::Greater()},
-                    {"+", TokenKind::Plus()},
-                    {"-", TokenKind::Minus()},
-                    {"*", TokenKind::Star()},
-                    {"/", TokenKind::Slash()},
-                    {"%", TokenKind::Percent()},
-                    {"=", TokenKind::Equals()},
-                    {"!", TokenKind::Bang()},
-                    {"&", TokenKind::Ampersand()},
-                    {"|", TokenKind::Pipe()},
-                    {"^", TokenKind::Caret()},
-                    {"~", TokenKind::Tilde()},
-                    {".", TokenKind::Dot()},
-                    {"@", TokenKind::At()},
-
-                    // Delimiters
-                    {"(", TokenKind::LParen()},
-                    {")", TokenKind::RParen()},
-                    {"{", TokenKind::LBrace()},
-                    {"}", TokenKind::RBrace()},
-                    {"[", TokenKind::LBracket()},
-                    {"]", TokenKind::RBracket()},
-                    {",", TokenKind::Comma()},
-                    {":", TokenKind::Colon()},
-                    {";", TokenKind::Semicolon()},
-                };
-
-                auto it = symbol_map.find(spelling);
-                return it != symbol_map.end() ? it->second : TokenKind::Unknown();
-            }
+            TokenKind lookup_symbol(const std::string& spelling);
     };
 } // namespace ziv::toolchain::lex
 

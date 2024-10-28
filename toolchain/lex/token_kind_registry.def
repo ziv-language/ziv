@@ -119,6 +119,7 @@ ZIV_TOKEN(Identifier)
 ZIV_TOKEN(Comment)
 ZIV_TOKEN(Decorator)
 ZIV_TOKEN(Error)
+ZIV_TOKEN(Sof)
 ZIV_TOKEN(Eof)
 ZIV_TOKEN(Unknown)
 

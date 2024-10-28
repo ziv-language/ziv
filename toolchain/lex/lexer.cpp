@@ -44,6 +44,8 @@ namespace ziv::toolchain::lex {
     }
 
     void Lexer::lex() {
+        add_token(TokenKind::Sof(), ""); // Start of file
+
         while(!is_eof()) {
             char current = peek();
             if (handlers_.count(current)) {
@@ -335,4 +337,91 @@ namespace ziv::toolchain::lex {
         return std::isalnum(c) || c == '_';
     }
 
+    TokenKind Lexer::lookup_keyword(const std::string& spelling) {
+        static const std::unordered_map<std::string, TokenKind> keyword_map = {
+            // General Keywords
+            {"fn", TokenKind::Fn()},
+            {"class", TokenKind::Class()},
+            {"interface", TokenKind::Interface()},
+            {"module", TokenKind::Module()},
+            {"end", TokenKind::End()},
+            {"import", TokenKind::Import()},
+            {"as", TokenKind::As()},
+            {"if", TokenKind::If()},
+            {"else", TokenKind::Else()},
+            {"for", TokenKind::For()},
+            {"in", TokenKind::In()},
+            {"while", TokenKind::While()},
+            {"break", TokenKind::Break()},
+            {"continue", TokenKind::Continue()},
+            {"do", TokenKind::Do()},
+            {"return", TokenKind::Return()},
+            // Logical Keywords
+            {"and", TokenKind::And()},
+            {"or", TokenKind::Or()},
+            {"not", TokenKind::Not()},
+            {"xor", TokenKind::Xor()},
+            // Type Keywords
+            {"int", TokenKind::Int()},
+            {"float", TokenKind::Float()},
+            {"bool", TokenKind::Bool()},
+            {"char", TokenKind::Char()},
+            {"string", TokenKind::String()},
+            {"void", TokenKind::Type()},
+            {"null", TokenKind::Null()},
+            // Boolean Keywords
+            {"true", TokenKind::True()},
+            {"false", TokenKind::False()},
+        };
+
+        auto it = keyword_map.find(spelling);
+        return it != keyword_map.end() ? it->second : TokenKind::Identifier();
+    };
+
+    TokenKind Lexer::lookup_symbol(const std::string& spelling) {
+        static const std::unordered_map<std::string, TokenKind> symbol_map = {
+            // Symbols
+            {"->", TokenKind::Arrow()},
+            {"..", TokenKind::DoubleDot()},
+            {"==", TokenKind::DoubleEquals()},
+            {"!=", TokenKind::NotEquals()},
+            {"<=", TokenKind::LessEquals()},
+            {">=", TokenKind::GreaterEquals()},
+            {"+=", TokenKind::PlusEquals()},
+            {"-=", TokenKind::MinusEquals()},
+            {"*=", TokenKind::StarEquals()},
+            {"/=", TokenKind::SlashEquals()},
+            {"++", TokenKind::Increment()},
+            {"--", TokenKind::Decrement()},
+            {"<", TokenKind::Less()},
+            {">", TokenKind::Greater()},
+            {"+", TokenKind::Plus()},
+            {"-", TokenKind::Minus()},
+            {"*", TokenKind::Star()},
+            {"/", TokenKind::Slash()},
+            {"%", TokenKind::Percent()},
+            {"=", TokenKind::Equals()},
+            {"!", TokenKind::Bang()},
+            {"&", TokenKind::Ampersand()},
+            {"|", TokenKind::Pipe()},
+            {"^", TokenKind::Caret()},
+            {"~", TokenKind::Tilde()},
+            {".", TokenKind::Dot()},
+            {"@", TokenKind::At()},
+
+            // Delimiters
+            {"(", TokenKind::LParen()},
+            {")", TokenKind::RParen()},
+            {"{", TokenKind::LBrace()},
+            {"}", TokenKind::RBrace()},
+            {"[", TokenKind::LBracket()},
+            {"]", TokenKind::RBracket()},
+            {",", TokenKind::Comma()},
+            {":", TokenKind::Colon()},
+            {";", TokenKind::Semicolon()},
+        };
+
+        auto it = symbol_map.find(spelling);
+        return it != symbol_map.end() ? it->second : TokenKind::Unknown();
+    };
 }

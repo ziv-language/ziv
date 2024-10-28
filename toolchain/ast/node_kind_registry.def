@@ -1,0 +1,97 @@
+// Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+// See /LICENSE for license details.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+#ifndef ZIV_NODE_KIND
+#error "ZIV_NODE_KIND must be defined before including this file"
+#endif
+
+// File structure
+ZIV_NODE_KIND(FileStart)           // Marks the start of the file
+ZIV_NODE_KIND(FileEnd)             // Marks the end of the file
+ZIV_NODE_KIND(Invalid)             // Invalid node
+ZIV_NODE_KIND(Placeholder)         // Placeholder for unimplemented features
+
+// Comments
+ZIV_NODE_KIND(SingleLineComment)   // Single line comment (#)
+ZIV_NODE_KIND(MultiLineComment)    // Multi-line comment (#-- --#)
+
+// Variables
+ZIV_NODE_KIND(VariableDecl)        // Variable declaration (name: type)
+ZIV_NODE_KIND(VariableInit)        // Variable initialization (= value)
+ZIV_NODE_KIND(TypeSpec)            // Type specification
+
+// Functions
+ZIV_NODE_KIND(FunctionSignature)   // Function signature without body
+ZIV_NODE_KIND(FunctionDecl)        // Complete function declaration with body
+ZIV_NODE_KIND(FunctionName)        // Function name
+ZIV_NODE_KIND(ParameterList)       // Function parameters
+ZIV_NODE_KIND(Parameter)           // Individual parameter
+ZIV_NODE_KIND(ReturnType)          // Function return type
+ZIV_NODE_KIND(FunctionBody)        // Function body block
+ZIV_NODE_KIND(FunctionCall)        // Function call
+ZIV_NODE_KIND(ArgumentList)        // Function call arguments
+
+// Control Flow
+ZIV_NODE_KIND(IfStatement)         // If statement
+ZIV_NODE_KIND(IfCondition)         // If condition
+ZIV_NODE_KIND(ElseStatement)       // Else statement
+ZIV_NODE_KIND(ElseIfStatement)     // Else if statement
+ZIV_NODE_KIND(ElseIfCondition)     // Else if condition
+
+// Loops
+ZIV_NODE_KIND(ForLoop)             // For loop
+ZIV_NODE_KIND(ForHeader)           // For loop header (item in iterable)
+ZIV_NODE_KIND(WhileLoop)           // While loop
+ZIV_NODE_KIND(WhileCondition)      // While loop condition
+ZIV_NODE_KIND(DoWhileLoop)         // Do while loop
+ZIV_NODE_KIND(DoWhileCondition)    // Do while loop condition
+ZIV_NODE_KIND(BreakStatement)      // Break statement
+ZIV_NODE_KIND(ContinueStatement)   // Continue statement
+
+// Code Structure
+ZIV_NODE_KIND(CodeBlock)           // Code block
+ZIV_NODE_KIND(StatementList)       // List of statements
+ZIV_NODE_KIND(ReturnStatement)     // Return statement
+ZIV_NODE_KIND(ReturnValue)         // Return value
+
+// Types
+ZIV_NODE_KIND(PrimitiveType)       // int, float, string, bool
+ZIV_NODE_KIND(ListType)            // List type
+ZIV_NODE_KIND(TupleType)           // Tuple type
+ZIV_NODE_KIND(DictionaryType)      // Dictionary type
+
+// Operators
+ZIV_NODE_KIND(ArithmeticOp)        // +, -, *, /, %, ^
+ZIV_NODE_KIND(ComparisonOp)        // ==, !=, >, <, >=, <=
+ZIV_NODE_KIND(LogicalOp)           // and, or, not, xor
+ZIV_NODE_KIND(AssignmentOp)        // =, +=, -=, *=, /=, %=, ^=
+
+// Modules
+ZIV_NODE_KIND(ModuleDecl)          // Module declaration
+ZIV_NODE_KIND(ModuleName)          // Module name
+ZIV_NODE_KIND(ModuleImport)        // Import statement
+ZIV_NODE_KIND(ModuleImportName)          // Module name
+ZIV_NODE_KIND(ModuleAlias)         // Module alias
+ZIV_NODE_KIND(ModuleImportList)    // List of imported items
+ZIV_NODE_KIND(ModuleImportItem)    // Individual imported item
+
+// Error Handling
+ZIV_NODE_KIND(TryBlock)            // Try block
+ZIV_NODE_KIND(HandleBlock)         // Handle block (instead of catch)
+ZIV_NODE_KIND(HandleError)         // Error handling with variable
+ZIV_NODE_KIND(ErrorVariable)       // Error variable in handle block
+
+// Expressions
+ZIV_NODE_KIND(BinaryExpression)    // Binary operations
+ZIV_NODE_KIND(UnaryExpression)     // Unary operations
+ZIV_NODE_KIND(GroupExpression)     // Parenthesized expressions
+ZIV_NODE_KIND(LiteralExpression)   // Literals (numbers, strings, etc.)
+ZIV_NODE_KIND(IdentifierExpr)      // Variable/function identifiers
+ZIV_NODE_KIND(ListExpr)           // List expressions
+ZIV_NODE_KIND(TupleExpr)          // Tuple expressions
+ZIV_NODE_KIND(DictExpr)           // Dictionary expressions
+ZIV_NODE_KIND(IndexExpr)          // Index access expressions
+ZIV_NODE_KIND(CallExpr)           // Function call expressions
+
+#undef ZIV_NODE_KIND
