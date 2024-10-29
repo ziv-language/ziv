@@ -14,6 +14,7 @@ Welcome to the Ziv programming language project! Ziv is designed to combine the 
 
 - [Features](#features)
 - [Documentation](#documentation)
+- [Installation](#installation)
 - [Contributing](#contributing)
 - [Code of Conduct](#code-of-conduct)
 - [Security](#security)
@@ -32,6 +33,71 @@ Welcome to the Ziv programming language project! Ziv is designed to combine the 
 ## Documentation
 
 Comprehensive documentation will be provided as the project develops. For now, refer to the code comments and the [book](https://ziv-language.github.io/book/) for insights on language features and usage.
+
+## Installation
+
+**1. Clone the Repository using SSH**
+
+Make sure your SSH keys are properly configured. Then, run:
+
+```bash
+git clone git@github.com:ziv-language/ziv.git
+```
+
+**2. Install Build Dependencies**
+
+Install **CMake** and **Ninja** using:
+
+```bash
+sudo apt-get install cmake ninja-build
+```
+
+**3. Install LLVM and MLIR Dependencies**
+
+Run the following command to install all required LLVM and MLIR packages:
+
+```bash
+sudo apt-get install llvm-18-dev llvm-18 llvm-18-tools clang-18 libmlir-18 libmlir-18-dev
+```
+
+**4. Set Up Environment Variables**
+
+Add the following variables to your **~/.bashrc** or **~/.zshrc** file:
+
+```bash
+export CMAKE_PREFIX_PATH="/usr/lib/llvm-18:$CMAKE_PREFIX_PATH"
+export MLIR_DIR="/usr/lib/llvm-18/lib/cmake/mlir"
+```
+
+Reload the shell configuration by running:
+
+```bash
+source ~/.bashrc  # If using bash
+```
+
+or
+
+```bash
+source ~/.zshrc  # If using zsh
+```
+
+**5. Build the Project**
+
+Navigate into the project directory and compile it:
+
+```bash
+cd ziv
+cmake -G Ninja -B build -S .
+cmake --build build
+```
+
+**6. Run the Compiler**
+
+Test the installation by running the following:
+
+```bash
+./build/zivc --help
+```
 
 ## Contributing
 
