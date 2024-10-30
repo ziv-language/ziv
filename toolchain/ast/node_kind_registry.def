@@ -12,10 +12,6 @@ ZIV_NODE_KIND(FileEnd)             // Marks the end of the file
 ZIV_NODE_KIND(Invalid)             // Invalid node
 ZIV_NODE_KIND(Placeholder)         // Placeholder for unimplemented features
 
-// Comments
-ZIV_NODE_KIND(SingleLineComment)   // Single line comment (#)
-ZIV_NODE_KIND(MultiLineComment)    // Multi-line comment (#-- --#)
-
 // Variables
 ZIV_NODE_KIND(VariableDecl)        // Variable declaration (name: type)
 ZIV_NODE_KIND(VariableInit)        // Variable initialization (= value)

@@ -26,15 +26,28 @@ namespace ziv::toolchain::ast {
         return get_token(node).get_line();
     }
 
-    AST::Node AST::add_node(NodeKind kind, ziv::toolchain::lex::TokenBuffer::Token token) {
+    AST::Node AST::add_node(NodeKind kind, ziv::toolchain::lex::TokenBuffer::Token token, bool has_error) {
         size_t index = nodes_.size();
         nodes_.emplace_back(NodeData(kind, token));
-        return Node(index, this);
+        nodes_.back().has_error = has_error;
+        return Node(index - 1, this);
+    }
+
+    void AST::mark_error(AST::Node node) {
+        if (node.index_ < nodes_.size()) {
+            nodes_[node.index_].has_error = true;
+        }
     }
 
     void AST::add_child(Node parent, Node child) {
-        nodes_[parent.index_].children.push_back(child.index_);
-        nodes_[child.index_].parent = parent.index_;
+        if (parent.index_ < nodes_.size() && child.index_ < nodes_.size()) {
+            nodes_[parent.index_].children.push_back(child.index_);
+            nodes_[child.index_].parent = parent.index_;
+
+            if (nodes_[child.index_].has_error) {
+                nodes_[parent.index_].has_error = true;
+            }
+        }
     }
 
     AST::TreeIterator& AST::TreeIterator::operator++() {

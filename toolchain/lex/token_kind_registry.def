@@ -86,6 +86,7 @@ ZIV_KEYWORD_TOKEN(As, "as")
 ZIV_KEYWORD_TOKEN(Version, "version")
 ZIV_KEYWORD_TOKEN(Spawn, "spawn")
 ZIV_KEYWORD_TOKEN(Parallel, "parallel")
+ZIV_KEYWORD_TOKEN(Thread, "thread")
 ZIV_KEYWORD_TOKEN(End, "end")
 
 // Logical operators

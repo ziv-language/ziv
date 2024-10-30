@@ -23,7 +23,14 @@ namespace ziv::toolchain::ast {
 
             AST() = default;
 
-            bool has_errors() const  { return has_errors_; }
+            bool has_errors() const  {
+                for (const auto& node: nodes_) {
+                    if (node.has_error) {
+                        return true;
+                    }
+                }
+                return false;
+            }
 
             size_t size() const { return nodes_.size(); }
 
@@ -40,7 +47,9 @@ namespace ziv::toolchain::ast {
             llvm::StringRef get_spelling(Node node) const;
             size_t get_line(Node node) const;
 
-            Node add_node(NodeKind kind, ziv::toolchain::lex::TokenBuffer::Token token);
+            Node add_node(NodeKind kind, ziv::toolchain::lex::TokenBuffer::Token token, bool has_error = false);
+
+            void mark_error(Node node);
 
             void add_child(Node parent, Node child);
 

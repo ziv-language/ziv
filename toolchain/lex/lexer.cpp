@@ -372,6 +372,7 @@ namespace ziv::toolchain::lex {
             // Boolean Keywords
             {"true", TokenKind::True()},
             {"false", TokenKind::False()},
+            {"thread", TokenKind::Thread()},
         };
 
         auto it = keyword_map.find(spelling);
