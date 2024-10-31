@@ -6,12 +6,14 @@
 #ifndef ZIV_TOOLCHAIN_PARSER_PARSER_HPP
 #define ZIV_TOOLCHAIN_PARSER_PARSER_HPP
 
+#include <iostream>
 #include <vector>
 #include <memory>
 #include "toolchain/lex/token_buffer.hpp"
 #include "toolchain/lex/lexer.hpp"
 #include "toolchain/ast/tree.hpp"
 #include "llvm/ADT/StringRef.h"
+#include "llvm/Support/raw_ostream.h"
 
 namespace ziv::toolchain::parser {
     class Parser {
@@ -27,7 +29,7 @@ namespace ziv::toolchain::parser {
 
             bool match(ziv::toolchain::lex::TokenKind kind) const;
 
-            bool check(ziv::toolchain::lex::TokenKind kind) const;
+            bool is_keyword() const;
 
             const ziv::toolchain::lex::TokenBuffer::Token& consume();
 
@@ -82,7 +84,9 @@ namespace ziv::toolchain::parser {
             ziv::toolchain::ast::AST::Node parse_factor();
             ziv::toolchain::ast::AST::Node parse_unary();
             ziv::toolchain::ast::AST::Node parse_primary();
-
+            ziv::toolchain::ast::AST::Node parse_addition();
+            ziv::toolchain::ast::AST::Node parse_multiplication();
+            ziv::toolchain::ast::AST::Node parse_precedence_expression();
 
             // Type parsing
             ziv::toolchain::ast::AST::Node parse_type_specifier();
@@ -92,7 +96,7 @@ namespace ziv::toolchain::parser {
             // Utility functions
             void synchronize(); // Error recovery
             void expect(ziv::toolchain::lex::TokenKind kind, const llvm::StringRef &message);
-            void parse_error(const llvm::StringRef &message);
+            void parse_error(const ziv::toolchain::ast::AST::Node &node, const llvm::StringRef &message);
             void parse_code_block();
             ziv::toolchain::ast::AST::Node parse_identifier();
 
@@ -102,7 +106,6 @@ namespace ziv::toolchain::parser {
             size_t current_;
 
     };
-
 
 } // namespace ziv::toolchain::parser
 
