@@ -44,54 +44,39 @@ Make sure your SSH keys are properly configured. Then, run:
 git clone git@github.com:ziv-language/ziv.git
 ```
 
+Navigate to the project directory:
+
+```bash
+cd ziv/
+```
+
 **2. Install Build Dependencies**
 
-Install **CMake** and **Ninja** using:
+Install [Mamba](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html) to manage the dependencies, and then create a the environment environment:
+
 
 ```bash
-sudo apt-get install cmake ninja-build
+mamba env create -f ziv.yml
 ```
 
-**3. Install LLVM and MLIR Dependencies**
-
-Run the following command to install all required LLVM and MLIR packages:
+Activate the environment:
 
 ```bash
-sudo apt-get install llvm-18-dev llvm-18 llvm-18-tools clang-18 libmlir-18 libmlir-18-dev
+mamba activate ziv
 ```
 
-**4. Set Up Environment Variables**
+Now you can proceed to build the project.
 
-Add the following variables to your **~/.bashrc** or **~/.zshrc** file:
+**3. Build the Project**
 
-```bash
-export CMAKE_PREFIX_PATH="/usr/lib/llvm-18:$CMAKE_PREFIX_PATH"
-export MLIR_DIR="/usr/lib/llvm-18/lib/cmake/mlir"
-```
-
-Reload the shell configuration by running:
+Build the project and compile it:
 
 ```bash
-source ~/.bashrc  # If using bash
-```
-
-or
-
-```bash
-source ~/.zshrc  # If using zsh
-```
-
-**5. Build the Project**
-
-Navigate into the project directory and compile it:
-
-```bash
-cd ziv
 cmake -G Ninja -B build -S .
 cmake --build build
 ```
 
-**6. Run the Compiler**
+**4. Run the Compiler**
 
 Test the installation by running the following:
 

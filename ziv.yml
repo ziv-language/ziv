@@ -1,0 +1,22 @@
+# Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+# See /LICENSE for license details.
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+name: ziv
+channels:
+  - conda-forge
+dependencies:
+  - clang>=19
+  - clang-tools>=19
+  - clangxx>=19
+  - cmake>=3.30
+  - libmlir>=19
+  - lld>=19
+  - llvm>=19
+  - llvm-tools>=19
+  - llvm-openmp>=19
+  - llvmdev>=19
+  - mlir>=19
+  - mlir-python-bindings>=19
+  - ninja>=1.12
+  - zlib>=1.2
