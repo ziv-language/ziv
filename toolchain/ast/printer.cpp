@@ -16,6 +16,7 @@ namespace ziv::toolchain::ast {
             {NodeKind::Invalid(), "Invalid"},
             {NodeKind::Placeholder(), "Placeholder"},
             {NodeKind::VariableDecl(), "VariableDecl"},
+            {NodeKind::VariableName(), "VariableName"},
             {NodeKind::VariableInit(), "VariableInit"},
             {NodeKind::TypeSpec(), "TypeSpec"},
             {NodeKind::FunctionDecl(), "FunctionDecl"},

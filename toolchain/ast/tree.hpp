@@ -98,6 +98,10 @@ namespace ziv::toolchain::ast {
                 return lhs.index_ >= rhs.index_;
             }
 
+            llvm::StringRef get_spelling() const {
+                return ast_->get_spelling(*this);
+            }
+
             size_t get_index() const {
                 return index_;
             }

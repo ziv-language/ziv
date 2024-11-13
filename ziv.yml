@@ -19,4 +19,5 @@ dependencies:
   - mlir>=19
   - mlir-python-bindings>=19
   - ninja>=1.12
+  - pre-commit>=4.0
   - zlib>=1.2

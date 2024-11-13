@@ -16,11 +16,12 @@ namespace ziv::toolchain::parser {
                 return parse_if_statement();
             case ziv::toolchain::lex::TokenKind::Fn():
                 return parse_function_declaration();
-            default:
+            case ziv::toolchain::lex::TokenKind::Identifier():
                 return parse_identifier();
+            default:
+                auto invalid_node = ast_.add_node(ast::NodeKind::Invalid(), consume());
+                return invalid_node;
         }
-        // consume();
-        return ast_.add_node(ast::NodeKind::Invalid(), previous());
     }
 
     ziv::toolchain::ast::AST::Node Parser::parse_module_declaration() {
@@ -90,15 +91,15 @@ namespace ziv::toolchain::parser {
     }
 
     ziv::toolchain::ast::AST::Node Parser::parse_function_declaration() {
+        
         //  (param1: type, param2: type) -> return_type { body }
         auto function_node = ast_.add_node(ast::NodeKind::FunctionDecl(), consume());
 
         // Parse function name
-        if (!match(ziv::toolchain::lex::TokenKind::Identifier())) {
-            return function_node;
-        }
+        expect(ziv::toolchain::lex::TokenKind::Identifier(), "Expected identifier after 'fn'");
 
-        auto function_name = ast_.add_node(ast::NodeKind::FunctionName(), consume());
+
+        auto function_name = ast_.add_node(ast::NodeKind::FunctionName(), previous());
         ast_.add_child(function_node, function_name);
 
         // Parse function signature
@@ -203,6 +204,7 @@ namespace ziv::toolchain::parser {
         }
 
         expect(ziv::toolchain::lex::TokenKind::RParen(), "Expected ')' at end of function call");
+        expect(ziv::toolchain::lex::TokenKind::Semicolon(), "Expected ';' at end of function call");
 
         return function_call_node;
     }
@@ -212,6 +214,7 @@ namespace ziv::toolchain::parser {
         // we don't have a keyword for variables so we need to check if it's a variable declaration or expression
         // variables are defined as: <identifier> : <type> = <expression>
 
+        // Fall back to statement parsing
         if (is_keyword()) {
             return parse_statement();
         }
@@ -228,34 +231,28 @@ namespace ziv::toolchain::parser {
             }
             lookahead++;
         }
-        return ast_.add_node(ast::NodeKind::IdentifierExpr(), consume());
+        auto identifier_expr = ast_.add_node(ast::NodeKind::IdentifierExpr(), consume());
+        return identifier_expr;
     }
 
-
     ziv::toolchain::ast::AST::Node Parser::parse_variable_declaration() {
-        // Store the identifier token
-        auto identifier_token = consume();
-        auto variable_node = ast_.add_node(ast::NodeKind::VariableDecl(), identifier_token);
+        // Expect an identifier
+        auto variable_node = ast_.add_node(ast::NodeKind::VariableDecl(), peek());
 
-        // Parse type specifier
-        if (!consume_match(ziv::toolchain::lex::TokenKind::Colon())) {
-            parse_error(variable_node, "Expected ':' in variable declaration");
-            return variable_node;
-        }
+        auto name = ast_.add_node(ast::NodeKind::VariableName(), consume());
+        ast_.add_child(variable_node, name);
 
         // Parse the type
-        auto type = parse_type_specifier();
-        if (type.is_valid()) {
-            ast_.add_child(variable_node, type);
-        }
+        expect(ziv::toolchain::lex::TokenKind::Colon(), "Expected ':' in variable declaration");
+        auto type_node = parse_type_specifier();
+        ast_.add_child(variable_node, type_node);
 
-        // Parse the initial value
-        if (consume_match(ziv::toolchain::lex::TokenKind::Equals())) {
-            auto expression = parse_expression();
-            if (expression.is_valid()) {
-                ast_.add_child(variable_node, expression);
-            }
-        }
+        // Parse the value
+        expect(ziv::toolchain::lex::TokenKind::Equals(), "Expected '=' in variable declaration");
+        auto value_node = parse_expression();
+        ast_.add_child(variable_node, value_node);
+
+        expect(ziv::toolchain::lex::TokenKind::Semicolon(), "Expected ';' at end of variable declaration");
 
         return variable_node;
     }
@@ -290,6 +287,9 @@ namespace ziv::toolchain::parser {
             expect(ziv::toolchain::lex::TokenKind::RParen(), "Expected ')' at end of expression");
         }
 
+        // Check for delimiter
+        expect(ziv::toolchain::lex::TokenKind::Semicolon(), "Expected ';' at end of expression");
+
         return expr;
     }
 
@@ -307,9 +307,8 @@ namespace ziv::toolchain::parser {
             if (right.is_valid()) {
                 ast_.add_child(assignment_node, right);
             }
-
             return assignment_node;
         }
         return left;
     }
-} //
+}

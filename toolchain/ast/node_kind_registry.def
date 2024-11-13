@@ -14,6 +14,7 @@ ZIV_NODE_KIND(Placeholder)         // Placeholder for unimplemented features
 
 // Variables
 ZIV_NODE_KIND(VariableDecl)        // Variable declaration (name: type)
+ZIV_NODE_KIND(VariableName)        // Variable name
 ZIV_NODE_KIND(VariableInit)        // Variable initialization (= value)
 ZIV_NODE_KIND(TypeSpec)            // Type specification
 

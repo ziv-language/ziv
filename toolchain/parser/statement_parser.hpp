@@ -16,10 +16,11 @@ namespace ziv::toolchain::parser {
             // case ziv::toolchain::lex::TokenKind::Return():
             //     return parse_return_statement();
             case ziv::toolchain::lex::TokenKind::Identifier():
-                return parse_variable_declaration();
+                return parse_identifier();
             default:
                 return parse_expression();
         }
+
     }
 
     ziv::toolchain::ast::AST::Node Parser::parse_block() {
@@ -117,8 +118,4 @@ namespace ziv::toolchain::parser {
 
         return while_node;
     }
-
-
-
-
 }
