@@ -23,6 +23,7 @@ Below are the guidelines we follow to ensure contributions are streamlined, orga
     - [Building and Testing](#building-and-testing)
 - [Style Guidelines for Documentation](#style-guidelines-for-documentation)
 - [Contribution Philosophy](#contribution-philosophy)
+- [Setting Up Your Development Environment](#setting-up-your-development-environment)
 - [Code of Conduct](#code-of-conduct)
 
 ## Philosophy and Guidelines
@@ -178,6 +179,58 @@ Fixes #123
 - **Collaboration**: Open dialogue and teamwork are the keys to success. Don’t hesitate to reach out to maintainers or the community with questions or ideas.
 
 - **Quality over Quantity**: It's better to make fewer, higher-quality contributions than to contribute large amounts of low-quality code. Each small, focused change should improve the project in a meaningful way.
+
+## Setting Up Your Development Environment
+
+To set up your development environment, follow these steps:
+
+1. Make a fork of the repository.
+
+2. Clone your fork to your local machine:
+
+```bash
+    git clone git@github.com:your-username/ziv.git
+```
+
+3. Navigate to the project directory:
+
+```bash
+    cd ziv/
+```
+
+4. Install the build dependencies:
+
+```bash
+    mamba env create -f ziv.yml
+```
+
+5. Activate the environment:
+
+```bash
+    conda activate ziv
+```
+
+6. Install the pre-commit hooks:
+
+```bash
+    pre-commit install
+```
+
+7. Build the project:
+
+```bash
+    cmake -G Ninja -B build -S .
+    cmake --build build
+```
+
+8. Run the compiler:
+
+```bash
+    ./build/zivc --help
+```
+
+9. You're all set! Now you can start contributing to Ziv.
+
 
 ## Code of Conduct
 

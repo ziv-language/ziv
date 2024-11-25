@@ -19,6 +19,7 @@ Welcome to the Ziv programming language project! Ziv is designed to combine the 
 - [Code of Conduct](#code-of-conduct)
 - [Security](#security)
 - [License](#license)
+- [Join Our Community! 🚀](#join-our-community)
 
 ## Features
 
@@ -103,3 +104,16 @@ This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE
 ---
 
 Thank you for your interest in Ziv! We hope you find it as exciting as we do. Feel free to reach out with any questions or suggestions in the [Discussions](https://github.com/ziv-language/ziv/discussions) section.
+
+## Join Our Community
+
+[![Discord](https://img.shields.io/discord/1310665530763513927?color=7289DA&label=Join%20our%20Discord&logo=discord&logoColor=white)](https://discord.gg/jNxqNSdyQH)
+
+We have an active and friendly community on Discord where you can:
+- Get help with Ziv development
+- Share your projects and ideas
+- Participate in language design discussions
+- Connect with other developers
+- Stay updated on the latest changes
+
+Don't hesitate to join us and be part of shaping Ziv's future! 🚀
