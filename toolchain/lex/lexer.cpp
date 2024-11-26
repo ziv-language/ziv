@@ -46,7 +46,21 @@ namespace ziv::toolchain::lex {
     void Lexer::lex() {
         add_token(TokenKind::Sof(), ""); // Start of file
 
+        auto last_token = TokenKind::Sof();
+        bool new_line = false;
+
         while(!is_eof()) {
+            if (is_line_terminator()) {
+                new_line = true;
+                consume();
+                continue;
+            }
+
+            // If we're at a new line and last token can terminate
+            if (new_line && can_terminate_expression(last_token)) {
+                add_token(TokenKind::Semicolon(), ";");
+            }
+
             char current = peek();
             if (handlers_.count(current)) {
                 (this->*handlers_[current])();
@@ -63,6 +77,14 @@ namespace ziv::toolchain::lex {
             else {
                 consume_unknown();
             }
+
+            new_line = false;
+            last_token = buffer_.get_last_token();
+        }
+
+        // Handle final semicolon if needed
+        if (can_terminate_expression(last_token)) {
+            add_token(TokenKind::Semicolon(), ";");
         }
 
         add_token(TokenKind::Eof(), "");
@@ -87,6 +109,10 @@ namespace ziv::toolchain::lex {
 
     bool Lexer::is_eof() const {
         return cursor_ >= source_.get_contents().size();
+    }
+
+    bool Lexer::is_line_terminator() const {
+        return peek() == '\n' || peek() == '\r';
     }
 
     void Lexer::add_token(TokenKind kind, llvm::StringRef spelling) {
@@ -335,6 +361,21 @@ namespace ziv::toolchain::lex {
 
     bool Lexer::is_identifier_char(char c) const {
         return std::isalnum(c) || c == '_';
+    }
+
+    bool Lexer::can_terminate_expression(const TokenKind& kind) const {
+        return kind == TokenKind::Identifier() ||
+               kind == TokenKind::IntLiteral() ||
+               kind == TokenKind::FloatLiteral() ||
+               kind == TokenKind::StringLiteral() ||
+               kind == TokenKind::Break() ||
+               kind == TokenKind::Continue() ||
+               kind == TokenKind::Return() ||
+               kind == TokenKind::RBrace() ||
+               kind == TokenKind::RParen() ||
+               kind == TokenKind::RBracket() ||
+               kind == TokenKind::Increment() ||
+               kind == TokenKind::Decrement();
     }
 
     TokenKind Lexer::lookup_keyword(const std::string& spelling) {
