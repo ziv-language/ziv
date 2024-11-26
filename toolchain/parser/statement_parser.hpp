@@ -13,6 +13,8 @@ namespace ziv::toolchain::parser {
                 return parse_if_statement();
             case ziv::toolchain::lex::TokenKind::While():
                 return parse_while_statement();
+            case ziv::toolchain::lex::TokenKind::Do():
+                return parse_do_while_statement();
             // case ziv::toolchain::lex::TokenKind::Return():
             //     return parse_return_statement();
             case ziv::toolchain::lex::TokenKind::Identifier():
@@ -117,5 +119,32 @@ namespace ziv::toolchain::parser {
         }
 
         return while_node;
+    }
+
+
+    ziv::toolchain::ast::AST::Node Parser::parse_do_while_statement() {
+        auto do_while_node = ast_.add_node(ast::NodeKind::DoWhileLoop(), consume());
+
+        auto block = parse_block();
+        if (block.is_valid()) {
+            ast_.add_child(do_while_node, block);
+        }
+
+        auto while_node = ast_.add_node(ast::NodeKind::WhileLoop(), consume());
+        ast_.add_child(do_while_node, while_node);
+
+        // Parse condition
+        bool has_parens = consume_match(ziv::toolchain::lex::TokenKind::LParen());
+
+        auto condition = parse_expression();
+        if (condition.is_valid()) {
+            ast_.add_child(while_node, condition);
+        }
+
+        if (has_parens) {
+            expect(ziv::toolchain::lex::TokenKind::RParen(), "Expected ')' at end of condition");
+        }
+
+        return do_while_node;
     }
 }
