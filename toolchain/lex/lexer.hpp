@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include "toolchain/source/source_buffer.hpp"
 #include "toolchain/lex/token_buffer.hpp"
 #include "toolchain/lex/token_kind.hpp"
@@ -41,6 +42,7 @@ namespace ziv::toolchain::lex {
             char peek() const;
             char consume();
             bool is_eof() const;
+            bool is_line_terminator() const;
             void add_token(TokenKind kind, llvm::StringRef spelling);
 
             void consume_whitespace();
@@ -56,6 +58,8 @@ namespace ziv::toolchain::lex {
 
             bool is_identifier_start(char c) const;
             bool is_identifier_char(char c) const;
+
+            bool can_terminate_expression(const TokenKind& kind) const;
 
             TokenKind lookup_keyword(const std::string& spelling);
 
