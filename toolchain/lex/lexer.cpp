@@ -43,11 +43,54 @@ namespace ziv::toolchain::lex {
         handlers_['@'] = &Lexer::consume_operator;
     }
 
+    void Lexer::track_indentation() {
+        size_t spaces = 0;
+        size_t tab_width = 4; // Standard tab width
+
+        while (peek() == ' ' || peek() == '\t') {
+            if (peek() == ' ') {
+                spaces++;
+            } else { // tab
+                spaces += tab_width - (spaces % tab_width);
+            }
+            consume();
+        }
+
+        // Each indentation level must be exactly indent_width_ spaces
+        if (spaces % indent_width_ != 0) {
+            add_token(TokenKind::Error(), "Indentation must be a multiple of " +
+                    std::to_string(indent_width_) + " spaces");
+            return;
+        }
+
+        size_t level = spaces / indent_width_;
+
+        if (level > indent_level_) {
+            // Only allow single level increases
+            if (level != indent_level_ + 1) {
+                add_token(TokenKind::Error(), "Too many indentation levels at once");
+                return;
+            }
+            indent_stack_.push_back(indent_level_);
+            indent_level_ = level;
+            add_token(TokenKind::Indent(), "");
+        } else if (level < indent_level_) {
+            while (!indent_stack_.empty() && level < indent_level_) {
+                indent_level_ = indent_stack_.back();
+                indent_stack_.pop_back();
+                add_token(TokenKind::Dedent(), "");
+            }
+            if (level != indent_level_) {
+                add_token(TokenKind::Error(), "Inconsistent indentation");
+            }
+        }
+    }
+
     void Lexer::lex() {
         add_token(TokenKind::Sof(), ""); // Start of file
 
         auto last_token = TokenKind::Sof();
-        bool new_line = false;
+        bool new_line = true;  // Start assuming we're at beginning of line
 
         while(!is_eof()) {
             if (is_line_terminator()) {
@@ -56,9 +99,13 @@ namespace ziv::toolchain::lex {
                 continue;
             }
 
-            // If we're at a new line and last token can terminate
-            if (new_line && can_terminate_expression(last_token)) {
-                add_token(TokenKind::Semicolon(), ";");
+            // Handle indentation at start of line
+            if (new_line) {
+                track_indentation();
+                // Add implicit semicolon if needed
+                if (can_terminate_expression(last_token)) {
+                    add_token(TokenKind::Semicolon(), ";");
+                }
             }
 
             char current = peek();
@@ -85,6 +132,13 @@ namespace ziv::toolchain::lex {
         // Handle final semicolon if needed
         if (can_terminate_expression(last_token)) {
             add_token(TokenKind::Semicolon(), ";");
+        }
+
+        // Add remaining dedents at EOF
+        while (!indent_stack_.empty()) {
+            indent_level_ = indent_stack_.back();
+            indent_stack_.pop_back();
+            add_token(TokenKind::Dedent(), "");
         }
 
         add_token(TokenKind::Eof(), "");
@@ -381,6 +435,8 @@ namespace ziv::toolchain::lex {
     TokenKind Lexer::lookup_keyword(const std::string& spelling) {
         static const std::unordered_map<std::string, TokenKind> keyword_map = {
             // General Keywords
+            {"let", TokenKind::Let()},
+            {"mut", TokenKind::Mut()},
             {"fn", TokenKind::Fn()},
             {"class", TokenKind::Class()},
             {"interface", TokenKind::Interface()},
