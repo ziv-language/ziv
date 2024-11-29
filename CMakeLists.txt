@@ -60,3 +60,9 @@ target_link_libraries(zivc PRIVATE
 # Print summary of files found (useful for debugging)
 message(STATUS "Found toolchain sources: ${TOOLCHAIN_SOURCES}")
 message(STATUS "Found zivc sources: ${ZIVC_SOURCES}")
+
+
+# Enable testing
+enable_testing()
+find_package(GTest REQUIRED)
+add_subdirectory(tests)
