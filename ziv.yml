@@ -6,10 +6,12 @@ name: ziv
 channels:
   - conda-forge
 dependencies:
+  - benchmark>=1.9.1
   - clang>=19
   - clang-tools>=19
   - clangxx>=19
   - cmake>=3.30
+  - gtest>=1.15.2
   - libmlir>=19
   - lld>=19
   - llvm>=19
