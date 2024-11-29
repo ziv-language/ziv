@@ -7,6 +7,7 @@ channels:
   - conda-forge
 dependencies:
   - benchmark>=1.9.1
+  - ccache>=4.10
   - clang>=19
   - clang-tools>=19
   - clangxx>=19
