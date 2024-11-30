@@ -6,6 +6,10 @@
 cmake_minimum_required(VERSION 3.20)
 project(Ziv)
 
+# Use Ccache
+set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+
 # Use Clang as the compiler
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)

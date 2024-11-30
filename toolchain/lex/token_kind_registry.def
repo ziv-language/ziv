@@ -57,6 +57,9 @@ ZIV_SYMBOL_TOKEN(Semicolon, ";")
 
 
 // Keywords
+ZIV_KEYWORD_TOKEN(Let, "let")
+ZIV_KEYWORD_TOKEN(Const, "const")
+ZIV_KEYWORD_TOKEN(Mut, "mut")
 ZIV_KEYWORD_TOKEN(Fn, "fn")
 ZIV_KEYWORD_TOKEN(Class, "class")
 ZIV_KEYWORD_TOKEN(Interface, "interface")
@@ -101,7 +104,7 @@ ZIV_KEYWORD_TOKEN(Char, "char")
 ZIV_KEYWORD_TOKEN(Int, "int")
 ZIV_KEYWORD_TOKEN(Float, "float")
 ZIV_KEYWORD_TOKEN(String, "string")
-ZIV_KEYWORD_TOKEN(Void, "void")
+ZIV_KEYWORD_TOKEN(Unit, "unit")
 ZIV_KEYWORD_TOKEN(Any, "any")
 ZIV_KEYWORD_TOKEN(Null, "null")
 
@@ -123,6 +126,8 @@ ZIV_TOKEN(Error)
 ZIV_TOKEN(Sof)
 ZIV_TOKEN(Eof)
 ZIV_TOKEN(Unknown)
+ZIV_TOKEN(Indent)
+ZIV_TOKEN(Dedent)
 
 #undef ZIV_SYMBOL_TOKEN
 #undef ZIV_KEYWORD_TOKEN

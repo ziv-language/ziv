@@ -35,6 +35,13 @@ namespace ziv::toolchain::lex {
             size_t line_;
             size_t column_;
 
+            // Identation
+            size_t indent_level_ = 0;
+            std::vector<size_t> indent_stack_;
+            size_t indent_width_ = 4;
+
+            void track_indentation();
+
             using Handler = void (Lexer::*)();
             std::unordered_map<char, Handler> handlers_;
             void initialize_handlers();
