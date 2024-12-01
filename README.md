@@ -43,29 +43,39 @@ Welcome to the Ziv programming language project! Ziv is designed to combine the 
 
 ### Installation
 
-1. **Clone the Repository**
-```bash
-git clone git@github.com:ziv-language/ziv.git
-cd ziv
-```
+1. **Prerequisites**
 
-2. **Set Up Development Environment**
-```bash
-# Install dependencies using Mamba
-mamba env create -f ziv.yml
-mamba activate ziv
-```
+- Install Mambaforge from: https://github.com/conda-forge/miniforge#mambaforge
 
-3. **Build the Project**
-```bash
-cmake -G Ninja -B build -S .
-cmake --build build
-```
+- Install conda-lock:
 
-4. **Verify Installation**
-```bash
-./build/zivc --version
-```
+    ```bash
+    mamba install conda-lock
+    ```
+
+2. **Clone the Repository**
+    ```bash
+    git clone git@github.com:ziv-language/ziv.git
+    cd ziv
+    ```
+
+3. **Set Up Development Environment**
+    ```bash
+    # Create reproducible environment
+    conda-lock install --mamba -n ziv
+    conda activate ziv
+    ```
+
+4. **Build the Project**
+    ```bash
+    cmake -G Ninja -B build -S .
+    cmake --build build
+    ```
+
+5. **Verify Installation**
+    ```bash
+    ./build/zivc --version
+    ```
 
 ### Hello World
 
