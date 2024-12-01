@@ -14,4 +14,4 @@ const std::vector<TokenBuffer::Token>& TokenBuffer::get_tokens() const {
     return tokens_;
 }
 
-} // namespace ziv::toolchain::lex
+}  // namespace ziv::toolchain::lex
