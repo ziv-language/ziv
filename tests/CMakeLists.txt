@@ -13,7 +13,7 @@ file(GLOB_RECURSE SOURCE_FILES
 )
 
 # Create the test executable with both test and implementation files
-add_executable(ziv_tests 
+add_executable(ziv_tests
     ${TEST_SOURCES}
     ${SOURCE_FILES}
 )

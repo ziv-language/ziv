@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 #include "toolchain/ast/tree.hpp"
+
 #include <algorithm>
 #include <cassert>
 
@@ -14,18 +15,14 @@ AST::Node AST::get_root() const noexcept {
 }
 
 ziv::toolchain::lex::TokenBuffer::Token AST::get_token(Node node) const noexcept {
-    return is_valid_node(node) ? nodes_[node.index_].token :
-           ziv::toolchain::lex::TokenBuffer::Token(
-               ziv::toolchain::lex::TokenKind::Sof(),
-               llvm::StringRef(),
-               0,
-               0
-           );
+    return is_valid_node(node) ? nodes_[node.index_].token
+                               : ziv::toolchain::lex::TokenBuffer::Token(
+                                   ziv::toolchain::lex::TokenKind::Sof(), llvm::StringRef(), 0, 0);
 }
 
 bool AST::is_valid_node(Node node) const noexcept {
-    return node.index_ > 0 && node.index_ < nodes_.size() &&
-           nodes_[node.index_].kind != NodeKind::Invalid();
+    return node.index_ > 0 && node.index_ < nodes_.size()
+           && nodes_[node.index_].kind != NodeKind::Invalid();
 }
 
 NodeKind AST::get_kind(Node node) const noexcept {
@@ -33,8 +30,7 @@ NodeKind AST::get_kind(Node node) const noexcept {
 }
 
 llvm::StringRef AST::get_spelling(Node node) const noexcept {
-    return is_valid_node(node) ? nodes_[node.index_].token.get_spelling() :
-           llvm::StringRef();
+    return is_valid_node(node) ? nodes_[node.index_].token.get_spelling() : llvm::StringRef();
 }
 
 size_t AST::get_line(Node node) const noexcept {
@@ -99,7 +95,8 @@ void AST::propagate_error(size_t index) noexcept {
     size_t current = index;
     while (current != 0) {
         auto& node = nodes_[current];
-        if (node.has_error) break;
+        if (node.has_error)
+            break;
         node.has_error = true;
         current = node.parent;
     }
@@ -107,10 +104,8 @@ void AST::propagate_error(size_t index) noexcept {
 
 void AST::unlink_child(size_t parent_idx, size_t child_idx) noexcept {
     auto& parent_children = nodes_[parent_idx].children;
-    parent_children.erase(
-        std::remove(parent_children.begin(), parent_children.end(), child_idx),
-        parent_children.end()
-    );
+    parent_children.erase(std::remove(parent_children.begin(), parent_children.end(), child_idx),
+                          parent_children.end());
 }
 
 bool AST::is_ancestor(Node ancestor, Node descendant) const noexcept {
@@ -130,30 +125,22 @@ bool AST::is_ancestor(Node ancestor, Node descendant) const noexcept {
 
 // Traversal Methods
 llvm::iterator_range<AST::TreeIterator> AST::nodes() const noexcept {
-    return empty() ?
-           llvm::make_range(TreeIterator(), TreeIterator()) :
-           llvm::make_range(
-               TreeIterator(this, get_root()),
-               TreeIterator(this, Node::create_end_node(this))
-           );
+    return empty() ? llvm::make_range(TreeIterator(), TreeIterator())
+                   : llvm::make_range(TreeIterator(this, get_root()),
+                                      TreeIterator(this, Node::create_end_node(this)));
 }
 
 llvm::iterator_range<AST::TreeIterator> AST::subtree(Node node) const noexcept {
-    return !is_valid_node(node) ?
-           llvm::make_range(TreeIterator(), TreeIterator()) :
-           llvm::make_range(
-               TreeIterator(this, node),
-               TreeIterator(this, Node::create_end_node(this))
-           );
+    return !is_valid_node(node) ? llvm::make_range(TreeIterator(), TreeIterator())
+                                : llvm::make_range(TreeIterator(this, node),
+                                                   TreeIterator(this, Node::create_end_node(this)));
 }
 
 llvm::iterator_range<AST::ChildIterator> AST::children(Node node) const noexcept {
-    return !is_valid_node(node) ?
-           llvm::make_range(ChildIterator(), ChildIterator()) :
-           llvm::make_range(
-               ChildIterator(this, node, 0),
-               ChildIterator(this, node, nodes_[node.index_].children.size())
-           );
+    return !is_valid_node(node)
+               ? llvm::make_range(ChildIterator(), ChildIterator())
+               : llvm::make_range(ChildIterator(this, node, 0),
+                                  ChildIterator(this, node, nodes_[node.index_].children.size()));
 }
 
 // Node Implementation
@@ -188,7 +175,8 @@ AST::TreeIterator& AST::TreeIterator::operator++() {
 }
 
 AST::Node AST::TreeIterator::find_leftmost_leaf(Node start) const noexcept {
-    if (!start.is_valid()) return Node();
+    if (!start.is_valid())
+        return Node();
 
     Node current = start;
     while (!ast_->nodes_[current.index_].children.empty()) {
@@ -200,17 +188,16 @@ AST::Node AST::TreeIterator::find_leftmost_leaf(Node start) const noexcept {
 //... previous code remains the same until TreeIterator::find_next_postorder ...
 
 AST::Node AST::TreeIterator::find_next_postorder(Node current) const noexcept {
-    if (!current.is_valid()) return Node();
+    if (!current.is_valid())
+        return Node();
 
     // If at root, we're done
     if (current.index_ == 1) {
-        return Node(ast_->nodes_.size(), ast_); // End iterator
+        return Node(ast_->nodes_.size(), ast_);  // End iterator
     }
 
     const auto& parent = ast_->nodes_[ast_->nodes_[current.index_].parent];
-    auto it = std::find(parent.children.begin(),
-                       parent.children.end(),
-                       current.index_);
+    auto it = std::find(parent.children.begin(), parent.children.end(), current.index_);
 
     // If we're not the last child, move to next sibling's leftmost descendant
     if (it != parent.children.end() && std::next(it) != parent.children.end()) {
@@ -224,19 +211,17 @@ AST::Node AST::TreeIterator::find_next_postorder(Node current) const noexcept {
 
 // ChildIterator Implementation
 AST::Node AST::ChildIterator::operator*() const noexcept {
-    if (!ast_ || !node_.is_valid() ||
-        index_ >= ast_->nodes_[node_.index_].children.size()) {
+    if (!ast_ || !node_.is_valid() || index_ >= ast_->nodes_[node_.index_].children.size()) {
         return Node();
     }
     return Node(ast_->nodes_[node_.index_].children[index_], ast_);
 }
 
 AST::ChildIterator& AST::ChildIterator::operator++() noexcept {
-    if (ast_ && node_.is_valid() &&
-        index_ < ast_->nodes_[node_.index_].children.size()) {
+    if (ast_ && node_.is_valid() && index_ < ast_->nodes_[node_.index_].children.size()) {
         ++index_;
     }
     return *this;
 }
 
-} // namespace ziv::toolchain::ast
+}  // namespace ziv::toolchain::ast

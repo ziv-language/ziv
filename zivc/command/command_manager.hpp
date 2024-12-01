@@ -10,15 +10,15 @@
 namespace ziv::cli::command {
 
 class CommandManager {
-    public:
-        void execute(int argc, char **argv);
+public:
+    void execute(int argc, char** argv);
 
-    private:
-        void handle_source(const std::string &filename);
-        void handle_lexer(const std::string &filename);
-        void handle_parser(const std::string &filename);
+private:
+    void handle_source(const std::string& filename);
+    void handle_lexer(const std::string& filename);
+    void handle_parser(const std::string& filename);
 };
 
-} // namespace ziv::cli::command
+}  // namespace ziv::cli::command
 
-#endif // ZIV_COMMAND_MANAGER_HPP
+#endif  // ZIV_COMMAND_MANAGER_HPP
