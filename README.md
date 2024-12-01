@@ -6,114 +6,124 @@ SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 # The Ziv Programming Language
 
+[![Discord](https://img.shields.io/discord/1310665530763513927?color=7289DA&label=Discord&logo=discord&logoColor=white)](https://discord.gg/jNxqNSdyQH)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![Documentation](https://img.shields.io/badge/docs-website-blue)](https://ziv-language.github.io/book/)
+
+> A modern programming language focused on simplicity, safety, and performance.
+
+## Overview
+
 Welcome to the Ziv programming language project! Ziv is designed to combine the best features of various programming languages while maintaining simplicity and ease of use. Our goal is to create a language that is not only powerful but also accessible to developers of all backgrounds.
 
 > **Note**: Ziv is still in its early stages of development. We appreciate your patience and support as we work to bring you a powerful and user-friendly programming language.
 
-## Table of Contents
+## Key Features
 
-- [Features](#features)
-- [Documentation](#documentation)
-- [Installation](#installation)
-- [Contributing](#contributing)
-- [Code of Conduct](#code-of-conduct)
-- [Security](#security)
-- [License](#license)
-- [Join Our Community! 🚀](#join-our-community)
+- 🚀 **High Performance**: Built on LLVM for optimized native code generation
+- 🛡️ **Memory Safety**: Strong compile-time guarantees without runtime overhead
+- 📦 **Zero-Cost Abstractions**: High-level features with predictable performance
+- 🔧 **Modern Tooling**: Integrated build system and package management
+- 📚 **Rich Standard Library**: Comprehensive built-in functionality
+- 🌟 **Clear Syntax**: Familiar, expressive, and readable code
 
-## Features
+## Quick Start
 
-- **Simplicity**: Designed with a focus on readability and ease of use.
+### Prerequisites
 
-- **Versatility**: Incorporates features from various popular programming languages.
+- C++20 compatible compiler
+- CMake 3.20+
+- LLVM 19.0+
+- Python 3.8+ (for development tools)
 
-- **Performance**: Built on top of LLVM for optimized performance.
+### Installation
 
-- **Modular**: Supports a modular architecture to allow easy extension and integration.
-
-## Documentation
-
-Comprehensive documentation will be provided as the project develops. For now, refer to the code comments and the [book](https://ziv-language.github.io/book/) for insights on language features and usage.
-
-## Installation
-
-**1. Clone the Repository using SSH**
-
-Make sure your SSH keys are properly configured. Then, run:
-
+1. **Clone the Repository**
 ```bash
 git clone git@github.com:ziv-language/ziv.git
+cd ziv
 ```
 
-Navigate to the project directory:
-
+2. **Set Up Development Environment**
 ```bash
-cd ziv/
-```
-
-**2. Install Build Dependencies**
-
-Install [Mamba](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html) to manage the dependencies, and then create a the environment environment:
-
-
-```bash
+# Install dependencies using Mamba
 mamba env create -f ziv.yml
-```
-
-Activate the environment:
-
-```bash
 mamba activate ziv
 ```
 
-Now you can proceed to build the project.
-
-**3. Build the Project**
-
-Build the project and compile it:
-
+3. **Build the Project**
 ```bash
 cmake -G Ninja -B build -S .
 cmake --build build
 ```
 
-**4. Run the Compiler**
-
-Test the installation by running the following:
-
+4. **Verify Installation**
 ```bash
-./build/zivc --help
+./build/zivc --version
 ```
+
+### Hello World
+
+```ziv
+fn main() -> unit:
+    println!("Hello, Ziv!")
+```
+
+## Project Structure
+
+```
+ziv/
+├── examples/       # Example programs
+├── toolchain/      # Compiler implementation
+├── tests/          # Test suite
+└── zivc/           # Command-line interface
+```
+
+## Documentation
+
+- [Language Guide](https://ziv-language.github.io/book/)
+- [Example Collection](examples/)
+- [Contributing Guide](CONTRIBUTING.md)
+
+## Community & Support
+
+- 💬 [Discord Community](https://discord.gg/jNxqNSdyQH)
+- 📝 [GitHub Discussions](https://github.com/ziv-language/ziv/discussions)
+- 🐛 [Issue Tracker](https://github.com/ziv-language/ziv/issues)
+- 📰 [Release Notes](CHANGELOG.md)
+
+### Getting Help
+
+1. Check the [documentation](https://ziv-language.github.io/book/)
+2. Search [existing issues](https://github.com/ziv-language/ziv/issues)
+3. Ask in [Discord](https://discord.gg/jNxqNSdyQH) or [Discussions](https://github.com/ziv-language/ziv/discussions)
+4. [Open an issue](https://github.com/ziv-language/ziv/issues/new/choose)
 
 ## Contributing
 
-We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) for details on how to get involved.
+We welcome contributions of all kinds! Here's how you can help:
 
-## Code of Conduct
+- 🐛 Report bugs and suggest features
+- 📝 Improve documentation
+- 🔧 Submit pull requests
+- 💬 Help others in the community
 
-This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this standard.
+See our [Contributing Guide](CONTRIBUTING.md) for details.
 
 ## Security
 
-For reporting security vulnerabilities, please refer to our [SECURITY.md](SECURITY.md) for guidelines on responsible disclosure.
+For security concerns, please see our [Security Policy](SECURITY.md). We take all security reports seriously and appreciate responsible disclosure.
 
 ## License
 
-This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for more details.
+Ziv is licensed under the Apache License 2.0 with LLVM Exception - see [LICENSE](LICENSE) for details.
 
 ---
 
-Thank you for your interest in Ziv! We hope you find it as exciting as we do. Feel free to reach out with any questions or suggestions in the [Discussions](https://github.com/ziv-language/ziv/discussions) section.
+<div align="center">
 
-## Join Our Community
+**[Website](https://ziv-language.org)** • **[Documentation](https://ziv-language.github.io/book/)** • **[Discord](https://discord.gg/jNxqNSdyQH)**
 
-[![Discord](https://img.shields.io/discord/1310665530763513927?color=7289DA&label=Join%20our%20Discord&logo=discord&logoColor=white)](https://discord.gg/jNxqNSdyQH)
+Built with ❤️ by the Ziv community
 
-We have an active and friendly community on Discord where you can:
-- Get help with Ziv development
-- Share your projects and ideas
-- Participate in language design discussions
-- Connect with other developers
-- Stay updated on the latest changes
-
-Don't hesitate to join us and be part of shaping Ziv's future! 🚀
+</div>
