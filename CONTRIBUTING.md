@@ -173,7 +173,14 @@ cd build && ctest --output-on-failure
 
 ## Developer Setup
 
-1. Install Mamba: Follow instructions at https://mamba.readthedocs.io/en/latest/installation
+1. Install Mamba and conda lock:
+
+- Follow instructions at https://mamba.readthedocs.io/en/latest/installation
+
+- Install conda-lock:
+    ```bash
+    mamba install conda-lock
+    ```
 
 2. Clone and setup:
     ```bash
@@ -185,7 +192,7 @@ cd build && ctest --output-on-failure
     ```
 
     ```bash
-    mamba env create -f ziv.yml
+    conda-lock install --mamba -n ziv
     conda activate ziv
     ```
 
@@ -201,6 +208,12 @@ cd build && ctest --output-on-failure
     ```bash
     cd build && ctest --output-on-failure
     ```
+
+> **Note**: When updating dependencies in `ziv.yml`, run `conda-lock` to update the `ziv.lock` file.
+> ```bash
+> conda-lock lock --mamba -f ziv.yml
+> ```
+> This will update the `conda-lock.yml` file with the latest dependencies.
 
 ---
 
