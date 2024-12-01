@@ -15,6 +15,7 @@ dependencies:
   - gtest>=1.15.2
   - libmlir>=19
   - lld>=19
+  - lldb>=19
   - llvm>=19
   - llvm-tools>=19
   - llvm-openmp>=19
