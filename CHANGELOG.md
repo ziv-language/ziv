@@ -12,51 +12,38 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
-- Placeholder for upcoming features.
 
 ### Fixed
-- Placeholder for bug fixes.
 
 ### Changed
-- Placeholder for improvements.
+
+### Security
+
+### Deprecated
+
+### Removed
 
 ---
 
 ## [x.x.x] - YYYY-MM-DD
 
-### [Action]
-- [Description]
-
----
-
-## [x.x.x] - 2024-11-25
+_First release_
 
 ### Added
-- Do while expression recognition at parser.
-- Init changelog file.
+- Initial release of the project
 
 ---
 
 ### Conventions
 
-- **Added**: New features, commands, or components.
-- **Changed**: Updates to existing features or improvements.
-- **Deprecated**: Features marked for removal in future versions.
-- **Removed**: Features or functionality removed in this version.
-- **Fixed**: Bug fixes or error corrections.
-- **Security**: Vulnerability fixes.
+Changes are categorized using the following labels:
 
----
+- **Added**: New features or capabilities
+- **Fixed**: Bug fixes and corrections
+- **Changed**: Updates or improvements to existing features
+- **Security**: Security-related changes or fixes
+- **Deprecated**: Features marked for future removal
+- **Removed**: Features removed in this version
 
-## How to Update This File
-1. Start each new release with a `[Unreleased]` section to track ongoing changes.
-2. Move `Unreleased` content under a new version heading when releasing.
-3. Ensure dates follow the `YYYY-MM-DD` format for consistency.
-
----
-
-### Useful Links
-
-- [Repository](https://github.com/ziv-language)
-- [Issues](https://github.com/ziv-language/issues)
-- [Pull Requests](https://github.com/ziv-language/pulls)
+> This changelog is automatically updated on the first day of each month.
+> New releases are manually tagged and documented.

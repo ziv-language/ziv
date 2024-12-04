@@ -1,0 +1,55 @@
+# Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+# See /LICENSE for license details.
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+name: Update Changelog
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'  # Runs at 00:00 on the first day of every month
+  workflow_dispatch:      # Allows manual triggering
+
+jobs:
+  update-changelog:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for all tags and branches
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyGithub
+
+      - name: Update Changelog
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python .github/scripts/update_changelog.py
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'docs: update changelog for month [skip ci]'
+          title: 'docs: Update Changelog for ${{ github.ref_name }}'
+          body: |
+            🤖 Automated changelog update
+            
+            This PR updates the CHANGELOG.md file with the latest changes from the repository.
+            
+            Please review the changes and merge if they look correct.
+          branch: ci/update-changelog
+          base: main
+          delete-branch: true
+          labels: documentation
