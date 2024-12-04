@@ -52,8 +52,8 @@ cd ziv
 2. **Set Up Development Environment**
 ```bash
 # Install dependencies using Mamba
-mamba env create -f ziv.yml
-mamba activate ziv
+mamba env create -f ziv-build.yml
+mamba activate ziv-build
 ```
 
 3. **Build the Project**
@@ -71,7 +71,7 @@ cmake --build build
 
 ```ziv
 fn main() -> unit:
-    println!("Hello, Ziv!")
+    print("Hello, World!")
 ```
 
 ## Project Structure
