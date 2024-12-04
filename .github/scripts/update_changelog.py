@@ -6,7 +6,7 @@
 
 import os
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, List, Optional
 import subprocess
 from pathlib import Path
@@ -37,25 +37,17 @@ def parse_conventional_commit(commit_message: str) -> Optional[Dict[str, str]]:
         'description': match.group('description')
     }
 
-def get_latest_release_date() -> Optional[str]:
-    """Get the date of the latest release from the changelog."""
-    if not Path(CHANGELOG_PATH).exists():
-        return None
-        
-    with open(CHANGELOG_PATH, 'r') as f:
-        content = f.read()
-        
-    dates = re.findall(r'\[x\.x\.x\] - (\d{4}-\d{2}-\d{2})', content)
-    return dates[0] if dates else None
-
-def get_commits_since_date(date: Optional[str]) -> List[str]:
-    """Get all commits since the given date."""
-    if date:
-        date_obj = datetime.strptime(date, '%Y-%m-%d')
-        git_cmd = ['git', 'log', '--since', date_obj.strftime('%Y-%m-%d'), '--format=%H %s']
-    else:
-        git_cmd = ['git', 'log', '--format=%H %s']
-        
+def get_current_month_commits() -> List[str]:
+    """Get commits from the last month until now."""
+    today = datetime.now()
+    first_day_current_month = today.replace(day=1)
+    last_day_previous_month = first_day_current_month - timedelta(days=1)
+    first_day_previous_month = last_day_previous_month.replace(day=1)
+    
+    date_since = first_day_previous_month.strftime('%Y-%m-%d')
+    date_until = first_day_current_month.strftime('%Y-%m-%d')
+    
+    git_cmd = ['git', 'log', f'--since={date_since}', f'--until={date_until}', '--format=%H %s']
     result = subprocess.run(git_cmd, capture_output=True, text=True)
     return result.stdout.strip().split('\n')
 
@@ -92,19 +84,11 @@ def categorize_commits(commits: List[str]) -> Dict[str, List[str]]:
 
 def update_changelog(categorized_commits: Dict[str, List[str]]) -> None:
     """Update the CHANGELOG.md file with new changes."""
-    now = datetime.now().strftime('%Y-%m-%d')
+    current_month = datetime.now().strftime('%B %Y')
     
     if not Path(CHANGELOG_PATH).exists():
-        # Create new changelog if it doesn't exist
-        with open(CHANGELOG_PATH, 'w') as f:
-            f.write('''# CHANGELOG
-
-All notable changes to this project will be documented in this file.  
-This project adheres to [Semantic Versioning](https://semver.org/).
-
-## [Unreleased]
-
-''')
+        print(f"Error: {CHANGELOG_PATH} does not exist")
+        return
     
     with open(CHANGELOG_PATH, 'r') as f:
         content = f.readlines()
@@ -120,29 +104,31 @@ This project adheres to [Semantic Versioning](https://semver.org/).
         print("Could not find [Unreleased] section")
         return
     
-    # Create the new content
-    new_changes = []
-    for category, changes in categorized_commits.items():
-        if changes:
-            new_changes.append(f"\n### {category}\n")
-            for change in changes:
-                new_changes.append(f"- {change}\n")
+    # Create the new month section
+    new_month_content = [f"\n### {current_month}\n\n"]
     
-    # Insert the new changes after the [Unreleased] section
-    if new_changes:
-        content = (
-            content[:unreleased_idx + 1] +
-            new_changes +
-            content[unreleased_idx + 1:]
-        )
-        
-        # Write the updated content
-        with open(CHANGELOG_PATH, 'w') as f:
-            f.writelines(content)
+    # Add categorized changes
+    for category in ["Added", "Fixed", "Changed", "Security", "Deprecated", "Removed"]:
+        changes = categorized_commits.get(category, [])
+        if changes:
+            new_month_content.append(f"#### {category}\n")
+            for change in changes:
+                new_month_content.append(f"- {change}\n")
+            new_month_content.append("\n")
+    
+    # Insert the new month section after [Unreleased]
+    content = (
+        content[:unreleased_idx + 1] +
+        new_month_content +
+        content[unreleased_idx + 1:]
+    )
+    
+    # Write the updated content
+    with open(CHANGELOG_PATH, 'w') as f:
+        f.writelines(content)
 
 def main():
-    latest_release_date = get_latest_release_date()
-    commits = get_commits_since_date(latest_release_date)
+    commits = get_current_month_commits()
     categorized = categorize_commits(commits)
     update_changelog(categorized)
 
