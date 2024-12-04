@@ -37,12 +37,20 @@ jobs:
         run: |
           python .github/scripts/update_changelog.py
 
+      - name: Set Current Month-Year
+        id: date
+        run: echo "month_year=$(date '+%m-%Y')" >> $GITHUB_ENV
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'docs: update changelog for month [skip ci]'
-          title: 'docs: Update Changelog for ${{ github.ref_name }}'
+          commit-message: 'docs: update changelog for ${{ env.month_year }}'
+          committer: github-actions[bot] <actions@github.com>
+          author: github-actions[bot] <actions@github.com>
+          signoff: true
+          sign-commits: true
+          title: 'docs: Update Changelog for ${{ env.month_year }}'
           body: |
             🤖 Automated changelog update
             
