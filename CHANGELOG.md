@@ -11,52 +11,64 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
-### Added
-- Placeholder for upcoming features.
+### November 2024
 
-### Fixed
-- Placeholder for bug fixes.
+#### Added
+- updated dependencies manager [12-11-2024]
+- #5 add do while expression recognition at parser (#6) [25-11-2024]
+- #2 automatic semicolon insertion (#4) [25-11-2024]
+- updated pre commits to check message [29-11-2024]
+- #3 initial test implementation with gtest [29-11-2024]
+- #3 initial test implementation with gtest (#8) [30-11-2024]
+- #7 updated lexer to include indentation levels (#9) [30-11-2024]
 
-### Changed
-- Placeholder for improvements.
+#### Changed
+- included support for semicolon delimiter [22-11-2024]
+- updated contribution information [25-11-2024]
+
+
+### October 2024
+
+#### Added
+- created source buffer with driver [24-10-2024]
+- enhance symbol support and improve token management [25-10-2024]
+- added basic lexer implementation [25-10-2024]
+- implemented lex kind [25-10-2024]
+- implemented abstract syntax tree [27-10-2024]
+- added parser with basic support [28-10-2024]
+
+#### Fixed
+- improved cli logic and made input file mandatory [25-10-2024]
+
+#### Changed
+- created default community health files [11-10-2024]
+- added prettier, PR checklist, pre-commit, and workflows [23-10-2024]
+- add to ppal readme step-by-step ziv installation (#1) [28-10-2024]
+- included error messages for each node [30-10-2024]
+- implemented parser into different files [31-10-2024]
 
 ---
 
-## [x.x.x] - YYYY-MM-DD
+## Releases
 
-### [Action]
-- [Description]
+### [x.x.x] - YYYY-MM-DD
+*First release*
 
----
-
-## [x.x.x] - 2024-11-25
-
-### Added
-- Do while expression recognition at parser.
-- Init changelog file.
+#### Added
+- Initial release of the project
 
 ---
 
 ### Conventions
 
-- **Added**: New features, commands, or components.
-- **Changed**: Updates to existing features or improvements.
-- **Deprecated**: Features marked for removal in future versions.
-- **Removed**: Features or functionality removed in this version.
-- **Fixed**: Bug fixes or error corrections.
-- **Security**: Vulnerability fixes.
+Changes are categorized using the following labels:
 
----
+- **Added**: New features or capabilities
+- **Fixed**: Bug fixes and corrections
+- **Changed**: Updates or improvements to existing features
+- **Security**: Security-related changes or fixes
+- **Deprecated**: Features marked for future removal
+- **Removed**: Features removed in this version
 
-## How to Update This File
-1. Start each new release with a `[Unreleased]` section to track ongoing changes.
-2. Move `Unreleased` content under a new version heading when releasing.
-3. Ensure dates follow the `YYYY-MM-DD` format for consistency.
-
----
-
-### Useful Links
-
-- [Repository](https://github.com/ziv-language)
-- [Issues](https://github.com/ziv-language/issues)
-- [Pull Requests](https://github.com/ziv-language/pulls)
+> This changelog is automatically updated on the first day of each month.
+> New releases are manually tagged and documented.
