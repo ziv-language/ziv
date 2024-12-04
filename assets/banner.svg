@@ -1,3 +1,9 @@
+<!--
+Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+See /LICENSE for license details.
+SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+-->
+
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 320">
   <!-- Background with subtle gradient -->
   <defs>
