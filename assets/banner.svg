@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 320">
+  <!-- Background with subtle gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FAFAFA"/>
+      <stop offset="100%" stop-color="#F5F5F5"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="320" fill="url(#bgGradient)"/>
+  
+  <!-- Subtle grid pattern -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#E5E7EB" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="320" fill="url(#grid)" opacity="0.3"/>
+
+  <!-- Logo Group (scaled and positioned) -->
+  <g transform="translate(100,60) scale(1)">
+    <!-- Enhanced outer glow -->
+    <defs>
+      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="2" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+      </filter>
+      <filter id="strongGlow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="2.5" result="blur"/>
+        <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+      </filter>
+    </defs>
+    
+    <!-- Diamond background with shadow -->
+    <defs>
+      <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="1.5" stdDeviation="2.5" flood-opacity="0.15"/>
+      </filter>
+    </defs>
+    
+    <!-- Diamond -->
+    <rect x="50" y="50" width="100" height="100" 
+          transform="rotate(45, 100, 100)" 
+          fill="#4338CA"
+          filter="url(#shadow)"/>
+    
+    <!-- Z gradient -->
+    <defs>
+      <linearGradient id="starTrail" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ffffff"/>
+        <stop offset="40%" stop-color="#fff"/>
+        <stop offset="100%" stop-color="#B8D0FF"/>
+      </linearGradient>
+    </defs>
+    
+    <!-- Z path -->
+    <path d="M75 75 L125 75 L75 125 L125 125"
+          stroke="url(#starTrail)"
+          stroke-width="8"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          filter="url(#strongGlow)"
+          fill="none"/>
+    
+    <!-- Sparkles -->
+    <circle cx="75" cy="75" r="4" fill="white" filter="url(#strongGlow)"/>
+    <circle cx="75" cy="75" r="2" fill="#4338CA"/>
+    <circle cx="125" cy="75" r="2.5" fill="white" opacity="0.9" filter="url(#glow)"/>
+    <circle cx="100" cy="100" r="2" fill="white" opacity="0.75" filter="url(#glow)"/>
+    <circle cx="125" cy="125" r="2.5" fill="white" opacity="0.9" filter="url(#glow)"/>
+    
+    <!-- Circuit lines -->
+    <g>
+      <path d="M60 100 L80 100" stroke="#818CF8" stroke-width="1.25"/>
+      <path d="M120 100 L140 100" stroke="#818CF8" stroke-width="1.25"/>
+      <polygon points="58,100 59,101.5 60,100 59,98.5" fill="#818CF8" opacity="0.9"/>
+      <polygon points="140,100 141,101.5 142,100 141,98.5" fill="#818CF8" opacity="0.9"/>
+    </g>
+    
+    <g filter="url(#glow)" opacity="0.4">
+      <path d="M60 100 L80 100" stroke="#818CF8" stroke-width="0.5"/>
+      <path d="M120 100 L140 100" stroke="#818CF8" stroke-width="0.5"/>
+    </g>
+  </g>
+
+  <!-- Text Section -->
+  <g transform="translate(320,110)">
+    <!-- Ziv Title -->
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#1F2937">
+      The Ziv Programming Language
+    </text>
+    
+    <!-- Tagline -->
+    <text x="0" y="50" font-family="Arial, sans-serif" font-size="24" fill="#4B5563">
+    Simplicity • Safety • Performance
+    </text>
+    
+    <!-- Subtitle -->
+    <text x="0" y="100" font-family="Arial, sans-serif" font-size="18" fill="#6B7280">
+      A modern programming language for the future
+    </text>
+  </g>
+
+  <!-- Decorative Elements -->
+  <path d="M0 319.5 L1280 319.5" stroke="#E5E7EB" stroke-width="1"/>
+</svg>
