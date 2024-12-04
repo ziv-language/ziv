@@ -12,7 +12,7 @@ set(CMAKE_CXX_COMPILER clang++)
 option(ZIV_ENABLE_OPTIMIZATIONS "Enable optimizations" ON)
 option(ZIV_ENABLE_WARNINGS "Enable extra warnings" ON)
 option(ZIV_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
-option(ZIV_ENABLE_TESTING "Enable testing" ON)
+option(ZIV_ENABLE_TESTING "Enable testing" OFF)
 option(ZIV_USE_CCACHE "Use ccache if available" ON)
 
 # Use ccache if available (before project())

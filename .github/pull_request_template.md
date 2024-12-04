@@ -1,3 +1,8 @@
+<!--
+Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+See /LICENSE for license details.
+SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+-->
 
 <!-- Please describe the changes made in this PR. Provide any relevant details, code examples, or documentation updates. -->
 
