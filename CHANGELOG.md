@@ -11,6 +11,22 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+### December 2024
+
+#### Added
+- #3 initial test implementation with gtest (#8)
+- #7 updated lexer to include indentation levels (#9)
+- updated pre commits to check message
+- #3 initial test implementation with gtest
+- #5 add do while expression recognition at parser (#6)
+- #2 automatic semicolon insertion (#4)
+- updated dependencies manager
+
+#### Changed
+- updated contribution information
+- included support for semicolon delimiter
+
+
 ### Added
 - #3 initial test implementation with gtest (#8)
 - #7 updated lexer to include indentation levels (#9)
