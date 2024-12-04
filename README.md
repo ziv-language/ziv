@@ -6,11 +6,16 @@ SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 # The Ziv Programming Language
 
+<div align="center">
+  <img src="assets/banner.svg" alt="Ziv Programming Language" width="100%">
+</div>
+
+> A modern programming language focused on simplicity, safety, and performance.
+
 [![Discord](https://img.shields.io/discord/1310665530763513927?color=7289DA&label=Discord&logo=discord&logoColor=white)](https://discord.gg/jNxqNSdyQH)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Documentation](https://img.shields.io/badge/docs-website-blue)](https://ziv-language.github.io/book/)
 
-> A modern programming language focused on simplicity, safety, and performance.
 
 ## Overview
 
