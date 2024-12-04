@@ -5,10 +5,10 @@
 #ifndef ZIV_TOOLCHAIN_AST_PRINTER_HPP
 #define ZIV_TOOLCHAIN_AST_PRINTER_HPP
 
+#include "llvm/ADT/StringRef.h"
+#include "llvm/Support/raw_ostream.h"
 #include "node_kind.hpp"
 #include "tree.hpp"
-#include "llvm/Support/raw_ostream.h"
-#include "llvm/ADT/StringRef.h"
 
 namespace ziv::toolchain::ast {
 
@@ -57,25 +57,25 @@ private:
 
     void print_node(llvm::raw_ostream& os, AST::Node node, size_t indent) const {
         print_indentation(os, indent);
-        
+
         // Print node header
         os << "└─ ";
         print_node_header(os, node);
-        
+
         // Handle children
         const auto& children = ast_.get_children(node);
         if (!children.empty()) {
             // Print node details before going into children
             print_node_details(os, node);
             os << "\n";
-            
+
             // Print children with increased indentation
             size_t child_count = 0;
             for (const auto& child : children) {
                 child_count++;
                 // Use different prefix for last child
                 if (child_count == std::distance(children.begin(), children.end())) {
-                    print_node(os, child, indent + 1); 
+                    print_node(os, child, indent + 1);
                 } else {
                     print_indentation(os, indent + 1);
                     os << "├─ ";
@@ -97,6 +97,6 @@ inline llvm::raw_ostream& operator<<(llvm::raw_ostream& os, const AST& ast) {
     return os;
 }
 
-} // namespace ziv::toolchain::ast
+}  // namespace ziv::toolchain::ast
 
-#endif // ZIV_TOOLCHAIN_AST_PRINTER_HPP
+#endif  // ZIV_TOOLCHAIN_AST_PRINTER_HPP

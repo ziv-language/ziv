@@ -1,0 +1,117 @@
+# Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+# See /LICENSE for license details.
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+# Language and base style
+Language: Cpp
+BasedOnStyle: LLVM
+
+# Basic formatting
+IndentWidth: 4
+ColumnLimit: 100
+UseTab: Never
+MaxEmptyLinesToKeep: 2
+
+# Braces and indentation
+BreakBeforeBraces: Attach
+NamespaceIndentation: None
+IndentCaseLabels: false
+IndentPPDirectives: BeforeHash
+AccessModifierOffset: -4
+
+# Line breaks and wrapping
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakTemplateDeclarations: Yes
+BreakConstructorInitializers: BeforeColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+BreakBeforeBinaryOperators: NonAssignment
+BinPackArguments: false
+BinPackParameters: false
+
+# Alignment
+PointerAlignment: Left
+ReferenceAlignment: Left
+DerivePointerAlignment: false
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: None
+AlignConsecutiveDeclarations: None
+AlignEscapedNewlines: Left
+AlignOperands: Align
+AlignTrailingComments: true
+
+# Spaces
+SpaceAfterCStyleCast: false
+SpaceAfterLogicalNot: false
+SpaceAfterTemplateKeyword: false
+SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: false
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: true
+SpaceInEmptyParentheses: false
+SpacesBeforeTrailingComments: 2
+SpacesInAngles: Never
+SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: false
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+
+# Include sorting
+SortIncludes: CaseSensitive
+IncludeBlocks: Regroup
+IncludeCategories:
+  - Regex:           '^<[^/.]*>$'   # Standard library headers (e.g., <vector>)
+    Priority:        1
+  - Regex:           '^<.*\..*>$'   # Other system headers (e.g., <sys/types.h>)
+    Priority:        2
+  - Regex:           '^<.*'         # Other angle bracket headers
+    Priority:        3
+  - Regex:           '.*'           # Project headers
+    Priority:        4
+
+# Function declarations/definitions
+BraceWrapping:
+  AfterClass: false
+  AfterControlStatement: Never
+  AfterEnum: false
+  AfterFunction: false
+  AfterNamespace: false
+  AfterObjCDeclaration: false
+  AfterStruct: false
+  AfterUnion: false
+  BeforeCatch: false
+  BeforeElse: false
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+
+# Comments
+FixNamespaceComments: true
+ReflowComments: true
+CommentPragmas: '^ IWYU pragma:'
+
+# Other formatting
+Cpp11BracedListStyle: true
+IndentWrappedFunctionNames: false
+KeepEmptyLinesAtTheStartOfBlocks: false
+SortUsingDeclarations: true
+
+# Short constructors
+AllowShortLambdasOnASingleLine: Empty
+CompactNamespaces: false
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 4
+
+# Penalties to encourage good formatting
+PenaltyBreakAssignment: 100
+PenaltyBreakBeforeFirstCallParameter: 100
+PenaltyBreakComment: 100
+PenaltyBreakFirstLessLess: 100
+PenaltyBreakString: 100
+PenaltyExcessCharacter: 100
+PenaltyReturnTypeOnItsOwnLine: 100

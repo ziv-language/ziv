@@ -8,12 +8,12 @@
 #include <string>
 
 namespace ziv::cli::toolchain {
-    class Command {
-        public:
-            virtual ~Command() = default;
-            virtual void execute(const std::string &arg) = 0;
-    };
+class Command {
+public:
+    virtual ~Command() = default;
+    virtual void execute(const std::string& arg) = 0;
+};
 
-} // namespace ziv::cli::toolchain
+}  // namespace ziv::cli::toolchain
 
-#endif // ZIV_TOOLCHAIN_COMMAND_HPP
+#endif  // ZIV_TOOLCHAIN_COMMAND_HPP

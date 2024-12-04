@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+
 #include "command.hpp"
 
 namespace ziv::cli::toolchain {
@@ -15,12 +16,12 @@ namespace ziv::cli::toolchain {
 class ToolchainDriver {
 public:
     ToolchainDriver();
-    void run(const std::string &command, const std::string &args);
+    void run(const std::string& command, const std::string& args);
 
 private:
     std::unordered_map<std::string, std::unique_ptr<Command>> commands_;
 };
 
-} // namespace ziv::cli::toolchain
+}  // namespace ziv::cli::toolchain
 
-#endif // ZIV_CLI_TOOLCHAIN_DRIVER_HPP
+#endif  // ZIV_CLI_TOOLCHAIN_DRIVER_HPP

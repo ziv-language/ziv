@@ -185,8 +185,8 @@ cd build && ctest --output-on-failure
     ```
 
     ```bash
-    mamba env create -f ziv.yml
-    conda activate ziv
+    mamba env create -f ziv-dev.yml
+    conda activate ziv-dev
     ```
 
    ```bash
