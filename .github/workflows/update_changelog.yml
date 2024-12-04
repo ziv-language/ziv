@@ -41,7 +41,10 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: 'docs: update changelog for month [skip ci]'
+          commit-message: 'docs: update changelog for month'
+          committer: github-actions[bot] <actions@github.com>
+          author: github-actions[bot] <actions@github.com>
+          signoff: true
           title: 'docs: Update Changelog for ${{ github.ref_name }}'
           body: |
             🤖 Automated changelog update
