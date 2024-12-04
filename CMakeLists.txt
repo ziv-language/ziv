@@ -3,27 +3,50 @@
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 cmake_minimum_required(VERSION 3.20)
-project(Ziv VERSION 0.1.0 LANGUAGES CXX)
 
-# Options
+# Set compiler before project()
+set(CMAKE_C_COMPILER clang)
+set(CMAKE_CXX_COMPILER clang++)
+
+# Options must be set before project()
 option(ZIV_ENABLE_OPTIMIZATIONS "Enable optimizations" ON)
 option(ZIV_ENABLE_WARNINGS "Enable extra warnings" ON)
 option(ZIV_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
 option(ZIV_ENABLE_TESTING "Enable testing" ON)
 option(ZIV_USE_CCACHE "Use ccache if available" ON)
 
-# Use ccache if available
+# Use ccache if available (before project())
 if(ZIV_USE_CCACHE)
     find_program(CCACHE_PROGRAM ccache)
     if(CCACHE_PROGRAM)
-        set(CMAKE_C_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
-        set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
+        message(STATUS "Found ccache: ${CCACHE_PROGRAM}")
+        set(CMAKE_C_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+        set(CMAKE_CXX_COMPILER_LAUNCHER "${CCACHE_PROGRAM}")
+    else()
+        message(WARNING "ccache not found, compilation will not be cached")
     endif()
 endif()
 
-# Compiler settings
-set(CMAKE_C_COMPILER clang)
-set(CMAKE_CXX_COMPILER clang++)
+project(Ziv VERSION 0.1.0 LANGUAGES CXX)
+
+# Handle conda environment
+if(DEFINED ENV{CONDA_PREFIX})
+    set(CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX};${CMAKE_PREFIX_PATH}")
+    link_directories("$ENV{CONDA_PREFIX}/lib")
+    include_directories("$ENV{CONDA_PREFIX}/include")
+    message(STATUS "Using Conda environment: $ENV{CONDA_PREFIX}")
+endif()
+
+# RPATH settings
+set(CMAKE_SKIP_BUILD_RPATH FALSE)
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+if(DEFINED ENV{CONDA_PREFIX})
+    file(TO_CMAKE_PATH "$ENV{CONDA_PREFIX}/lib" CONDA_LIB_DIR)
+    list(APPEND CMAKE_INSTALL_RPATH "${CONDA_LIB_DIR}")
+endif()
+
+# C++ standard settings
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -34,6 +57,8 @@ if(ZIV_ENABLE_OPTIMIZATIONS)
     set(OPTIMIZATION_FLAGS
         -O3
         -march=native
+        -fno-rtti
+        -ffunction-sections
     )
 endif()
 
@@ -56,7 +81,6 @@ if(ZIV_ENABLE_WARNINGS)
         -Wsign-promo
         -Wdouble-promotion
     )
-
     if(ZIV_WARNINGS_AS_ERRORS)
         list(APPEND WARNING_FLAGS -Werror)
     endif()
@@ -92,7 +116,10 @@ add_executable(zivc
 )
 
 # Set compile options
-target_compile_options(zivc PRIVATE ${WARNING_FLAGS})
+target_compile_options(zivc PRIVATE 
+    ${WARNING_FLAGS}
+    ${OPTIMIZATION_FLAGS}
+)
 
 # Set include directories
 target_include_directories(zivc PRIVATE
@@ -124,3 +151,8 @@ message(STATUS "LLVM version: ${LLVM_VERSION}")
 message(STATUS "Optimizations enabled: ${ZIV_ENABLE_OPTIMIZATIONS}")
 message(STATUS "Warnings enabled: ${ZIV_ENABLE_WARNINGS}")
 message(STATUS "Warnings as errors: ${ZIV_WARNINGS_AS_ERRORS}")
+message(STATUS "Compiler flags: ${WARNING_FLAGS} ${OPTIMIZATION_FLAGS}")
+if(DEFINED ENV{CONDA_PREFIX})
+    message(STATUS "RPATH settings: ${CMAKE_INSTALL_RPATH}")
+    message(STATUS "Conda lib dir: ${CONDA_LIB_DIR}")
+endif()
