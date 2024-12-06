@@ -6,6 +6,21 @@
 
 namespace ziv::toolchain::lex {
 
+        void Lexer::update_location(char c) {
+            if (c == '\n') {
+                current_loc_.line++;
+                current_loc_.column = 1;
+            } else {
+                current_loc_.column++;
+            }
+            current_loc_.offset++;
+        }
+
+        void Lexer::save_location() {
+            start_loc_ = current_loc_;
+        }
+
+
 void Lexer::initialize_handlers() {
     // Single line comments
     handlers_['#'] = &Lexer::consume_comment;
@@ -140,21 +155,21 @@ void Lexer::lex() {
     add_token(TokenKind::Eof(), "");
 }
 
-char Lexer::peek() const {
-    return cursor_ < source_.get_contents().size() ? source_.get_contents()[cursor_] : '\0';
-}
-
-char Lexer::consume() {
-    char current = peek();
-    if (current == '\n') {
-        line_++;
-        column_ = 1;
-    } else {
-        column_++;
+    char Lexer::peek() const {
+        return cursor_ < source_.get_contents().size() ? source_.get_contents()[cursor_] : '\0';
     }
-    cursor_++;
-    return current;
-}
+
+    char Lexer::peek_next() const {
+        if (cursor_ + 1 >= source_.get_contents().size()) return '\0';
+        return source_.get_contents()[cursor_ + 1];
+    }
+
+    char Lexer::consume() {
+        char current = peek();
+        update_location(current);
+        cursor_++;
+        return current;
+    }
 
 bool Lexer::is_eof() const {
     return cursor_ >= source_.get_contents().size();
@@ -164,9 +179,9 @@ bool Lexer::is_line_terminator() const {
     return peek() == '\n' || peek() == '\r';
 }
 
-void Lexer::add_token(TokenKind kind, llvm::StringRef spelling) {
-    buffer_.add_token(kind, spelling, line_, column_);
-}
+    void Lexer::add_token(TokenKind kind, llvm::StringRef spelling) {
+        buffer_.add_token(kind, spelling, current_loc_.line, current_loc_.column);
+    }
 
 void Lexer::consume_whitespace() {
     while (std::isspace(peek())) {
@@ -213,10 +228,38 @@ void Lexer::consume_identifier() {
     add_token(kind, spelling);
 }
 
-void Lexer::consume_number() {
-    std::string spelling;
-    bool is_float = false;
-    bool has_exponent = false;
+    void Lexer::consume_number() {
+        std::string spelling;
+        bool is_float = false;
+        bool has_exponent = false;
+
+        // Handle hex numbers
+        if (peek() == '0' && (peek_next() == 'x' || peek_next() == 'X')) {
+            spelling += consume(); // '0'
+            spelling += consume(); // 'x'
+            if (!std::isxdigit(peek())) {
+                return;
+            }
+            while (std::isxdigit(peek())) {
+                spelling += consume();
+            }
+            add_token(TokenKind::IntLiteral(), spelling);
+            return;
+        }
+
+        // Handle binary numbers
+        if (peek() == '0' && (peek_next() == 'b' || peek_next() == 'B')) {
+            spelling += consume(); // '0'
+            spelling += consume(); // 'b'
+            if (peek() != '0' && peek() != '1') {
+                return;
+            }
+            while (peek() == '0' || peek() == '1') {
+                spelling += consume();
+            }
+            add_token(TokenKind::IntLiteral(), spelling);
+            return;
+        }
 
     // Handle leading sign
     if (peek() == '-' || peek() == '+') {
@@ -274,61 +317,64 @@ void Lexer::consume_number() {
     add_token(is_float ? TokenKind::FloatLiteral() : TokenKind::IntLiteral(), spelling);
 }
 
-void Lexer::consume_string() {
-    consume();  // Initial quote
-    std::string spelling;
-    bool escaped = false;
+    void Lexer::consume_string() {
+        save_location();
+        consume(); // Initial quote
+        std::string spelling;
+        bool escaped = false;
 
-    while (!is_eof()) {
-        char c = peek();
-        if (c == '\n') {
-            // Error: unterminated string
-            add_token(TokenKind::Error(), "Unterminated string literal");
-            return;
-        }
-
-        if (!escaped) {
-            if (c == '"') {
-                consume();
-                add_token(TokenKind::StringLiteral(), spelling);
+        while (!is_eof()) {
+            char c = peek();
+            if (c == '\n') {
+                emitter_.emit(diagnostic::DiagnosticKind::UnterminatedString(),
+                                get_location(start_loc_),
+                                "unterminated string literal");
                 return;
             }
-            if (c == '\\') {
-                escaped = true;
+
+            if (!escaped) {
+                if (c == '"') {
+                    consume();
+                    add_token(TokenKind::StringLiteral(), spelling);
+                    return;
+                }
+                if (c == '\\') {
+                    escaped = true;
+                    auto escape_loc = current_loc_;
+                    if (peek_next() == '\0') {
+                        emitter_.emit(diagnostic::DiagnosticKind::InvalidEscapeSequence(),
+                                    get_location(escape_loc),
+                                    "incomplete escape sequence");
+                        return;
+                    }
+                    consume();
+                    continue;
+                }
+            } else {
+                escaped = false;
+                switch (c) {
+                    case 'n': spelling += '\n'; break;
+                    case 't': spelling += '\t'; break;
+                    case 'r': spelling += '\r'; break;
+                    case '\\': spelling += '\\'; break;
+                    case '"': spelling += '"'; break;
+                    default:
+                        emitter_.emit(diagnostic::DiagnosticKind::InvalidEscapeSequence(),
+                                    get_location(current_loc_),
+                                    "invalid escape sequence '\\{0}'", c);
+                        spelling += '\\';
+                        spelling += c;
+                }
                 consume();
                 continue;
             }
-        } else {
-            escaped = false;
-            switch (c) {
-            case 'n':
-                spelling += '\n';
-                break;
-            case 't':
-                spelling += '\t';
-                break;
-            case 'r':
-                spelling += '\r';
-                break;
-            case '\\':
-                spelling += '\\';
-                break;
-            case '"':
-                spelling += '"';
-                break;
-            default:
-                spelling += '\\';
-                spelling += c;
-            }
-            consume();
-            continue;
+            spelling += consume();
         }
-        spelling += consume();
-    }
 
-    // Error: EOF in string
-    add_token(TokenKind::Error(), "EOF in string literal");
-}
+        emitter_.emit(diagnostic::DiagnosticKind::UnterminatedString(),
+                        get_location(start_loc_),
+                        "EOF in string literal");
+        }
 
 void Lexer::consume_char() {
     consume();  // Initial quote

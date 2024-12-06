@@ -6,14 +6,17 @@
 
 #include "toolchain/ast/tree.hpp"
 #include "toolchain/parser/parser.hpp"
+#include "toolchain/ast/tree.hpp"
+#include "toolchain/diagnostic/diagnostic_consumer.hpp"
 
 namespace ziv::cli::toolchain {
 
-void LexerCommand::execute(const std::string& arg) {
-    llvm::vfs::FileSystem& fs = *llvm::vfs::getRealFileSystem();
-    auto source = ziv::toolchain::source::SourceBuffer::from_file(fs, arg);
-    ziv::toolchain::lex::TokenBuffer buffer;
-    ziv::toolchain::lex::Lexer lexer(*source, buffer);
+    void LexerCommand::execute(const std::string &arg) {
+        llvm::vfs::FileSystem &fs = *llvm::vfs::getRealFileSystem();
+        auto source = ziv::toolchain::source::SourceBuffer::from_file(fs, arg);
+        ziv::toolchain::lex::TokenBuffer buffer;
+        auto consumer = std::make_shared<ziv::toolchain::diagnostic::ConsoleDiagnosticConsumer>();
+        ziv::toolchain::lex::Lexer lexer(*source, buffer, consumer);
 
     lexer.lex();  // Lex the source file
 
