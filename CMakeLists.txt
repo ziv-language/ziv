@@ -14,8 +14,8 @@ set(CMAKE_CXX_COMPILER_LAUNCHER ${CCACHE_PROGRAM})
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
 
-# Set C++17 as the standard
-set(CMAKE_CXX_STANDARD 17)
+# Set C++23 as the standard
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Find LLVM package
