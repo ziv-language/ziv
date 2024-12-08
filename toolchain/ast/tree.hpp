@@ -12,236 +12,172 @@
 #include "llvm/ADT/SmallVector.h"
 #include "llvm/ADT/iterator.h"
 #include "llvm/ADT/iterator_range.h"
+#include <stack>
+#include <memory>
 
 namespace ziv::toolchain::ast {
 
-    class AST {
-        public:
-            class Node;
-            class TreeIterator;
-            class ChildIterator;
+class AST {
+public:
+    class Node;
+    class TreeIterator;
+    class ChildIterator;
 
-            AST() = default;
+    struct NodeData {
+        NodeKind kind;
+        ziv::toolchain::lex::TokenBuffer::Token token;
+        llvm::SmallVector<size_t, 4> children;
+        size_t parent;
+        bool has_error : 1;
+        bool visited : 1;
 
-            bool has_errors() const  {
-                for (const auto& node: nodes_) {
-                    if (node.has_error) {
-                        return true;
-                    }
-                }
-                return false;
-            }
+        NodeData() : kind(NodeKind::Invalid()),
+                    token(ziv::toolchain::lex::TokenKind::Sof(), llvm::StringRef(), 0, 0),
+                    parent(0), has_error(false), visited(false) {}
 
-            size_t size() const { return nodes_.size(); }
-
-            Node get_root() const;
-
-            llvm::iterator_range<TreeIterator> get_nodes() const;
-
-            llvm::iterator_range<TreeIterator> get_subtree(Node node) const;
-
-            llvm::iterator_range<ChildIterator> get_children(Node node) const;
-
-            NodeKind get_kind(Node node) const;
-            ziv::toolchain::lex::TokenBuffer::Token get_token(Node node) const;
-            llvm::StringRef get_spelling(Node node) const;
-            size_t get_line(Node node) const;
-
-            Node add_node(NodeKind kind, ziv::toolchain::lex::TokenBuffer::Token token, bool has_error = false);
-
-            void mark_error(Node node);
-
-            void add_child(Node parent, Node child);
-
-        private:
-            struct NodeData {
-                NodeKind kind;
-                ziv::toolchain::lex::TokenBuffer::Token token;
-                llvm::SmallVector<size_t, 4> children; // quad tree
-                size_t parent;
-                bool has_error {false};
-
-                NodeData(NodeKind kind, ziv::toolchain::lex::TokenBuffer::Token token):
-                    kind(kind), token(token), parent(0) {}
-
-            };
-
-            llvm::SmallVector<NodeData, 0> nodes_;
-            bool has_errors_ = false;
+        NodeData(NodeKind kind, ziv::toolchain::lex::TokenBuffer::Token token)
+            : kind(kind), token(token), parent(0), has_error(false), visited(false) {}
     };
 
-    class AST::Node {
-        public:
-            Node(): index_(0), ast_(nullptr) {}
-
-            friend bool operator==(const Node& lhs, const Node& rhs) {
-                return lhs.index_ == rhs.index_;
-            }
-
-            friend bool operator!=(const Node& lhs, const Node& rhs) {
-                return lhs.index_ != rhs.index_;
-            }
-
-            friend bool operator<(const Node& lhs, const Node& rhs) {
-                return lhs.index_ < rhs.index_;
-            }
-
-            friend bool operator>(const Node& lhs, const Node& rhs) {
-                return lhs.index_ > rhs.index_;
-            }
-
-            friend bool operator<=(const Node& lhs, const Node& rhs) {
-                return lhs.index_ <= rhs.index_;
-            }
-
-            friend bool operator>=(const Node& lhs, const Node& rhs) {
-                return lhs.index_ >= rhs.index_;
-            }
-
-            llvm::StringRef get_spelling() const {
-                return ast_->get_spelling(*this);
-            }
-
-            size_t get_index() const {
-                return index_;
-            }
-
-            bool is_valid() const {
-                // Check if the index is within the valid ranges
-                if (index_ == 0) {
-                    return false;
-                }
-
-                const NodeData& data = ast_->nodes_[index_];
-                if (data.parent >= ast_->nodes_.size()) {
-                    return false; // points to an invalid parent
-                }
-
-                if (data.kind == NodeKind::Invalid()) {
-                    return false;
-                }
-
-                return true;
-            }
-
-        private:
-            // Constructor a node into the post-order traversal
-            // Node() : index_(0), ast_(nullptr) {}
-
-            explicit Node(size_t index) : index_(index), ast_(nullptr) {}
-
-            Node(size_t index, const AST* ast) : index_(index), ast_(ast) {}
-            size_t index_;
-
-            const AST* ast_ {nullptr};
-
-            friend class AST;
-    };
-
-    class AST::TreeIterator
-        : public llvm::iterator_facade_base<
-            TreeIterator,// This is the type we're defining
-            std::forward_iterator_tag, // This iterator is a forward iterator
-            AST::Node, // The type of the elements
-            ptrdiff_t, // The type of the difference between two iterators
-            const AST::Node*,
-            const AST::Node> {
-        public:
-            TreeIterator() = default;
-
-            bool operator==(const TreeIterator& rhs) const {
-                return node_ == rhs.node_ && ast_ == rhs.ast_;
-            }
-
-            bool operator!=(const TreeIterator& other) const {
-                return node_ != other.node_;
-            }
-
-            TreeIterator& operator++();
-
-        private:
-            friend class AST;
-
-            TreeIterator(const AST* ast, AST::Node node):
-                ast_(ast), node_(node) {}
-
-            const AST* ast_ {nullptr};
-            AST::Node node_;
-    };
-
-    class AST::ChildIterator
-        : public llvm::iterator_facade_base<
-            ChildIterator,// This is the type we're defining
-            std::forward_iterator_tag, // This iterator is a forward iterator
-            AST::Node, // The type of the elements
-            ptrdiff_t, // The type of the difference between two iterators
-            const AST::Node*,
-            const AST::Node> {
-        public:
-            ChildIterator() = default;
-
-            bool operator==(const ChildIterator& rhs) const {
-                return index_ == rhs.index_ && ast_ == rhs.ast_ && node_ == rhs.node_;
-            }
-
-            AST::Node operator*() const {
-                return AST::Node(ast_->nodes_[node_.index_].children[index_]);
-            }
-
-            ChildIterator& operator++() {
-                ++index_;
-                return *this;
-            }
-
-        private:
-            friend class AST;
-
-            ChildIterator(const AST* ast, AST::Node node, size_t index):
-                ast_(ast), node_(node), index_(index) {}
-
-            const AST* ast_ {nullptr};
-            AST::Node node_;
-            size_t index_ {0};
-    };
-
-        inline llvm::iterator_range<AST::TreeIterator> AST::get_nodes() const {
-        if (nodes_.empty()) {
-            return llvm::make_range(
-                TreeIterator(this, Node()),
-                TreeIterator(this, Node())
-            );
-        }
-        return llvm::make_range(
-            TreeIterator(this, get_root()),
-            TreeIterator(this, Node(nodes_.size()))
-        );
+    AST() {
+        // Reserve index 0 for sentinel
+        nodes_.emplace_back(NodeData(NodeKind::Invalid(),
+            ziv::toolchain::lex::TokenBuffer::Token(
+                ziv::toolchain::lex::TokenKind::Sof(),
+                llvm::StringRef(),
+                0,
+                0
+            )));
     }
 
-    inline llvm::iterator_range<AST::TreeIterator> AST::get_subtree(Node node) const {
-        if (node.index_ >= nodes_.size()) {
-            return llvm::make_range(
-                TreeIterator(this, Node()),
-                TreeIterator(this, Node())
-            );
-        }
-        return llvm::make_range(
-            TreeIterator(this, node),
-            TreeIterator(this, Node(nodes_.size()))
-        );
+    // Core tree operations
+    [[nodiscard]] size_t size() const noexcept { return nodes_.size(); }
+    [[nodiscard]] Node get_root() const noexcept;
+    [[nodiscard]] bool empty() const noexcept { return nodes_.size() <= 1; }
+
+    // Node property accessors
+    [[nodiscard]] NodeKind get_kind(Node node) const noexcept;
+    [[nodiscard]] ziv::toolchain::lex::TokenBuffer::Token get_token(Node node) const noexcept;
+    [[nodiscard]] llvm::StringRef get_spelling(Node node) const noexcept;
+    [[nodiscard]] size_t get_line(Node node) const noexcept;
+    [[nodiscard]] bool has_error(Node node) const noexcept;
+
+    // Tree modification operations
+    Node add_node(NodeKind kind, ziv::toolchain::lex::TokenBuffer::Token token);
+    void add_child(Node parent, Node child);
+    void mark_error(Node node);
+    void clear_error(Node node) noexcept;
+
+    // Traversal interfaces
+    [[nodiscard]] llvm::iterator_range<TreeIterator> nodes() const noexcept;
+    [[nodiscard]] llvm::iterator_range<TreeIterator> subtree(Node node) const noexcept;
+    [[nodiscard]] llvm::iterator_range<ChildIterator> children(Node node) const noexcept;
+
+    // Validation helpers
+    [[nodiscard]] bool is_valid_node(Node node) const noexcept;
+    [[nodiscard]] bool is_ancestor(Node ancestor, Node descendant) const noexcept;
+
+private:
+    llvm::SmallVector<NodeData, 32> nodes_; // Pre-allocated for typical AST size
+
+    friend class Node;
+    friend class TreeIterator;
+    friend class ChildIterator;
+
+    // Internal helper methods
+    void propagate_error(size_t index) noexcept;
+    void unlink_child(size_t parent_idx, size_t child_idx) noexcept;
+};
+
+class AST::Node {
+public:
+    Node() noexcept : index_(0), ast_(nullptr) {}
+
+    // Core node operations
+    [[nodiscard]] bool is_valid() const noexcept;
+    [[nodiscard]] bool has_error() const noexcept;
+    [[nodiscard]] NodeKind get_kind() const noexcept;
+    [[nodiscard]] llvm::StringRef get_spelling() const noexcept;
+    [[nodiscard]] size_t get_line() const noexcept;
+
+    // Comparison operators
+    bool operator==(const Node& rhs) const noexcept { return index_ == rhs.index_; }
+    bool operator!=(const Node& rhs) const noexcept { return !(*this == rhs); }
+    bool operator<(const Node& rhs) const noexcept { return index_ < rhs.index_; }
+
+    static Node create_end_node(const AST* ast) {
+            return Node(ast->nodes_.size(), ast);
     }
 
-    inline llvm::iterator_range<AST::ChildIterator> AST::get_children(Node node) const {
-        if (node.index_ >= nodes_.size()) {
-            return llvm::make_range(
-                ChildIterator(),
-                ChildIterator()
-            );
-        }
-        return llvm::make_range(
-            ChildIterator(this, node, 0),
-            ChildIterator(this, node, nodes_[node.index_].children.size())
-        );
+    size_t get_index() const noexcept { return index_; }
+
+protected:
+    Node(size_t index, const AST* ast) noexcept : index_(index), ast_(ast) {}
+
+    size_t index_;
+    const AST* ast_;
+
+    friend class AST;
+    friend class TreeIterator;
+    friend class ChildIterator;
+};
+
+// Post-order tree iterator
+class AST::TreeIterator
+    : public llvm::iterator_facade_base<TreeIterator,
+                                      std::forward_iterator_tag,
+                                      Node,
+                                      ptrdiff_t,
+                                      const Node*,
+                                      const Node> {
+public:
+    TreeIterator() noexcept = default;
+    TreeIterator(const AST* ast, Node node) noexcept : ast_(ast), node_(node) {}
+
+    bool operator==(const TreeIterator& rhs) const noexcept {
+        return node_ == rhs.node_ && ast_ == rhs.ast_;
     }
+
+    Node operator*() const noexcept { return node_; }
+    TreeIterator& operator++();
+
+private:
+    const AST* ast_ {nullptr};
+    Node node_;
+
+    // Helper methods for traversal
+    [[nodiscard]] Node find_leftmost_leaf(Node start) const noexcept;
+    [[nodiscard]] Node find_next_postorder(Node current) const noexcept;
+};
+
+// Efficient child iterator
+class AST::ChildIterator
+    : public llvm::iterator_facade_base<ChildIterator,
+                                      std::forward_iterator_tag,
+                                      Node,
+                                      ptrdiff_t,
+                                      const Node*,
+                                      const Node> {
+public:
+    ChildIterator() noexcept = default;
+
+    bool operator==(const ChildIterator& rhs) const noexcept {
+        return index_ == rhs.index_ && ast_ == rhs.ast_ && node_ == rhs.node_;
+    }
+
+    Node operator*() const noexcept;
+    ChildIterator& operator++() noexcept;
+
+private:
+    friend class AST;
+
+    ChildIterator(const AST* ast, Node node, size_t index) noexcept
+        : ast_(ast), node_(node), index_(index) {}
+
+    const AST* ast_ {nullptr};
+    Node node_;
+    size_t index_ {0};
+};
 
 } // namespace ziv::toolchain::ast
 
