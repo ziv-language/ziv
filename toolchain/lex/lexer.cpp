@@ -331,7 +331,7 @@ namespace ziv::toolchain::lex {
         while (!is_eof()) {
             char c = peek();
             if (c == '\n') {
-                emitter_.emit(diagnostic::DiagnosticKind::UnterminatedString(),
+                emitter_.emit(diagnostics::DiagnosticKind::UnterminatedString(),
                                 get_location(start_loc_),
                                 "unterminated string literal");
                 return;
@@ -347,7 +347,7 @@ namespace ziv::toolchain::lex {
                     escaped = true;
                     auto escape_loc = current_loc_;
                     if (peek_next() == '\0') {
-                        emitter_.emit(diagnostic::DiagnosticKind::InvalidEscapeSequence(),
+                        emitter_.emit(diagnostics::DiagnosticKind::InvalidEscapeSequence(),
                                     get_location(escape_loc),
                                     "incomplete escape sequence");
                         return;
@@ -364,7 +364,7 @@ namespace ziv::toolchain::lex {
                     case '\\': spelling += '\\'; break;
                     case '"': spelling += '"'; break;
                     default:
-                        emitter_.emit(diagnostic::DiagnosticKind::InvalidEscapeSequence(),
+                        emitter_.emit(diagnostics::DiagnosticKind::InvalidEscapeSequence(),
                                     get_location(current_loc_),
                                     "invalid escape sequence '\\{0}'", c);
                         spelling += '\\';
@@ -376,7 +376,7 @@ namespace ziv::toolchain::lex {
             spelling += consume();
         }
 
-        emitter_.emit(diagnostic::DiagnosticKind::UnterminatedString(),
+        emitter_.emit(diagnostics::DiagnosticKind::UnterminatedString(),
                         get_location(start_loc_),
                         "EOF in string literal");
         }

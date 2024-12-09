@@ -4,7 +4,7 @@
 
 #include "diagnostic_kind.hpp"
 
-namespace ziv::toolchain::diagnostic {
+namespace ziv::toolchain::diagnostics {
     llvm::StringRef DiagnosticKind::get_name() const {
         static constexpr llvm::StringLiteral names[] = {
             #define ZIV_DIAGNOSTIC(NAME) #NAME,

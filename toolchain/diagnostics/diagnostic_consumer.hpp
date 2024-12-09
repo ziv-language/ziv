@@ -7,14 +7,16 @@
 
 #pragma once
 #include "diagnostic_kind.hpp"
-#include "source_location.hpp"
+#include "diagnostic_message.hpp"
+#include "toolchain/source/source_location.hpp"
+#include "toolchain/source/source_extractor.hpp"
 #include <string>
 
-namespace ziv::toolchain::diagnostic {
+namespace ziv::toolchain::diagnostics {
 
     struct Diagnostic {
         DiagnosticKind kind;
-        SourceLocation location;
+        source::SourceLocation location;
         std::string message;
     };
 
@@ -23,8 +25,9 @@ namespace ziv::toolchain::diagnostic {
             virtual ~DiagnosticConsumer() = default;
             virtual void consume(const Diagnostic &diagnostic) = 0;
             bool has_errors() const { return error_count_ > 0; }
+            size_t error_count() const { return error_count_; }
         protected:
-            virtual void print_diagnostic(const Diagnostic &diagnostic);
+            virtual void print_diagnostic(const DiagnosticMessage& msg);
             size_t error_count_ {0};
     };
 
@@ -32,7 +35,11 @@ namespace ziv::toolchain::diagnostic {
     // ConsoleDiagnosticConsumer is a diagnostic consumer that prints diagnostics to the console.
     class ConsoleDiagnosticConsumer: public DiagnosticConsumer {
         public:
+            ConsoleDiagnosticConsumer(const source::SourceBuffer& source): source_extractor_(source) {}
             void consume(const Diagnostic &diagnostic) override;
+
+        private:
+            source::SourceExtractor source_extractor_;
     };
 
 } // namespace ziv::toolchain::diagnostic

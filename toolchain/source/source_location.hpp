@@ -2,14 +2,14 @@
 // See /LICENSE for license details.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
-#ifndef ZIV_TOOLCHAIN_DIAGNOSTIC_SOURCE_LOCATION_HPP
-#define ZIV_TOOLCHAIN_DIAGNOSTIC_SOURCE_LOCATION_HPP
+#ifndef ZIV_TOOLCHAIN_SOURCE_LOCATION_HPP
+#define ZIV_TOOLCHAIN_SOURCE_LOCATION_HPP
 
 #pragma once
 #include <cstddef>
 #include <string_view>
 
-namespace ziv::toolchain::diagnostic {
+namespace ziv::toolchain::source {
 
     struct SourceLocation {
         std::string_view file;
@@ -21,6 +21,6 @@ namespace ziv::toolchain::diagnostic {
         auto operator<=>(const SourceLocation&) const = default;
     };
 
-} // namespace ziv::toolchain::diagnostic
+} // namespace ziv::toolchain::source
 
-#endif // ZIV_TOOLCHAIN_DIAGNOSTIC_SOURCE_LOCATION_HPP
+#endif // ZIV_TOOLCHAIN_SOURCE_LOCATION_HPP

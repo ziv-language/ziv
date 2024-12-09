@@ -7,7 +7,7 @@
 #include "toolchain/source/source_buffer.hpp"
 #include "toolchain/lex/token_buffer.hpp"
 #include "toolchain/lex/token_kind.hpp"
-#include "toolchain/diagnostics/source_location.hpp"
+#include "toolchain/source/source_location.hpp"
 #include "toolchain/diagnostics/diagnostic_emitter.hpp"
 #include "toolchain/diagnostics/diagnostic_consumer.hpp"
 #include "llvm/ADT/StringRef.h"
@@ -17,7 +17,7 @@ namespace ziv::toolchain::lex {
        public:
            Lexer(const source::SourceBuffer& source,
                  TokenBuffer& buffer,
-                 std::shared_ptr<ziv::toolchain::diagnostic::DiagnosticConsumer> consumer):
+                 std::shared_ptr<diagnostics::DiagnosticConsumer> consumer):
                source_(source),
                buffer_(buffer),
                cursor_(0),
@@ -35,7 +35,7 @@ namespace ziv::toolchain::lex {
            const source::SourceBuffer& source_;
            TokenBuffer& buffer_;
            size_t cursor_;
-           ziv::toolchain::diagnostic::DiagnosticEmitter emitter_;
+           diagnostics::DiagnosticEmitter emitter_;
 
            struct Location {
                size_t line;
@@ -51,7 +51,7 @@ namespace ziv::toolchain::lex {
 
            void save_location();
 
-           ziv::toolchain::diagnostic::SourceLocation get_location(const Location& loc, size_t len = 1) const {
+           source::SourceLocation get_location(const Location& loc, size_t len = 1) const {
                return {
                    source_.get_filename(),
                    loc.line,

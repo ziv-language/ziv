@@ -9,7 +9,7 @@
 #include <cstdint>
 #include "llvm/ADT/StringRef.h"
 
-namespace ziv::toolchain::diagnostic {
+namespace ziv::toolchain::diagnostics {
 
     enum class Severity: uint8_t {
             #define ZIV_DIAGNOSTIC_SEVERITY(NAME) NAME,
@@ -32,11 +32,14 @@ namespace ziv::toolchain::diagnostic {
         #include "diagnostic_kind_registry.def"
         #undef ZIV_DIAGNOSTIC_KIND
 
-        Severity get_severity() const;
-
         DiagnosticKind() = delete;
         bool operator==(const DiagnosticKind&) const = default;
+
+        constexpr operator KindEnum() const { return kind_; }
+        KindEnum get_kind() const { return kind_; }
         llvm::StringRef get_name() const;
+        Severity get_severity() const;
+        friend struct std::hash<DiagnosticKind>;
 
     private:
         constexpr DiagnosticKind(KindEnum kind): kind_(kind) {}
@@ -50,5 +53,14 @@ namespace ziv::toolchain::diagnostic {
         #undef ZIV_DIAGNOSTIC_SEVERITY
     };
 } // namespace ziv::toolchain::diagnostic
+
+namespace std {
+    template<>
+    struct hash<ziv::toolchain::diagnostics::DiagnosticKind> {
+        size_t operator()(const ziv::toolchain::diagnostics::DiagnosticKind& k) const {
+            return std::hash<uint8_t>{}(static_cast<uint8_t>(k.get_kind()));
+        }
+    };
+} // namespace std
 
 #endif // ZIV_TOOLCHAIN_DIAGNOSTIC_DIAGNOSTIC_KIND_HPP
