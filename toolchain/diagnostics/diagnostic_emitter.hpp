@@ -7,21 +7,21 @@
 
 #pragma once
 #include "diagnostic_kind.hpp"
-#include "source_location.hpp"
+#include "toolchain/source/source_location.hpp"
 #include "diagnostic_consumer.hpp"
 #include <string>
 #include <memory>
 #include <vector>
 
 
-namespace ziv::toolchain::diagnostic {
+namespace ziv::toolchain::diagnostics {
     class DiagnosticEmitter {
         public:
             DiagnosticEmitter(std::shared_ptr<DiagnosticConsumer> consumer): consumer_(consumer) {}
 
             template<typename... Args>
             // Emit a diagnostic with a message and a location.
-            void emit(DiagnosticKind kind, SourceLocation location, Args&&... args) {
+            void emit(DiagnosticKind kind, source::SourceLocation location, Args&&... args) {
                 std::string message = format(std::forward<Args>(args)...);
                 consumer_->consume({kind, location, message});
             }

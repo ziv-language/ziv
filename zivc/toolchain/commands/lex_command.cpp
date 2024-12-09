@@ -15,8 +15,8 @@ namespace ziv::cli::toolchain {
         llvm::vfs::FileSystem &fs = *llvm::vfs::getRealFileSystem();
         auto source = ziv::toolchain::source::SourceBuffer::from_file(fs, arg);
         ziv::toolchain::lex::TokenBuffer buffer;
-        auto consumer = std::make_shared<ziv::toolchain::diagnostic::ConsoleDiagnosticConsumer>();
-        ziv::toolchain::lex::Lexer lexer(*source, buffer, consumer);
+        auto diagnostics = std::make_shared<ziv::toolchain::diagnostics::ConsoleDiagnosticConsumer>(*source);
+        ziv::toolchain::lex::Lexer lexer(*source, buffer, diagnostics);
 
     lexer.lex();  // Lex the source file
 

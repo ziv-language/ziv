@@ -326,7 +326,7 @@ void Lexer::consume_identifier() {
         while (!is_eof()) {
             char c = peek();
             if (c == '\n') {
-                emitter_.emit(diagnostic::DiagnosticKind::UnterminatedString(),
+                emitter_.emit(diagnostics::DiagnosticKind::UnterminatedString(),
                                 get_location(start_loc_),
                                 "unterminated string literal");
                 return;
@@ -342,7 +342,7 @@ void Lexer::consume_identifier() {
                     escaped = true;
                     auto escape_loc = current_loc_;
                     if (peek_next() == '\0') {
-                        emitter_.emit(diagnostic::DiagnosticKind::InvalidEscapeSequence(),
+                        emitter_.emit(diagnostics::DiagnosticKind::InvalidEscapeSequence(),
                                     get_location(escape_loc),
                                     "incomplete escape sequence");
                         return;
@@ -359,7 +359,7 @@ void Lexer::consume_identifier() {
                     case '\\': spelling += '\\'; break;
                     case '"': spelling += '"'; break;
                     default:
-                        emitter_.emit(diagnostic::DiagnosticKind::InvalidEscapeSequence(),
+                        emitter_.emit(diagnostics::DiagnosticKind::InvalidEscapeSequence(),
                                     get_location(current_loc_),
                                     "invalid escape sequence '\\{0}'", c);
                         spelling += '\\';
@@ -371,7 +371,7 @@ void Lexer::consume_identifier() {
             spelling += consume();
         }
 
-        emitter_.emit(diagnostic::DiagnosticKind::UnterminatedString(),
+        emitter_.emit(diagnostics::DiagnosticKind::UnterminatedString(),
                         get_location(start_loc_),
                         "EOF in string literal");
         }
