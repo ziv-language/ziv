@@ -9,18 +9,27 @@
 #include "top_level_parser.hpp"
 
 namespace ziv::toolchain::parser {
-    void Parser::parse() {
-        auto root = ast_.add_node(ast::NodeKind::FileStart(), consume());
-        while (!is_eof()) {
-            auto node = parse_top_level();
-            if (node.is_valid()) {
-                ast_.add_child(root, node);
-            }
-            if (is_eof()) {
-                break;
-            }
+
+void Parser::parse() {
+    // Create TranslationUnit as root
+    auto root = ast_.add_node(ast::NodeKind::FileStart(), consume());
+
+    // Parse all declarations
+    while (!is_eof()) {
+        auto node = parse_top_level();
+        if (node.is_valid()) {
+            ast_.add_child(root, node);
         }
-        ast_.add_node(ast::NodeKind::FileEnd(), consume());
+        // Skip any extra semicolons
+        while (match(lex::TokenKind::Semicolon())) {
+            consume();
+        }
     }
+    auto eof = ast_.add_node(
+        ast::NodeKind::FileEnd(),
+        lex::TokenBuffer::Token(lex::TokenKind::Eof(), "", 0, 0)
+    );
+    ast_.add_child(root, eof);
+}
 
 } // namespace ziv::toolchain::parser

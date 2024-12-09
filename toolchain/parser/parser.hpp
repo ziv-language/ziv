@@ -39,6 +39,12 @@ namespace ziv::toolchain::parser {
 
             bool consume_match(ziv::toolchain::lex::TokenKind kind);
 
+            ziv::toolchain::ast::AST::Node parse_binary_expression(int min_precedence = 0);
+            bool is_binary_operator(ziv::toolchain::lex::TokenKind kind) const;
+            bool is_unary_operator(ziv::toolchain::lex::TokenKind kind) const;
+            int get_operator_precedence(ziv::toolchain::lex::TokenKind op) const;
+            bool should_take_operator(ziv::toolchain::lex::TokenKind op, int min_precedence) const;
+
         private:
             // Top-level parsing
             ziv::toolchain::ast::AST::Node parse_top_level();
@@ -62,6 +68,8 @@ namespace ziv::toolchain::parser {
             ziv::toolchain::ast::AST::Node parse_if_else();
             ziv::toolchain::ast::AST::Node parse_else_statement();
             ziv::toolchain::ast::AST::Node parse_else_if_statement();
+            ziv::toolchain::ast::AST::Node parse_match_statement();
+            ziv::toolchain::ast::AST::Node parse_match_case();
             // Loop parsing
             ziv::toolchain::ast::AST::Node parse_for_statement();
             ziv::toolchain::ast::AST::Node parse_while_statement();
