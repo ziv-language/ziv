@@ -5,7 +5,7 @@
 #include "lex_command.hpp"
 #include "toolchain/parser/parser.hpp"
 #include "toolchain/ast/tree.hpp"
-#include "toolchain/diagnostic/diagnostic_consumer.hpp"
+#include "toolchain/diagnostics/diagnostic_consumer.hpp"
 
 namespace ziv::cli::toolchain {
 
