@@ -6,6 +6,27 @@
 
 namespace ziv::toolchain::parser {
 
+    void Parser::synchronize() {
+        consume();
+
+        while (!is_eof()) {
+            if (previous().kind == lex::TokenKind::Semicolon()) return;
+
+            switch (peek().kind) {
+                case lex::TokenKind::Fn():
+                case lex::TokenKind::Let():
+                case lex::TokenKind::Mut():
+                case lex::TokenKind::Class():
+                case lex::TokenKind::If():
+                case lex::TokenKind::While():
+                case lex::TokenKind::Return():
+                    return;
+                default:
+                    consume();
+            }
+        }
+    }
+
     bool Parser::match(lex::TokenKind kind) const {
         if (is_eof()) {
             return false;
