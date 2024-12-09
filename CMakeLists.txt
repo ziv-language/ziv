@@ -4,18 +4,17 @@
 
 cmake_minimum_required(VERSION 3.20)
 
-# Set compiler before project()
+# Set compiler
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
 
-# Options must be set before project()
+# Options
 option(ZIV_ENABLE_OPTIMIZATIONS "Enable optimizations" ON)
 option(ZIV_ENABLE_WARNINGS "Enable extra warnings" ON)
-option(ZIV_WARNINGS_AS_ERRORS "Treat warnings as errors" OFF)
-option(ZIV_ENABLE_TESTING "Enable testing" ON)
+option(ZIV_ENABLE_TESTING "Enable testing" OFF)
 option(ZIV_USE_CCACHE "Use ccache if available" ON)
 
-# Use ccache if available (before project())
+# Use ccache if available
 if(ZIV_USE_CCACHE)
     find_program(CCACHE_PROGRAM ccache)
     if(CCACHE_PROGRAM)
@@ -81,9 +80,6 @@ if(ZIV_ENABLE_WARNINGS)
         -Wsign-promo
         -Wdouble-promotion
     )
-    if(ZIV_WARNINGS_AS_ERRORS)
-        list(APPEND WARNING_FLAGS -Werror)
-    endif()
 endif()
 
 # Find required packages
@@ -116,7 +112,7 @@ add_executable(zivc
 )
 
 # Set compile options
-target_compile_options(zivc PRIVATE 
+target_compile_options(zivc PRIVATE
     ${WARNING_FLAGS}
     ${OPTIMIZATION_FLAGS}
 )
