@@ -6,7 +6,7 @@
 #include "toolchain/parser/parser.hpp"
 #include "toolchain/ast/tree.hpp"
 #include "toolchain/ast/printer.hpp"
-#include "toolchain/diagnostic/diagnostic_consumer.hpp"
+#include "toolchain/diagnostics/diagnostic_consumer.hpp"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/Support/VirtualFileSystem.h"
 #include "llvm/Support/raw_ostream.h"

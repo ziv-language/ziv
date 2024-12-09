@@ -8,9 +8,9 @@
 #include "llvm/ADT/StringRef.h"
 #include "toolchain/lex/token_buffer.hpp"
 #include "toolchain/lex/token_kind.hpp"
-#include "toolchain/diagnostic/source_location.hpp"
-#include "toolchain/diagnostic/diagnostic_emitter.hpp"
-#include "toolchain/diagnostic/diagnostic_consumer.hpp"
+#include "toolchain/diagnostics/source_location.hpp"
+#include "toolchain/diagnostics/diagnostic_emitter.hpp"
+#include "toolchain/diagnostics/diagnostic_consumer.hpp"
 #include "llvm/ADT/StringRef.h"
 
 namespace ziv::toolchain::lex {
