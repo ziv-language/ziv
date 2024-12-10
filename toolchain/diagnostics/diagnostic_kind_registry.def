@@ -6,56 +6,26 @@
 #define ZIV_DIAGNOSTIC_KIND(NAME)
 #endif
 
-// Lexer diagnostics
-ZIV_DIAGNOSTIC_KIND(InvalidCharacter)
-ZIV_DIAGNOSTIC_KIND(UnterminatedString)
-ZIV_DIAGNOSTIC_KIND(UnterminatedComment)
-ZIV_DIAGNOSTIC_KIND(TabInIndentation)
-ZIV_DIAGNOSTIC_KIND(InvalidIndentation)
-ZIV_DIAGNOSTIC_KIND(InvalidEscapeSequence)
-
-// Parser diagnostics
-ZIV_DIAGNOSTIC_KIND(UnexpectedToken)
-ZIV_DIAGNOSTIC_KIND(ExpectedToken)
-ZIV_DIAGNOSTIC_KIND(InvalidExpression)
-ZIV_DIAGNOSTIC_KIND(InvalidStatement)
-ZIV_DIAGNOSTIC_KIND(MissingFunctionBody)
-ZIV_DIAGNOSTIC_KIND(MissingReturnType)
-ZIV_DIAGNOSTIC_KIND(InvalidParameterList)
-ZIV_DIAGNOSTIC_KIND(InvalidModuleDecl)
-ZIV_DIAGNOSTIC_KIND(UnmatchedParentheses)
-ZIV_DIAGNOSTIC_KIND(UnmatchedBraces)
-
-// Type system diagnostics
-ZIV_DIAGNOSTIC_KIND(TypeMismatch)
-ZIV_DIAGNOSTIC_KIND(UndeclaredType)
-ZIV_DIAGNOSTIC_KIND(InvalidTypeConversion)
-ZIV_DIAGNOSTIC_KIND(TypeNotCallable)
-ZIV_DIAGNOSTIC_KIND(InvalidTemplateArgument)
-
-// Symbol table diagnostics
-ZIV_DIAGNOSTIC_KIND(UndeclaredIdentifier)
-ZIV_DIAGNOSTIC_KIND(RedeclaredIdentifier)
-ZIV_DIAGNOSTIC_KIND(InvalidRedeclaration)
-ZIV_DIAGNOSTIC_KIND(InvalidScope)
-
-// Module system diagnostics
-ZIV_DIAGNOSTIC_KIND(CircularDependency)
-ZIV_DIAGNOSTIC_KIND(ModuleNotFound)
-ZIV_DIAGNOSTIC_KIND(InvalidImport)
-ZIV_DIAGNOSTIC_KIND(DuplicateImport)
+#include "kinds/lexer.def"
 
 #undef ZIV_DIAGNOSTIC_KIND
 
 
+#ifndef ZIV_DIAGNOSTIC_INFO
+#define ZIV_DIAGNOSTIC_INFO(NAME, CODE, SEVERITY, MESSAGE, HINT, NOTES, PATH)
+#endif
+
+#include "metadata/lexer.def"
+
+#undef ZIV_DIAGNOSTIC_INFO
+
 #ifndef ZIV_DIAGNOSTIC_SEVERITY
-#define ZIV_DIAGNOSTIC_SEVERITY(NAME)
+#define ZIV_DIAGNOSTIC_SEVERITY(SEVERITY)
 #endif
 
 ZIV_DIAGNOSTIC_SEVERITY(Error)
 ZIV_DIAGNOSTIC_SEVERITY(Warning)
+ZIV_DIAGNOSTIC_SEVERITY(Info)
 ZIV_DIAGNOSTIC_SEVERITY(Note)
-ZIV_DIAGNOSTIC_SEVERITY(Remark)
-ZIV_DIAGNOSTIC_SEVERITY(Hint)
 
 #undef ZIV_DIAGNOSTIC_SEVERITY

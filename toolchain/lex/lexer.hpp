@@ -1,3 +1,7 @@
+// Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+// See /LICENSE for license details.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
 #ifndef ZIV_TOOLCHAIN_LEX_LEXER_HPP
 #define ZIV_TOOLCHAIN_LEX_LEXER_HPP
 

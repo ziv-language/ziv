@@ -5,18 +5,16 @@
 #ifndef ZIV_TOOLCHAIN_DIAGNOSTIC_MESSAGE_HPP
 #define ZIV_TOOLCHAIN_DIAGNOSTIC_MESSAGE_HPP
 
+#pragma once
 #include <string>
 #include <vector>
-#include <unordered_map>
-#include "llvm/Support/raw_ostream.h"
-#include "diagnostic_kind.hpp"
+#include "diagnostic_registry.hpp"
 #include "toolchain/source/source_location.hpp"
 
 namespace ziv::toolchain::diagnostics {
 
 struct DiagnosticMessage {
-    DiagnosticMessage() : kind(DiagnosticKind::InvalidCharacter()),
-                         severity(Severity::Error) {}
+    DiagnosticMessage(DiagnosticKind k): kind(k) {}
 
     std::string error_code;
     DiagnosticKind kind;
@@ -29,7 +27,8 @@ struct DiagnosticMessage {
     std::string stack_trace;
 
     std::string get_doc_url() const {
-        return "https://ziv-lang.dev/diagnostics/" + error_code;
+        const auto& metadata =  DiagnosticRegistry::get_metadata(kind);
+        return "https://ziv-language.github.io/book/diagnostics/" + error_code;
     }
 };
 
@@ -43,24 +42,6 @@ namespace color {
     static const char* const RESET = "\033[0m";
     static const char* const BOLD = "\033[1m";
     static const char* const UNDERLINE = "\033[4m";
-}
-
-// Helper to generate error codes based on diagnostic kind
-inline std::string generate_error_code(const DiagnosticKind& kind) {
-    static const std::unordered_map<DiagnosticKind, std::string> code_map {
-        {DiagnosticKind::InvalidCharacter(), "ZIV-1001"},
-        {DiagnosticKind::UnterminatedString(), "ZIV-1002"},
-        {DiagnosticKind::TypeMismatch(), "ZIV-2001"},
-        {DiagnosticKind::UndeclaredIdentifier(), "ZIV-2002"},
-        {DiagnosticKind::RedeclaredIdentifier(), "ZIV-2003"},
-        // Add more mappings as needed...
-    };
-
-    auto it = code_map.find(kind);
-    if (it != code_map.end()) {
-        return it->second;
-    }
-    return "ZIV-0000"; // Unknown error code
 }
 
 inline std::string format_source_excerpt(const std::string& line, size_t col_start, size_t length) {
