@@ -11,16 +11,16 @@
 
 namespace ziv::toolchain::source {
 
-    struct SourceLocation {
-        std::string_view file;
-        std::size_t line {1};
-        std::size_t column {1};
-        std::size_t offset {0};
-        std::size_t length {0};
+struct SourceLocation {
+    std::string_view file;
+    std::size_t line{1};
+    std::size_t column{1};
+    std::size_t offset{0};
+    std::size_t length{0};
 
-        auto operator<=>(const SourceLocation&) const = default;
-    };
+    auto operator<=>(const SourceLocation&) const = default;
+};
 
-} // namespace ziv::toolchain::source
+}  // namespace ziv::toolchain::source
 
-#endif // ZIV_TOOLCHAIN_SOURCE_LOCATION_HPP
+#endif  // ZIV_TOOLCHAIN_SOURCE_LOCATION_HPP

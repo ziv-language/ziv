@@ -1,0 +1,14 @@
+// Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+// See /LICENSE for license details.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+ZIV_DIAGNOSTIC_KIND(InvalidCharacter)
+ZIV_DIAGNOSTIC_KIND(UnterminatedString)
+ZIV_DIAGNOSTIC_KIND(UnterminatedCharacter)
+ZIV_DIAGNOSTIC_KIND(UnterminatedComment)
+ZIV_DIAGNOSTIC_KIND(InvalidEscapeSequence)
+ZIV_DIAGNOSTIC_KIND(InvalidNumber)
+ZIV_DIAGNOSTIC_KIND(InvalidIdentifier)
+ZIV_DIAGNOSTIC_KIND(InvalidOperator)
+ZIV_DIAGNOSTIC_KIND(InvalidToken)
+ZIV_DIAGNOSTIC_KIND(InvalidIndentation)

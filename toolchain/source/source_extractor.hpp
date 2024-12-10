@@ -5,23 +5,24 @@
 #ifndef ZIV_TOOLCHAIN_SOURCE_EXTRACTOR_HPP
 #define ZIV_TOOLCHAIN_SOURCE_EXTRACTOR_HPP
 
+#include <vector>
+
 #include "source_buffer.hpp"
 #include "source_location.hpp"
-#include <vector>
 
 namespace ziv::toolchain::source {
 
 class SourceExtractor {
 public:
     struct SourceContext {
-        llvm::StringRef line;        // The source line
-        size_t start_col;            // Start column of the error
-        size_t length;               // Length of the error span
+        llvm::StringRef line;                         // The source line
+        size_t start_col;                             // Start column of the error
+        size_t length;                                // Length of the error span
         std::vector<llvm::StringRef> context_before;  // Lines before
         std::vector<llvm::StringRef> context_after;   // Lines after
     };
 
-    explicit SourceExtractor(const SourceBuffer& buffer): buffer_(buffer) {
+    explicit SourceExtractor(const SourceBuffer& buffer) : buffer_(buffer) {
         build_line_table();
     }
 
@@ -38,6 +39,6 @@ private:
     void build_line_table();
 };
 
-} // namespace ziv::toolchain::source
+}  // namespace ziv::toolchain::source
 
 #endif

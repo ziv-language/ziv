@@ -5,30 +5,14 @@
 #include "diagnostic_kind.hpp"
 
 namespace ziv::toolchain::diagnostics {
-    llvm::StringRef DiagnosticKind::get_name() const {
-        static constexpr llvm::StringLiteral names[] = {
-            #define ZIV_DIAGNOSTIC(NAME) #NAME,
-            #include "diagnostic_kind_registry.def"
-        };
-        return names[static_cast<int>(kind_)];
-    }
 
-    Severity DiagnosticKind::get_severity() const {
-        // Define the severity of each diagnostic kind
-        switch (kind_) {
-            case KindEnum::InvalidCharacter:
-            case KindEnum::UnterminatedString:
-            case KindEnum::UnterminatedComment:
-            case KindEnum::TabInIndentation:
-            case KindEnum::InvalidIndentation:
-            case KindEnum::InvalidEscapeSequence:
-            case KindEnum::UnexpectedToken:
-                return Severity::Error;
-            default:
-                return Severity::Warning;
-        }
-    }
+llvm::StringRef DiagnosticKind::get_name() const {
+    static constexpr llvm::StringLiteral names[] = {
+#define ZIV_DIAGNOSTIC_KIND(NAME) #NAME,
+#include "diagnostic_kind_registry.def"
+#undef ZIV_DIAGNOSTIC_KIND
+    };
+    return names[static_cast<size_t>(kind_)];
+}
 
-
-
-} // namespace ziv::toolchain::diagnostic
+}  // namespace ziv::toolchain::diagnostics

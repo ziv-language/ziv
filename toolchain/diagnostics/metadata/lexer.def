@@ -1,0 +1,23 @@
+// Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+// See /LICENSE for license details.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+ZIV_DIAGNOSTIC_INFO(
+    InvalidCharacter,
+    1001,
+    Error,
+    "Invalid character '{}'",
+    "Remove or replace the invalid character",
+    {"Invalid characters can cause parsing errors"},
+    "lexer/invalid-character"
+)
+
+ZIV_DIAGNOSTIC_INFO(
+    UnterminatedString,
+    1002,
+    Error,
+    "Unterminated string",
+    "Add a closing quote to terminate the string",
+    {"Strings must be enclosed in double quotes"},
+    "lexer/unterminated-string"
+)

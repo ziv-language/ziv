@@ -8,12 +8,12 @@ namespace ziv::toolchain::source {
 
 void SourceExtractor::build_line_table() {
     line_offsets_.clear();
-    line_offsets_.push_back(0); // First line starts at offset 0
+    line_offsets_.push_back(0);  // First line starts at offset 0
 
     llvm::StringRef content = buffer_.get_contents();
     size_t pos = 0;
     while ((pos = content.find('\n', pos)) != llvm::StringRef::npos) {
-        pos++; // Move past the newline
+        pos++;  // Move past the newline
         line_offsets_.push_back(pos);
     }
 }
@@ -28,7 +28,7 @@ llvm::StringRef SourceExtractor::get_line(size_t line_number) const {
     size_t length;
 
     if (line_number < line_offsets_.size()) {
-        length = line_offsets_[line_number] - start - 1; // Exclude the newline
+        length = line_offsets_[line_number] - start - 1;  // Exclude the newline
     } else {
         length = content.size() - start;
     }
@@ -36,10 +36,8 @@ llvm::StringRef SourceExtractor::get_line(size_t line_number) const {
     return content.substr(start, length);
 }
 
-SourceExtractor::SourceContext SourceExtractor::get_context(
-    const SourceLocation& loc,
-    size_t context_lines) const {
-
+SourceExtractor::SourceContext SourceExtractor::get_context(const SourceLocation& loc,
+                                                            size_t context_lines) const {
     SourceContext context;
 
     // Get the main error line
@@ -66,4 +64,4 @@ SourceExtractor::SourceContext SourceExtractor::get_context(
     return context;
 }
 
-} // namespace ziv::toolchain::source
+}  // namespace ziv::toolchain::source

@@ -6,36 +6,41 @@
 #define ZIV_TOOLCHAIN_DIAGNOSTIC_DIAGNOSTIC_EMITTER_HPP
 
 #pragma once
-#include "diagnostic_kind.hpp"
-#include "toolchain/source/source_location.hpp"
-#include "diagnostic_consumer.hpp"
-#include <string>
 #include <memory>
+#include <string>
 #include <vector>
+
+#include "diagnostic_consumer.hpp"
+#include "diagnostic_kind.hpp"
+#include "diagnostic_message.hpp"
+#include "toolchain/source/source_location.hpp"
 
 
 namespace ziv::toolchain::diagnostics {
-    class DiagnosticEmitter {
-        public:
-            DiagnosticEmitter(std::shared_ptr<DiagnosticConsumer> consumer): consumer_(consumer) {}
+class DiagnosticEmitter {
+public:
+    DiagnosticEmitter(std::shared_ptr<DiagnosticConsumer> consumer) : consumer_(consumer) {}
 
-            template<typename... Args>
-            // Emit a diagnostic with a message and a location.
-            void emit(DiagnosticKind kind, source::SourceLocation location, Args&&... args) {
-                std::string message = format(std::forward<Args>(args)...);
-                consumer_->consume({kind, location, message});
-            }
+    template<typename... Args>
+    // Emit a diagnostic message with the given kind, location, and arguments.
+    void emit(DiagnosticKind kind, source::SourceLocation location, Args&&... args) {
+        const auto& metadata = kind.get_metadata();
 
-        private:
-            std::shared_ptr<DiagnosticConsumer> consumer_;
+        DiagnosticMessage msg(kind);
+        msg.error_code = std::string(metadata.code);
+        msg.severity = metadata.severity;
+        msg.message = std::vformat(std::string(metadata.message),
+                                   std::make_format_args(std::forward<Args>(args)...));
+        msg.hint = std::string(metadata.hint);
+        msg.notes.assign(metadata.notes.begin(), metadata.notes.end());
+        msg.location = location;
 
-            template<typename... Args>
-            std::string format(Args&&... args) {
-                std::string result;
-                (result += ... += std::forward<Args>(args));
-                return result;
-            }
-    };
-} // namespace ziv::toolchain::diagnostic
+        consumer_->consume({kind, location, msg.message});
+    }
 
-#endif // ZIV_TOOLCHAIN_DIAGNOSTIC_DIAGNOSTIC_EMITTER_HPP
+private:
+    std::shared_ptr<DiagnosticConsumer> consumer_;
+};
+}  // namespace ziv::toolchain::diagnostics
+
+#endif  // ZIV_TOOLCHAIN_DIAGNOSTIC_DIAGNOSTIC_EMITTER_HPP

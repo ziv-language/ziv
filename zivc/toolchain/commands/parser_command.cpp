@@ -3,25 +3,23 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 #include "parser_command.hpp"
-#include "toolchain/parser/parser.hpp"
-#include "toolchain/ast/tree.hpp"
-#include "toolchain/ast/printer.hpp"
-#include "toolchain/diagnostics/diagnostic_consumer.hpp"
-#include "llvm/Support/raw_ostream.h"
+
 #include "llvm/Support/VirtualFileSystem.h"
 #include "llvm/Support/raw_ostream.h"
 #include "toolchain/ast/printer.hpp"
 #include "toolchain/ast/tree.hpp"
+#include "toolchain/diagnostics/diagnostic_consumer.hpp"
 #include "toolchain/parser/parser.hpp"
 
 namespace ziv::cli::toolchain {
 
-void ParserCommand::execute(const std::string &args) {
-        llvm::vfs::FileSystem &fs = *llvm::vfs::getRealFileSystem();
-        auto source = ziv::toolchain::source::SourceBuffer::from_file(fs, args);
-        ziv::toolchain::lex::TokenBuffer buffer;
-        auto consumer = std::make_shared<ziv::toolchain::diagnostics::ConsoleDiagnosticConsumer>(*source);
-        ziv::toolchain::lex::Lexer lexer(*source, buffer, consumer);
+void ParserCommand::execute(const std::string& args) {
+    llvm::vfs::FileSystem& fs = *llvm::vfs::getRealFileSystem();
+    auto source = ziv::toolchain::source::SourceBuffer::from_file(fs, args);
+    ziv::toolchain::lex::TokenBuffer buffer;
+    auto consumer = std::make_shared<ziv::toolchain::diagnostics::ConsoleDiagnosticConsumer>(
+        *source);
+    ziv::toolchain::lex::Lexer lexer(*source, buffer, consumer);
 
     lexer.lex();  // Lex the source file
 
