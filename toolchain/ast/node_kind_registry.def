@@ -10,89 +10,83 @@
 ZIV_NODE_KIND(FileStart)           // Marks the start of the file
 ZIV_NODE_KIND(FileEnd)             // Marks the end of the file
 ZIV_NODE_KIND(Invalid)             // Invalid node
-ZIV_NODE_KIND(Placeholder)         // Placeholder for unimplemented features
+ZIV_NODE_KIND(Placeholder)         // Placeholder node
 
-// Variables
-ZIV_NODE_KIND(VariableDecl)        // Variable declaration (name: type)
-ZIV_NODE_KIND(VariableName)        // Variable name
-ZIV_NODE_KIND(VariableInit)        // Variable initialization (= value)
-ZIV_NODE_KIND(TypeSpec)            // Type specification
-
-// Functions
-ZIV_NODE_KIND(FunctionSignature)   // Function signature without body
-ZIV_NODE_KIND(FunctionDecl)        // Complete function declaration with body
-ZIV_NODE_KIND(FunctionName)        // Function name
-ZIV_NODE_KIND(ParameterList)       // Function parameters
-ZIV_NODE_KIND(Parameter)           // Individual parameter
-ZIV_NODE_KIND(ParameterType)       // Parameter type
-ZIV_NODE_KIND(ReturnType)          // Function return type
-ZIV_NODE_KIND(FunctionBody)        // Function body block
-ZIV_NODE_KIND(FunctionCall)        // Function call
-ZIV_NODE_KIND(ArgumentList)        // Function call arguments
-
-// Control Flow
-ZIV_NODE_KIND(IfStatement)         // If statement
-ZIV_NODE_KIND(IfCondition)         // If condition
-ZIV_NODE_KIND(ElseStatement)       // Else statement
-ZIV_NODE_KIND(ElseIfStatement)     // Else if statement
-ZIV_NODE_KIND(ElseIfCondition)     // Else if condition
-
-// Loops
-ZIV_NODE_KIND(ForLoop)             // For loop
-ZIV_NODE_KIND(ForHeader)           // For loop header (item in iterable)
-ZIV_NODE_KIND(WhileLoop)           // While loop
-ZIV_NODE_KIND(WhileCondition)      // While loop condition
-ZIV_NODE_KIND(DoWhileLoop)         // Do while loop
-ZIV_NODE_KIND(DoWhileCondition)    // Do while loop condition
-ZIV_NODE_KIND(BreakStatement)      // Break statement
-ZIV_NODE_KIND(ContinueStatement)   // Continue statement
-
-// Code Structure
-ZIV_NODE_KIND(CodeBlock)           // Code block
-ZIV_NODE_KIND(StatementList)       // List of statements
-ZIV_NODE_KIND(ReturnStatement)     // Return statement
-ZIV_NODE_KIND(ReturnValue)         // Return value
-
-// Types
+// Type nodes
 ZIV_NODE_KIND(IntegerType)         // Integer type
 ZIV_NODE_KIND(FloatType)           // Float type
 ZIV_NODE_KIND(StringType)          // String type
-ZIV_NODE_KIND(BoolType)            // Boolean type
-ZIV_NODE_KIND(ListType)            // List type
-ZIV_NODE_KIND(TupleType)           // Tuple type
-ZIV_NODE_KIND(DictionaryType)      // Dictionary type
+ZIV_NODE_KIND(BoolType)           // Boolean type
+ZIV_NODE_KIND(ParameterType)       // Parameter type
 
-// Operators
-ZIV_NODE_KIND(ArithmeticOp)        // +, -, *, /, %, ^
-ZIV_NODE_KIND(ComparisonOp)        // ==, !=, >, <, >=, <=
-ZIV_NODE_KIND(LogicalOp)           // and, or, not, xor
-ZIV_NODE_KIND(AssignmentOp)        // =, +=, -=, *=, /=, %=, ^=
+// Operator nodes
+ZIV_NODE_KIND(AssignmentOp)        // Assignment operator
+ZIV_NODE_KIND(BinaryOp)           // Binary operator
+ZIV_NODE_KIND(UnaryOp)            // Unary operator
 
-// Modules
+// Function-related nodes
+ZIV_NODE_KIND(FunctionCall)        // Function call
+ZIV_NODE_KIND(ReturnType)         // Function return type
+
+// Top-level Constructs
+ZIV_NODE_KIND(TranslationUnit)     // Root node for entire source file
 ZIV_NODE_KIND(ModuleDecl)          // Module declaration
 ZIV_NODE_KIND(ModuleName)          // Module name
-ZIV_NODE_KIND(ModuleImport)        // Import statement
-ZIV_NODE_KIND(ModuleImportName)          // Module name
+ZIV_NODE_KIND(ModuleImport)        // Import declaration
 ZIV_NODE_KIND(ModuleAlias)         // Module alias
 ZIV_NODE_KIND(ModuleImportList)    // List of imported items
 ZIV_NODE_KIND(ModuleImportItem)    // Individual imported item
 
-// Error Handling
-ZIV_NODE_KIND(TryBlock)            // Try block
-ZIV_NODE_KIND(HandleBlock)         // Handle block (instead of catch)
-ZIV_NODE_KIND(HandleError)         // Error handling with variable
-ZIV_NODE_KIND(ErrorVariable)       // Error variable in handle block
+// Declarations
+ZIV_NODE_KIND(VarDecl)            // Variable declaration (let/mut)
+ZIV_NODE_KIND(VariableName)        // Variable name
+ZIV_NODE_KIND(VariableInit)        // Variable initialization
+ZIV_NODE_KIND(TypeSpec)           // Type specification
+ZIV_NODE_KIND(FunctionDecl)        // Function declaration
+ZIV_NODE_KIND(FunctionName)        // Function name
+ZIV_NODE_KIND(FunctionSignature)   // Function signature
+ZIV_NODE_KIND(FunctionBody)        // Function body
+ZIV_NODE_KIND(StructDecl)         // Struct declaration
+ZIV_NODE_KIND(ClassDecl)          // Class declaration
+ZIV_NODE_KIND(EnumDecl)           // Enum declaration
+ZIV_NODE_KIND(MethodDecl)         // Class method declaration
+
+// Parameters and Arguments
+ZIV_NODE_KIND(ParameterList)       // Function parameters
+ZIV_NODE_KIND(Parameter)           // Individual parameter
+ZIV_NODE_KIND(ArgumentList)        // Function call arguments
+ZIV_NODE_KIND(Argument)           // Individual argument
+
+// Statements
+ZIV_NODE_KIND(StatementList)       // List of statements
+ZIV_NODE_KIND(CodeBlock)           // Code block
+ZIV_NODE_KIND(ReturnStmt)         // Return statement
+ZIV_NODE_KIND(IfStatement)         // If statement
+ZIV_NODE_KIND(ElseStatement)       // Else statement
+ZIV_NODE_KIND(WhileLoop)          // While loop
+ZIV_NODE_KIND(DoWhileLoop)        // Do-while loop
+ZIV_NODE_KIND(ForLoop)            // For loop
+ZIV_NODE_KIND(MatchStmt)          // Match statement
+ZIV_NODE_KIND(CaseStmt)           // Match case
+ZIV_NODE_KIND(BreakStmt)          // Break statement
+ZIV_NODE_KIND(ContinueStmt)       // Continue statement
 
 // Expressions
-ZIV_NODE_KIND(BinaryExpr)    // Binary operations
-ZIV_NODE_KIND(UnaryExpr)     // Unary operations
-ZIV_NODE_KIND(GroupExpr)     // Parenthesized expressions
-ZIV_NODE_KIND(LiteralExpr)   // Literals (numbers, strings, etc.)
-ZIV_NODE_KIND(IdentifierExpr)      // Variable/function identifiers
-ZIV_NODE_KIND(ListExpr)           // List expressions
-ZIV_NODE_KIND(TupleExpr)          // Tuple expressions
-ZIV_NODE_KIND(DictExpr)           // Dictionary expressions
-ZIV_NODE_KIND(IndexExpr)          // Index access expressions
+ZIV_NODE_KIND(ArrayExpr)          // Array expression
+ZIV_NODE_KIND(LiteralExpr)        // Literal expressions
+ZIV_NODE_KIND(BinaryExpr)         // Binary expressions
+ZIV_NODE_KIND(UnaryExpr)          // Unary expressions
 ZIV_NODE_KIND(CallExpr)           // Function call expressions
+ZIV_NODE_KIND(IndexExpr)          // Array/map indexing
+ZIV_NODE_KIND(IdentifierExpr)     // Variable references
+
+// Class Members
+ZIV_NODE_KIND(FieldDecl)          // Field declaration
+ZIV_NODE_KIND(MethodList)         // Method list
+ZIV_NODE_KIND(FieldList)          // Field list
+
+// Special
+ZIV_NODE_KIND(Error)              // Error node
+ZIV_NODE_KIND(Comment)            // Comment node
 
 #undef ZIV_NODE_KIND

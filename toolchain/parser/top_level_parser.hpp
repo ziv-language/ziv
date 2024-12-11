@@ -2,7 +2,6 @@
 // See /LICENSE for license details.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
-
 #include "parser.hpp"
 
 namespace ziv::toolchain::parser {
@@ -16,8 +15,10 @@ namespace ziv::toolchain::parser {
                 return parse_if_statement();
             case ziv::toolchain::lex::TokenKind::Fn():
                 return parse_function_declaration();
-            case ziv::toolchain::lex::TokenKind::Identifier():
-                return parse_identifier();
+            case ziv::toolchain::lex::TokenKind::Let():
+            case ziv::toolchain::lex::TokenKind::Mut():
+            case ziv::toolchain::lex::TokenKind::Const():
+                return parse_variable_declaration();
             default:
                 auto invalid_node = ast_.add_node(ast::NodeKind::Invalid(), consume());
                 return invalid_node;
@@ -91,30 +92,29 @@ namespace ziv::toolchain::parser {
     }
 
     ziv::toolchain::ast::AST::Node Parser::parse_function_declaration() {
-        
-        //  (param1: type, param2: type) -> return_type { body }
-        auto function_node = ast_.add_node(ast::NodeKind::FunctionDecl(), consume());
+        auto fn_decl = ast_.add_node(ast::NodeKind::FunctionDecl(), consume()); // Consume 'fn'
 
         // Parse function name
-        expect(ziv::toolchain::lex::TokenKind::Identifier(), "Expected identifier after 'fn'");
+        expect(lex::TokenKind::Identifier(), "Expected function name");
+        auto fn_name = ast_.add_node(ast::NodeKind::FunctionName(), previous());
+        ast_.add_child(fn_decl, fn_name);
 
+        // Parse parameter list
+        auto params = parse_parameter_list();
+        ast_.add_child(fn_decl, params);
 
-        auto function_name = ast_.add_node(ast::NodeKind::FunctionName(), previous());
-        ast_.add_child(function_node, function_name);
-
-        // Parse function signature
-        auto signature = parse_function_signature();
-        if (signature.is_valid()) {
-            ast_.add_child(function_node, signature);
+        // Parse return type
+        if (consume_match(lex::TokenKind::Arrow())) {
+            auto return_type = parse_type_specifier();
+            ast_.add_child(fn_decl, return_type);
         }
 
         // Parse function body
-        auto body = parse_function_body();
-        if (body.is_valid()) {
-            ast_.add_child(function_node, body);
-        }
+        expect(lex::TokenKind::Colon(), "Expected ':' before function body");
+        auto body = parse_block();
+        ast_.add_child(fn_decl, body);
 
-        return function_node;
+        return fn_decl;
     }
 
     ziv::toolchain::ast::AST::Node Parser::parse_function_signature() {
@@ -132,7 +132,7 @@ namespace ziv::toolchain::parser {
                 parse_error(signature_node, "Expected type after '->' in function signature");
                 return signature_node;
             }
-            auto return_type = ast_.add_node(ast::NodeKind::ReturnType(), consume());
+            auto return_type = ast_.add_node(ast::NodeKind::ReturnStmt(), consume());
             ast_.add_child(signature_node, return_type);
         }
 
@@ -235,46 +235,56 @@ namespace ziv::toolchain::parser {
         return identifier_expr;
     }
 
+    // Variable Declaration Support
     ziv::toolchain::ast::AST::Node Parser::parse_variable_declaration() {
-        // Expect an identifier
-        auto variable_node = ast_.add_node(ast::NodeKind::VariableDecl(), peek());
+        // Consume let/mut/const
+        auto var_decl = ast_.add_node(ast::NodeKind::VarDecl(), consume());
 
-        auto name = ast_.add_node(ast::NodeKind::VariableName(), consume());
-        ast_.add_child(variable_node, name);
+        // Handle let/mut/const
+        if (!match(lex::TokenKind::Identifier())) {
+            parse_error(var_decl, "Expected identifier in variable declaration");
+            return var_decl;
+        }
 
-        // Parse the type
-        expect(ziv::toolchain::lex::TokenKind::Colon(), "Expected ':' in variable declaration");
-        auto type_node = parse_type_specifier();
-        ast_.add_child(variable_node, type_node);
+        auto var_name = ast_.add_node(ast::NodeKind::VariableName(), consume());
+        ast_.add_child(var_decl, var_name);
 
-        // Parse the value
-        expect(ziv::toolchain::lex::TokenKind::Equals(), "Expected '=' in variable declaration");
-        auto value_node = parse_expression();
-        ast_.add_child(variable_node, value_node);
+        // Parse type annotation
+        if (!consume_match(lex::TokenKind::Colon())) {
+            parse_error(var_decl, "Expected ':' after variable name");
+            return var_decl;
+        }
 
-        expect(ziv::toolchain::lex::TokenKind::Semicolon(), "Expected ';' at end of variable declaration");
+        auto type_spec = parse_type_specifier();
+        ast_.add_child(var_decl, type_spec);
 
-        return variable_node;
+        // Parse initialization
+        if (!consume_match(lex::TokenKind::Equals())) {
+            parse_error(var_decl, "Expected '=' after variable type");
+            return var_decl;
+        }
+
+        auto init_expr = ast_.add_node(ast::NodeKind::VariableInit(), peek());
+        auto expr = parse_expression();
+        if (expr.is_valid()) {
+            ast_.add_child(init_expr, expr);
+        }
+        ast_.add_child(var_decl, init_expr);
+
+        expect(lex::TokenKind::Semicolon(), "Expected ';' after variable declaration");
+        return var_decl;
     }
 
     ziv::toolchain::ast::AST::Node Parser::parse_type_specifier() {
-        if (match(ziv::toolchain::lex::TokenKind::Int())) {
-            return ast_.add_node(ast::NodeKind::IntegerType(), consume());
+        if (match(lex::TokenKind::Int()) || match(lex::TokenKind::Float()) ||
+            match(lex::TokenKind::Bool()) || match(lex::TokenKind::String()) ||
+            match(lex::TokenKind::Char())) {
+            return ast_.add_node(ast::NodeKind::TypeSpec(), consume());
         }
-        else if (match(ziv::toolchain::lex::TokenKind::Float())) {
-            return ast_.add_node(ast::NodeKind::FloatType(), consume());
-        }
-        else if (match(ziv::toolchain::lex::TokenKind::String())) {
-            return ast_.add_node(ast::NodeKind::StringType(), consume());
-        }
-        else if (match(ziv::toolchain::lex::TokenKind::Bool())) {
-            return ast_.add_node(ast::NodeKind::BoolType(), consume());
-        }
-        else {
-            auto invalid_node = ast_.add_node(ast::NodeKind::Invalid(), consume());
-            parse_error(invalid_node, "Expected type specifier");
-            return {};
-        }
+
+        auto error_node = ast_.add_node(ast::NodeKind::Error(), peek());
+        parse_error(error_node, "Expected type specifier");
+        return error_node;
     }
 
 
