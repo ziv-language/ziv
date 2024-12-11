@@ -17,16 +17,32 @@ class TokenBuffer {
     public:
         struct Token {
             TokenKind kind;
+            std::string spelling_value;
             llvm::StringRef spelling;
             size_t line;
             size_t column;
 
         Token(TokenKind kind, llvm::StringRef spelling, size_t line, size_t column):
-            kind(kind), spelling(spelling), line(line), column(column) {};
+            kind(kind),
+            spelling_value(spelling.str()),
+            spelling(spelling_value),
+            line(line),
+            column(column) {};
 
         TokenKind get_kind() const { return kind; };
 
-        llvm::StringRef get_spelling() const { return kind.get_spelling(); };
+        llvm::StringRef get_spelling() const {
+
+            if (kind == TokenKind::Identifier() ||
+            kind == TokenKind::StringLiteral() ||
+            kind == TokenKind::CharLiteral() ||
+            kind == TokenKind::IntLiteral() ||
+            kind == TokenKind::FloatLiteral()) {
+                return spelling;
+            }
+
+            return kind.get_spelling();
+        };
 
         llvm::StringRef get_name() const { return kind.get_name(); };
 
