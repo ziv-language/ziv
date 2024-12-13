@@ -3,9 +3,10 @@
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 #include "parser.hpp"
+
+#include "expression_parser.hpp"
 #include "parser_utils.hpp"
 #include "statement_parser.hpp"
-#include "expression_parser.hpp"
 #include "top_level_parser.hpp"
 
 namespace ziv::toolchain::parser {
@@ -25,11 +26,9 @@ void Parser::parse() {
             consume();
         }
     }
-    auto eof = ast_.add_node(
-        ast::NodeKind::FileEnd(),
-        lex::TokenBuffer::Token(lex::TokenKind::Eof(), "", 0, 0)
-    );
+    auto eof = ast_.add_node(ast::NodeKind::FileEnd(),
+                             lex::TokenBuffer::Token(lex::TokenKind::Eof(), "", 0, 0));
     ast_.add_child(root, eof);
 }
 
-} // namespace ziv::toolchain::parser
+}  // namespace ziv::toolchain::parser

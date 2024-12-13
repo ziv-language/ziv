@@ -5,18 +5,19 @@
 #ifndef ZIV_TOOLCHAIN_SOURCE_COMMAND_HPP
 #define ZIV_TOOLCHAIN_SOURCE_COMMAND_HPP
 
-#include "zivc/toolchain/command.hpp"
-#include "toolchain/source/source_buffer.hpp"
-#include "llvm/Support/raw_ostream.h"
 #include "llvm/Support/VirtualFileSystem.h"
+#include "llvm/Support/raw_ostream.h"
+#include "toolchain/source/source_buffer.hpp"
+#include "zivc/toolchain/command.hpp"
 
 namespace ziv::cli::toolchain {
-    class SourceCommand : public Command {
-        public:
-            void execute(const std::string &args) override;
-        private:
-            void print_source(const std::string &filename);
-    };
-} // namespace ziv::cli::toolchain
+class SourceCommand : public Command {
+public:
+    void execute(const std::string& args) override;
 
-#endif // ZIV_TOOLCHAIN_SOURCE_COMMAND_HPP
+private:
+    void print_source(const std::string& filename);
+};
+}  // namespace ziv::cli::toolchain
+
+#endif  // ZIV_TOOLCHAIN_SOURCE_COMMAND_HPP
