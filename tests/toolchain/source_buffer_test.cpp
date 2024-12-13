@@ -7,8 +7,7 @@
 #include "llvm/Support/VirtualFileSystem.h"
 #include "toolchain/source/source_buffer.hpp"
 
-namespace {
-using namespace ziv::toolchain::source;
+namespace ziv::toolchain::source {
 
 class SourceBufferTest : public ::testing::Test {
 protected:
@@ -51,4 +50,4 @@ TEST_F(SourceBufferTest, NonexistentFile) {
     auto buffer = SourceBuffer::from_file(fs, "/test/nonexistent.ziv");
     EXPECT_FALSE(buffer.has_value());
 }
-}  // namespace
+}  // namespace ziv::toolchain::source

@@ -6,9 +6,7 @@ name: PR Checklist Validation
 
 on:
   pull_request:
-    types: [review_requested]
-  pull_request_review:
-    types: [submitted]
+    branches: [ main ]
 
 jobs:
   checklist:
@@ -22,23 +20,29 @@ jobs:
         with:
           script: |
             const pr = context.payload.pull_request;
-            
-            // Skip if it's not a PR
+
+            // Early exit if not a PR
             if (!pr) {
               console.log("Not a pull request event. Skipping.");
               return;
             }
-            
+
             const body = pr.body || '';
-            
+
+            // Early exit if empty body
+            if (!body.trim()) {
+              core.setFailed("PR description is empty.");
+              return;
+            }
+
             // Check if there are any checkboxes
             const checkboxes = body.match(/-\s\[(x| )\]/g);
-            
+
             if (!checkboxes) {
               core.setFailed("No checklist found in PR description.");
               return;
             }
-            
+
             const uncheckedBoxes = checkboxes.filter(c => c.includes('[ ]')).length;
 
             if (uncheckedBoxes > 0) {
