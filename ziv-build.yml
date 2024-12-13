@@ -2,26 +2,18 @@
 # See /LICENSE for license details.
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
-name: ziv
+name: ziv-build
 channels:
   - conda-forge
 dependencies:
-  - benchmark>=1.9.1
-  - ccache>=4.10
+  # Minimal dependencies needed to build the project
   - clang>=19
-  - clang-tools>=19
   - clangxx>=19
   - cmake>=3.30
-  - gtest>=1.15.2
   - libmlir>=19
   - lld>=19
-  - lldb>=19
   - llvm>=19
-  - llvm-tools>=19
-  - llvm-openmp>=19
   - llvmdev>=19
   - mlir>=19
-  - mlir-python-bindings>=19
   - ninja>=1.12
-  - pre-commit>=4.0
   - zlib>=1.2

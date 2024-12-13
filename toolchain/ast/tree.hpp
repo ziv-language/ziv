@@ -12,6 +12,8 @@
 #include "llvm/ADT/StringRef.h"
 #include "llvm/ADT/iterator.h"
 #include "llvm/ADT/iterator_range.h"
+#include "toolchain/ast/node_kind.hpp"
+#include "toolchain/lex/token_buffer.hpp"
 
 namespace ziv::toolchain::ast {
 

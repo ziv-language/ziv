@@ -1,0 +1,87 @@
+# Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+# See /LICENSE for license details.
+# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  format:
+    name: Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Conda Environment
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-file: conda-lock.yml
+          environment-name: ziv
+          cache-environment: true
+          cache-downloads: true
+
+      - name: Format Check
+        shell: micromamba-shell {0}
+        run: |
+          # Run pre-commit first to format files
+          pre-commit run clang-format --all-files
+          # Then check if there are any remaining unformatted files
+          if ! git diff --quiet ; then
+            echo "Files were formatted by pre-commit. Please commit the formatting changes."
+            git diff
+            exit 1
+          fi
+
+  build-and-test:
+    needs: format
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Conda Environment
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-file: conda-lock.yml
+          environment-name: ziv
+          cache-environment: true
+          cache-downloads: true
+
+      - name: Cache ccache files
+        uses: actions/cache@v3
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-ccache-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-ccache-
+
+      - name: Configure ccache
+        shell: micromamba-shell {0}
+        run: |
+          ccache --max-size=2G
+          ccache --zero-stats
+
+      - name: Configure CMake
+        shell: micromamba-shell {0}
+        run: |
+          cmake -B build -G Ninja \
+                -DCMAKE_BUILD_TYPE=Release \
+                -DZIV_ENABLE_TESTING=ON
+
+      - name: Build
+        shell: micromamba-shell {0}
+        run: cmake --build build
+
+      - name: Print ccache stats
+        shell: micromamba-shell {0}
+        run: ccache --show-stats
+
+      - name: Test
+        shell: micromamba-shell {0}
+        working-directory: build
+        run: ctest --output-on-failure -V

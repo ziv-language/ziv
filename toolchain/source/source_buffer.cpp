@@ -34,7 +34,7 @@ std::optional<SourceBuffer> SourceBuffer::from_file(llvm::vfs::FileSystem& fs,
     // Use -1 to indicate that the file is not a regular file
     int64_t size = status->isRegularFile() ? status->getSize() : -1;
 
-    auto buffer = llvm::MemoryBuffer::getFile(filename);
+    auto buffer = (*file)->getBuffer(filename, size);
 
     if (!buffer) {
         return std::nullopt;  // Could not read file into memory buffer

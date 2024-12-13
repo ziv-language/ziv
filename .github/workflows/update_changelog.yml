@@ -29,7 +29,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+            python-version: '3.8'
 
       - name: Install dependencies
         run: |
@@ -40,7 +40,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          python .github/scripts/update_changelog.py
+          python ./scripts/update_changelog.py
 
       # Check if there are any changes to CHANGELOG.md
       - name: Check for changes
@@ -62,9 +62,9 @@ jobs:
           title: 'docs: Update Changelog for ${{ steps.date.outputs.month_year }}'
           body: |
             \U0001f916 Automated changelog update
-            
+
             This PR adds changes for ${{ steps.date.outputs.month_year }} to the changelog.
-            
+
             Please review the changes and merge if they look correct.
           branch: ci/update-changelog
           base: main
