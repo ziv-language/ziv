@@ -62,7 +62,7 @@ Welcome to the Ziv programming language project! Ziv is designed to combine the 
 3. **Set Up Development Environment**
     ```bash
     # Create reproducible environment
-    conda-lock install --mamba -n ziv
+    conda-lock install --mamba -n ziv conda-lock.yml
     conda activate ziv
     ```
 
