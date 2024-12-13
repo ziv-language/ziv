@@ -4,7 +4,7 @@
 
 #include "command/command_manager.hpp"
 
-int main(int argc, char **argv) {
+int main(int argc, char** argv) {
     ziv::cli::command::CommandManager commandManager;
     commandManager.execute(argc, argv);
     return 0;

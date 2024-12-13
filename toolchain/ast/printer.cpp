@@ -4,6 +4,7 @@
 
 
 #include "printer.hpp"
+
 #include <map>
 
 namespace ziv::toolchain::ast {
@@ -68,7 +69,9 @@ const llvm::StringRef Printer::get_kind_name(NodeKind kind) {
     return it != kind_names.end() ? it->second : "Unknown";
 }
 
-void Printer::print_indentation(llvm::raw_ostream& os, size_t indent, const std::vector<bool>& last_child) const {
+void Printer::print_indentation(llvm::raw_ostream& os,
+                                size_t indent,
+                                const std::vector<bool>& last_child) const {
     // We need to print indentation up to indent level
     for (size_t i = 0; i < indent; ++i) {
         // If we're within the last_child vector bounds
@@ -91,7 +94,7 @@ void Printer::print_node_header(llvm::raw_ostream& os, AST::Node node) const {
             os << "idx:" << node.get_index() << ", ";
         }
         os << "ln:" << ast_.get_line(node) << ", "
-            << "col:" << ast_.get_token(node).get_column();
+           << "col:" << ast_.get_token(node).get_column();
 
         if (options_.show_error_state && ast_.has_error(node)) {
             os << ", ERROR";
@@ -100,14 +103,18 @@ void Printer::print_node_header(llvm::raw_ostream& os, AST::Node node) const {
     }
 }
 
-void Printer::print_node_details(llvm::raw_ostream& os, AST::Node node, size_t indent, const std::vector<bool>& last_child) const {
-    if (!options_.show_token_info) return;
+void Printer::print_node_details(llvm::raw_ostream& os,
+                                 AST::Node node,
+                                 size_t indent,
+                                 const std::vector<bool>& last_child) const {
+    if (!options_.show_token_info)
+        return;
 
     const auto& token = ast_.get_token(node);
     auto token_kind = token.get_kind();
 
     std::vector<bool> child_prefix = last_child;
-    child_prefix.push_back(true); // Always true for details
+    child_prefix.push_back(true);  // Always true for details
 
     // First print the token kind
     os << "\n";
@@ -115,11 +122,10 @@ void Printer::print_node_details(llvm::raw_ostream& os, AST::Node node, size_t i
     os << "└─ Token: '" << token.get_name() << "'";
 
     // For literals and identifiers, print their actual value
-    if (token_kind == lex::TokenKind::Identifier() ||
-        token_kind == lex::TokenKind::StringLiteral() ||
-        token_kind == lex::TokenKind::IntLiteral() ||
-        token_kind == lex::TokenKind::FloatLiteral() ||
-        token_kind == lex::TokenKind::CharLiteral()) {
+    if (token_kind == lex::TokenKind::Identifier() || token_kind == lex::TokenKind::StringLiteral()
+        || token_kind == lex::TokenKind::IntLiteral()
+        || token_kind == lex::TokenKind::FloatLiteral()
+        || token_kind == lex::TokenKind::CharLiteral()) {
         os << "\n";
         print_indentation(os, indent + 1, child_prefix);
         os << "└─ Value: '" << token.get_spelling() << "'";
@@ -135,7 +141,10 @@ void Printer::print_node_details(llvm::raw_ostream& os, AST::Node node, size_t i
     }
 }
 
-void Printer::print_node(llvm::raw_ostream& os, AST::Node node, size_t indent, std::vector<bool> last_child) const {
+void Printer::print_node(llvm::raw_ostream& os,
+                         AST::Node node,
+                         size_t indent,
+                         std::vector<bool> last_child) const {
     if (!node.is_valid()) {
         print_indentation(os, indent, last_child);
         os << "└─ Invalid Node\n";
@@ -146,7 +155,7 @@ void Printer::print_node(llvm::raw_ostream& os, AST::Node node, size_t indent, s
 
     // Determine connector based on position
     if (indent == 0) {
-        os << "└─ "; // Root node
+        os << "└─ ";  // Root node
     } else {
         os << (last_child.back() ? "└─ " : "├─ ");
     }
@@ -177,4 +186,4 @@ void Printer::print_node(llvm::raw_ostream& os, AST::Node node, size_t indent, s
     }
 }
 
-} // namespace ziv::toolchain::ast
+}  // namespace ziv::toolchain::ast

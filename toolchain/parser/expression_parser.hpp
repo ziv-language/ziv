@@ -2,8 +2,8 @@
 // See /LICENSE for license details.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
-#include "parser.hpp"
 #include "operator_precedence.hpp"
+#include "parser.hpp"
 
 namespace ziv::toolchain::parser {
 
@@ -28,8 +28,7 @@ ast::AST::Node Parser::parse_binary_expression(int min_precedence) {
 
         // Check next operator for precedence comparison
         size_t next_pos = current_ + 1;
-        while (next_pos < tokens_.size() &&
-               !is_binary_operator(tokens_[next_pos].kind)) {
+        while (next_pos < tokens_.size() && !is_binary_operator(tokens_[next_pos].kind)) {
             next_pos++;
         }
 
@@ -39,7 +38,8 @@ ast::AST::Node Parser::parse_binary_expression(int min_precedence) {
 
             if (prec == Precedence::Ambiguous) {
                 auto error_node = ast_.add_node(ast::NodeKind::Error(), peek());
-                parse_error(error_node, "Ambiguous operator precedence. Please use parentheses to clarify.");
+                parse_error(error_node,
+                            "Ambiguous operator precedence. Please use parentheses to clarify.");
                 return error_node;
             }
 
@@ -48,7 +48,7 @@ ast::AST::Node Parser::parse_binary_expression(int min_precedence) {
             }
         }
 
-        consume(); // Consume the operator
+        consume();  // Consume the operator
         auto binary_node = ast_.add_node(ast::NodeKind::BinaryExpr(), previous());
         ast_.add_child(binary_node, left);
 
@@ -65,7 +65,7 @@ ast::AST::Node Parser::parse_unary() {
     if (is_unary_operator(peek().kind)) {
         auto op = consume();
         auto unary_node = ast_.add_node(ast::NodeKind::UnaryExpr(), op);
-        auto operand = parse_unary(); // Handle nested unary operators
+        auto operand = parse_unary();  // Handle nested unary operators
         ast_.add_child(unary_node, operand);
         return unary_node;
     }
@@ -75,10 +75,8 @@ ast::AST::Node Parser::parse_unary() {
 
 ziv::toolchain::ast::AST::Node Parser::parse_primary() {
     // Handle literals
-    if (match(lex::TokenKind::IntLiteral()) ||
-        match(lex::TokenKind::FloatLiteral()) ||
-        match(lex::TokenKind::StringLiteral()) ||
-        match(lex::TokenKind::CharLiteral())) {
+    if (match(lex::TokenKind::IntLiteral()) || match(lex::TokenKind::FloatLiteral())
+        || match(lex::TokenKind::StringLiteral()) || match(lex::TokenKind::CharLiteral())) {
         return ast_.add_node(ast::NodeKind::LiteralExpr(), consume());
     }
 
@@ -150,8 +148,7 @@ ziv::toolchain::ast::AST::Node Parser::parse_logical_and() {
 ziv::toolchain::ast::AST::Node Parser::parse_equality() {
     auto left = parse_comparison();
 
-    while (match(lex::TokenKind::DoubleEquals()) ||
-           match(lex::TokenKind::NotEquals())) {
+    while (match(lex::TokenKind::DoubleEquals()) || match(lex::TokenKind::NotEquals())) {
         auto op = consume();
         auto right = parse_comparison();
 
@@ -168,10 +165,8 @@ ziv::toolchain::ast::AST::Node Parser::parse_equality() {
 ziv::toolchain::ast::AST::Node Parser::parse_comparison() {
     auto left = parse_addition();
 
-    while (match(lex::TokenKind::Less()) ||
-           match(lex::TokenKind::LessEquals()) ||
-           match(lex::TokenKind::Greater()) ||
-           match(lex::TokenKind::GreaterEquals())) {
+    while (match(lex::TokenKind::Less()) || match(lex::TokenKind::LessEquals())
+           || match(lex::TokenKind::Greater()) || match(lex::TokenKind::GreaterEquals())) {
         auto op = consume();
         auto right = parse_addition();
 
@@ -188,8 +183,7 @@ ziv::toolchain::ast::AST::Node Parser::parse_comparison() {
 ziv::toolchain::ast::AST::Node Parser::parse_addition() {
     auto left = parse_multiplication();
 
-    while (match(lex::TokenKind::Plus()) ||
-           match(lex::TokenKind::Minus())) {
+    while (match(lex::TokenKind::Plus()) || match(lex::TokenKind::Minus())) {
         auto op = consume();
         auto right = parse_multiplication();
 
@@ -206,9 +200,8 @@ ziv::toolchain::ast::AST::Node Parser::parse_addition() {
 ziv::toolchain::ast::AST::Node Parser::parse_multiplication() {
     auto left = parse_unary();
 
-    while (match(lex::TokenKind::Star()) ||
-           match(lex::TokenKind::Slash()) ||
-           match(lex::TokenKind::Percent())) {
+    while (match(lex::TokenKind::Star()) || match(lex::TokenKind::Slash())
+           || match(lex::TokenKind::Percent())) {
         auto op = consume();
         auto right = parse_unary();
 
@@ -223,49 +216,38 @@ ziv::toolchain::ast::AST::Node Parser::parse_multiplication() {
 }
 
 bool Parser::is_binary_operator(lex::TokenKind kind) const {
-    return kind == lex::TokenKind::Plus() ||
-           kind == lex::TokenKind::Minus() ||
-           kind == lex::TokenKind::Star() ||
-           kind == lex::TokenKind::Slash() ||
-           kind == lex::TokenKind::Percent() ||
-           kind == lex::TokenKind::Pipe() ||
-           kind == lex::TokenKind::Ampersand() ||
-           kind == lex::TokenKind::Caret() ||
-           kind == lex::TokenKind::And() ||
-           kind == lex::TokenKind::Or();
+    return kind == lex::TokenKind::Plus() || kind == lex::TokenKind::Minus()
+           || kind == lex::TokenKind::Star() || kind == lex::TokenKind::Slash()
+           || kind == lex::TokenKind::Percent() || kind == lex::TokenKind::Pipe()
+           || kind == lex::TokenKind::Ampersand() || kind == lex::TokenKind::Caret()
+           || kind == lex::TokenKind::And() || kind == lex::TokenKind::Or();
 }
 
 bool Parser::is_unary_operator(lex::TokenKind kind) const {
-    return kind == lex::TokenKind::Minus() ||
-           kind == lex::TokenKind::Not() ||
-           kind == lex::TokenKind::Tilde();
+    return kind == lex::TokenKind::Minus() || kind == lex::TokenKind::Not()
+           || kind == lex::TokenKind::Tilde();
 }
 
 int Parser::get_operator_precedence(lex::TokenKind op) const {
-    if (op == lex::TokenKind::Star() ||
-        op == lex::TokenKind::Slash() ||
-        op == lex::TokenKind::Percent()) {
+    if (op == lex::TokenKind::Star() || op == lex::TokenKind::Slash()
+        || op == lex::TokenKind::Percent()) {
         return 5;
     }
-    if (op == lex::TokenKind::Plus() ||
-        op == lex::TokenKind::Minus()) {
+    if (op == lex::TokenKind::Plus() || op == lex::TokenKind::Minus()) {
         return 4;
     }
-    if (op == lex::TokenKind::Less() ||
-        op == lex::TokenKind::Greater() ||
-        op == lex::TokenKind::LessEquals() ||
-        op == lex::TokenKind::GreaterEquals()) {
+    if (op == lex::TokenKind::Less() || op == lex::TokenKind::Greater()
+        || op == lex::TokenKind::LessEquals() || op == lex::TokenKind::GreaterEquals()) {
         return 3;
     }
-    if (op == lex::TokenKind::DoubleEquals() ||
-        op == lex::TokenKind::NotEquals()) {
+    if (op == lex::TokenKind::DoubleEquals() || op == lex::TokenKind::NotEquals()) {
         return 2;
     }
-    return 1; // Lowest precedence for other operators
+    return 1;  // Lowest precedence for other operators
 }
 
 bool Parser::should_take_operator(lex::TokenKind op, int min_precedence) const {
     return get_operator_precedence(op) >= min_precedence;
 }
 
-} // namespace ziv::toolchain::parser
+}  // namespace ziv::toolchain::parser
