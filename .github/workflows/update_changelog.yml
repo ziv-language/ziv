@@ -40,7 +40,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          python .github/scripts/update_changelog.py
+          python ./scripts/update_changelog.py
 
       # Check if there are any changes to CHANGELOG.md
       - name: Check for changes

@@ -7,7 +7,7 @@ SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
   <!-- Background -->
 <rect width="200" height="200" fill="none"/>
-  
+
   <!-- Enhanced outer glow -->
   <defs>
     <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
@@ -20,20 +20,20 @@ SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
       <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
   </defs>
-  
+
   <!-- Refined diamond background with enhanced shadow -->
   <defs>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="0" dy="1.5" stdDeviation="2.5" flood-opacity="0.15"/>
     </filter>
   </defs>
-  
+
   <!-- Diamond background -->
-  <rect x="50" y="50" width="100" height="100" 
-        transform="rotate(45, 100, 100)" 
+  <rect x="50" y="50" width="100" height="100"
+        transform="rotate(45, 100, 100)"
         fill="#4338CA"
         filter="url(#shadow)"/>
-        
+
   <!-- Enhanced gradient definition -->
   <defs>
     <linearGradient id="starTrail" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -42,9 +42,9 @@ SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
       <stop offset="100%" stop-color="#B8D0FF"/>
     </linearGradient>
   </defs>
-  
+
   <!-- Z with enhanced gradient trail -->
-  <path d="M75 75 
+  <path d="M75 75
            L125 75
            L75 125
            L125 125"
@@ -54,30 +54,30 @@ SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
         stroke-linejoin="round"
         filter="url(#strongGlow)"
         fill="none"/>
-        
+
   <!-- Enhanced star sparkle at the start -->
   <circle cx="75" cy="75" r="4" fill="white" filter="url(#strongGlow)"/>
   <circle cx="75" cy="75" r="2" fill="#4338CA"/>
-  
+
   <!-- Enhanced trail sparkles with refined glow -->
   <circle cx="125" cy="75" r="2.5" fill="white" opacity="0.9" filter="url(#glow)"/>
   <circle cx="100" cy="100" r="2" fill="white" opacity="0.75" filter="url(#glow)"/>
   <circle cx="125" cy="125" r="2.5" fill="white" opacity="0.9" filter="url(#glow)"/>
-  
+
   <!-- Refined tech circuit lines -->
   <g>
     <!-- Left circuit line -->
     <path d="M60 100 L80 100" stroke="#818CF8" stroke-width="1.25"/>
     <!-- Right circuit line -->
     <path d="M120 100 L140 100" stroke="#818CF8" stroke-width="1.25"/>
-    
+
     <!-- Enhanced circuit endpoints -->
     <!-- Left arrow -->
     <polygon points="58,100 59,101.5 60,100 59,98.5" fill="#818CF8" opacity="0.9"/>
     <!-- Right arrow -->
     <polygon points="140,100 141,101.5 142,100 141,98.5" fill="#818CF8" opacity="0.9"/>
   </g>
-  
+
   <!-- Additional subtle circuit glow -->
   <g filter="url(#glow)" opacity="0.4">
     <path d="M60 100 L80 100" stroke="#818CF8" stroke-width="0.5"/>

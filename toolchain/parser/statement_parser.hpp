@@ -2,7 +2,6 @@
 // See /LICENSE for license details.
 // SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
-
 #include "parser.hpp"
 
 namespace ziv::toolchain::parser {

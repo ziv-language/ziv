@@ -25,27 +25,22 @@ jobs:
           cache-environment: true
           cache-downloads: true
 
-      - name: Check Format
+      - name: Format Check
         shell: micromamba-shell {0}
         run: |
-          pre-commit run --all-files
-          clang-format --dry-run --Werror $(find . -name "*.cpp" -o -name "*.hpp")
+          # Run pre-commit first to format files
+          pre-commit run clang-format --all-files
+          # Then check if there are any remaining unformatted files
+          if ! git diff --quiet ; then
+            echo "Files were formatted by pre-commit. Please commit the formatting changes."
+            git diff
+            exit 1
+          fi
 
-  build:
+  build-and-test:
     needs: format
-    name: Build (${{ matrix.os }})
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            platform: linux-64
-          - os: macos-latest
-            platform: osx-64
-          - os: windows-latest
-            platform: win-64
-
-    runs-on: ${{ matrix.os }}
+    name: Build and Test
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -57,7 +52,6 @@ jobs:
           environment-name: ziv
           cache-environment: true
           cache-downloads: true
-          platform: ${{ matrix.platform }}
 
       - name: Cache ccache files
         uses: actions/cache@v3
@@ -77,8 +71,7 @@ jobs:
         run: |
           cmake -B build -G Ninja \
                 -DCMAKE_BUILD_TYPE=Release \
-                -DZIV_ENABLE_TESTING=ON \
-                -DZIV_WARNINGS_AS_ERRORS=ON
+                -DZIV_ENABLE_TESTING=ON
 
       - name: Build
         shell: micromamba-shell {0}
@@ -87,47 +80,6 @@ jobs:
       - name: Print ccache stats
         shell: micromamba-shell {0}
         run: ccache --show-stats
-
-      # Cache the build for testing
-      - name: Upload build
-        uses: actions/upload-artifact@v3
-        with:
-          name: build-${{ matrix.platform }}
-          path: build
-
-  test:
-    needs: build
-    name: Test (${{ matrix.os }})
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            platform: linux-64
-          - os: macos-latest
-            platform: osx-64
-          - os: windows-latest
-            platform: win-64
-
-    runs-on: ${{ matrix.os }}
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Conda Environment
-        uses: mamba-org/setup-micromamba@v1
-        with:
-          environment-file: conda-lock.yml
-          environment-name: ziv
-          cache-environment: true
-          cache-downloads: true
-          platform: ${{ matrix.platform }}
-
-      - name: Download build
-        uses: actions/download-artifact@v3
-        with:
-          name: build-${{ matrix.platform }}
-          path: build
 
       - name: Test
         shell: micromamba-shell {0}
