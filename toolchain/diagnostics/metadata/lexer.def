@@ -8,16 +8,87 @@ ZIV_DIAGNOSTIC_INFO(
     Error,
     "Invalid character '{}'",
     "Remove or replace the invalid character",
-    {"Invalid characters can cause parsing errors"},
+    "Invalid characters can cause parsing errors",
     "lexer/invalid-character"
 )
-
 ZIV_DIAGNOSTIC_INFO(
     UnterminatedString,
     1002,
     Error,
     "Unterminated string",
     "Add a closing quote to terminate the string",
-    {"Strings must be enclosed in double quotes"},
+    "Strings must be enclosed in double quotes",
     "lexer/unterminated-string"
+)
+ZIV_DIAGNOSTIC_INFO(
+    UnterminatedCharacter,
+    1003,
+    Error,
+    "Unterminated character literal",
+    "Add a closing single quote to terminate the character literal",
+    "Character literals must be enclosed in single quotes",
+    "lexer/unterminated-character"
+)
+ZIV_DIAGNOSTIC_INFO(
+    UnterminatedComment,
+    1004,
+    Error,
+    "Unterminated multi-line comment",
+    "Add '--#' to close the multi-line comment",
+    "Multi-line comments must be closed with '--#'",
+    "lexer/unterminated-comment"
+)
+ZIV_DIAGNOSTIC_INFO(
+    InvalidEscapeSequence,
+    1005,
+    Error,
+    "Invalid escape sequence '\\{}'",
+    "Use a valid escape sequence",
+    "Valid escape sequences are: \\n, \\t, \\r, \\\\, \\\", \\'",
+    "lexer/invalid-escape"
+)
+ZIV_DIAGNOSTIC_INFO(
+    InvalidNumber,
+    1006,
+    Error,
+    "Invalid number literal: {}",
+    "Fix the numeric literal format",
+    "Numbers can be decimal, hexadecimal (0x), or binary (0b)",
+    "lexer/invalid-number"
+)
+ZIV_DIAGNOSTIC_INFO(
+    InvalidIdentifier,
+    1007,
+    Error,
+    "Invalid identifier '{}'",
+    "Identifiers must start with a letter or underscore",
+    "Identifiers can contain letters, numbers, and underscores",
+    "lexer/invalid-identifier"
+)
+ZIV_DIAGNOSTIC_INFO(
+    InvalidOperator,
+    1008,
+    Error,
+    "Invalid operator '{}'",
+    "Check the operator syntax",
+    "Some operators can be combined (e.g., ==, !=, <=, >=)",
+    "lexer/invalid-operator"
+)
+ZIV_DIAGNOSTIC_INFO(
+    InvalidToken,
+    1009,
+    Error,
+    "Invalid token: {}",
+    "The token is not recognized in this context",
+    "Check for syntax errors around this location",
+    "lexer/invalid-token"
+)
+ZIV_DIAGNOSTIC_INFO(
+    InvalidIndentation,
+    1010,
+    Error,
+    "Invalid indentation: {}",
+    "Indentation must be consistent",
+    "Each indent level must be exactly {} spaces",
+    "lexer/invalid-indentation"
 )
