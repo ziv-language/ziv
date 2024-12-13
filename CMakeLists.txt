@@ -13,6 +13,9 @@ option(ZIV_ENABLE_OPTIMIZATIONS "Enable optimizations" ON)
 option(ZIV_ENABLE_WARNINGS "Enable extra warnings" ON)
 option(ZIV_ENABLE_TESTING "Enable testing" OFF)
 option(ZIV_USE_CCACHE "Use ccache if available" ON)
+option(ZIV_ENABLE_LTO "Enable link-time optimization" OFF)
+option(ZIV_USE_THIN_LTO "Use ThinLTO instead of Full LTO" ON)
+option(ZIV_ENABLE_HARDENING "Enable security hardening features" OFF)
 
 # Use ccache if available
 if(ZIV_USE_CCACHE)
@@ -27,6 +30,27 @@ if(ZIV_USE_CCACHE)
 endif()
 
 project(Ziv VERSION 0.1.0 LANGUAGES CXX)
+
+# LTO configuration
+if(ZIV_ENABLE_LTO)
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT LTO_SUPPORTED)
+    
+    if(LTO_SUPPORTED)
+        message(STATUS "LTO is supported. Configuring LTO build...")
+        if(ZIV_USE_THIN_LTO)
+            add_compile_options(-flto=thin)
+            add_link_options(-flto=thin)
+            message(STATUS "Using ThinLTO")
+        else()
+            add_compile_options(-flto)
+            add_link_options(-flto)
+            message(STATUS "Using Full LTO")
+        endif()
+    else()
+        message(WARNING "LTO is not supported by the compiler")
+    endif()
+endif()
 
 # Handle conda environment
 if(DEFINED ENV{CONDA_PREFIX})
@@ -46,10 +70,18 @@ if(DEFINED ENV{CONDA_PREFIX})
 endif()
 
 # C++ standard settings
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# General compile flags
+set(GENERAL_COMPILE_FLAGS
+    -pipe   # Use pipes instead of temporary files
+    -fdiagnostics-color=always  # Enable colored diagnostics
+    $<$<CONFIG:Release>:-fno-math-errno> # Optimize math functions
+)
+
 
 # Optimization flags
 if(ZIV_ENABLE_OPTIMIZATIONS)
@@ -81,6 +113,34 @@ if(ZIV_ENABLE_WARNINGS)
         -Wdouble-promotion
     )
 endif()
+
+# Development flags
+set(DEVELOPMENT_FLAGS
+    -Werror=return-type
+    -Wuninitialized
+    -Wunused-parameter
+    -Wconversion
+    -Wshadow
+    -Wnon-virtual-dtor
+    -Wold-style-cast
+    -Wfloat-equal
+)
+
+# Hardening flags
+if(ZIV_ENABLE_HARDENING)
+    set(HARDENING_FLAGS
+        -fstack-protector-strong
+        -Wformat 
+        -Wformat-security
+        -fPIC
+        $<$<CXX_COMPILER_ID:Clang>:-fsanitize-cfi-cross-dso>
+    )
+endif()
+
+# LLVM configuration
+set(LLVM_ENABLE_RTTI OFF)
+set(LLVM_ENABLE_EH OFF)
+set(LLVM_LINK_LLVM_DYLIB ON)
 
 # Find required packages
 find_package(LLVM REQUIRED CONFIG)
@@ -115,6 +175,17 @@ add_executable(zivc
 target_compile_options(zivc PRIVATE
     ${WARNING_FLAGS}
     ${OPTIMIZATION_FLAGS}
+    ${GENERAL_COMPILE_FLAGS}
+    ${HARDENING_FLAGS}
+    $<$<CONFIG:Debug>:${DEVELOPMENT_FLAGS}>
+)
+
+# Set target properties
+set_target_properties(zivc PROPERTIES
+    INTERPROCEDURAL_OPTIMIZATION ${ZIV_ENABLE_LTO}
+    CXX_VISIBILITY_PRESET hidden
+    VISIBILITY_INLINES_HIDDEN ON
+    POSITION_INDEPENDENT_CODE ON
 )
 
 # Set include directories
@@ -141,14 +212,22 @@ if(ZIV_ENABLE_TESTING)
 endif()
 
 # Print build configuration
-message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
-message(STATUS "C++ compiler: ${CMAKE_CXX_COMPILER}")
-message(STATUS "LLVM version: ${LLVM_VERSION}")
-message(STATUS "Optimizations enabled: ${ZIV_ENABLE_OPTIMIZATIONS}")
-message(STATUS "Warnings enabled: ${ZIV_ENABLE_WARNINGS}")
-message(STATUS "Warnings as errors: ${ZIV_WARNINGS_AS_ERRORS}")
-message(STATUS "Compiler flags: ${WARNING_FLAGS} ${OPTIMIZATION_FLAGS}")
+include(CMakePrintHelpers)
+message(STATUS "=== Build Configuration ===")
+cmake_print_variables(CMAKE_BUILD_TYPE)
+cmake_print_variables(CMAKE_CXX_COMPILER)
+cmake_print_variables(CMAKE_CXX_COMPILER_ID)
+cmake_print_variables(CMAKE_CXX_COMPILER_VERSION)
+message(STATUS "=== Features ===")
+cmake_print_variables(ZIV_ENABLE_LTO)
+cmake_print_variables(ZIV_USE_THIN_LTO)
+cmake_print_variables(ZIV_ENABLE_HARDENING)
+cmake_print_variables(ZIV_ENABLE_OPTIMIZATIONS)
+message(STATUS "=== Paths ===")
+cmake_print_variables(CMAKE_INSTALL_PREFIX)
+cmake_print_variables(CMAKE_INSTALL_RPATH)
 if(DEFINED ENV{CONDA_PREFIX})
+    message(STATUS "=== Conda Configuration ===")
     message(STATUS "RPATH settings: ${CMAKE_INSTALL_RPATH}")
     message(STATUS "Conda lib dir: ${CONDA_LIB_DIR}")
 endif()
