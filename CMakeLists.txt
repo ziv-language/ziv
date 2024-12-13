@@ -2,20 +2,28 @@
 # See /LICENSE for license details.
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
+#-------------------------------------------------------------------------------
+# Basic Setup
+#-------------------------------------------------------------------------------
 cmake_minimum_required(VERSION 3.20)
 
 # Set compiler
 set(CMAKE_C_COMPILER clang)
 set(CMAKE_CXX_COMPILER clang++)
 
-# Options
+project(Ziv VERSION 0.1.0 LANGUAGES CXX)
+
+#-------------------------------------------------------------------------------
+# Build Options & Features
+#-------------------------------------------------------------------------------
 option(ZIV_ENABLE_OPTIMIZATIONS "Enable optimizations" ON)
 option(ZIV_ENABLE_WARNINGS "Enable extra warnings" ON)
 option(ZIV_ENABLE_TESTING "Enable testing" OFF)
 option(ZIV_USE_CCACHE "Use ccache if available" ON)
-option(ZIV_ENABLE_LTO "Enable link-time optimization" OFF)
+option(ZIV_ENABLE_PCH "Enable Precompiled Headers" ON)
+option(ZIV_ENABLE_LTO "Enable link-time optimization" ON)
 option(ZIV_USE_THIN_LTO "Use ThinLTO instead of Full LTO" ON)
-option(ZIV_ENABLE_HARDENING "Enable security hardening features" OFF)
+option(ZIV_ENABLE_HARDENING "Enable security hardening features" ON)
 
 # Use ccache if available
 if(ZIV_USE_CCACHE)
@@ -29,29 +37,9 @@ if(ZIV_USE_CCACHE)
     endif()
 endif()
 
-project(Ziv VERSION 0.1.0 LANGUAGES CXX)
-
-# LTO configuration
-if(ZIV_ENABLE_LTO)
-    include(CheckIPOSupported)
-    check_ipo_supported(RESULT LTO_SUPPORTED)
-    
-    if(LTO_SUPPORTED)
-        message(STATUS "LTO is supported. Configuring LTO build...")
-        if(ZIV_USE_THIN_LTO)
-            add_compile_options(-flto=thin)
-            add_link_options(-flto=thin)
-            message(STATUS "Using ThinLTO")
-        else()
-            add_compile_options(-flto)
-            add_link_options(-flto)
-            message(STATUS "Using Full LTO")
-        endif()
-    else()
-        message(WARNING "LTO is not supported by the compiler")
-    endif()
-endif()
-
+#-------------------------------------------------------------------------------
+# Environment & System Setup
+#-------------------------------------------------------------------------------
 # Handle conda environment
 if(DEFINED ENV{CONDA_PREFIX})
     set(CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX};${CMAKE_PREFIX_PATH}")
@@ -75,13 +63,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+#-------------------------------------------------------------------------------
+# Compilation Flags
+#-------------------------------------------------------------------------------
 # General compile flags
 set(GENERAL_COMPILE_FLAGS
     -pipe   # Use pipes instead of temporary files
     -fdiagnostics-color=always  # Enable colored diagnostics
     $<$<CONFIG:Release>:-fno-math-errno> # Optimize math functions
 )
-
 
 # Optimization flags
 if(ZIV_ENABLE_OPTIMIZATIONS)
@@ -90,6 +80,10 @@ if(ZIV_ENABLE_OPTIMIZATIONS)
         -march=native
         -fno-rtti
         -ffunction-sections
+        -fdata-sections
+        -fno-exceptions
+        -ftree-vectorize
+        -ffast-math
     )
 endif()
 
@@ -137,6 +131,69 @@ if(ZIV_ENABLE_HARDENING)
     )
 endif()
 
+#-------------------------------------------------------------------------------
+# Compiler Features Configuration
+#-------------------------------------------------------------------------------
+if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 2.6)
+    if(CMAKE_HOST_WIN32 AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 3.7)
+        list(APPEND GENERAL_COMPILE_FLAGS
+            -fansi-escape-codes 
+            -fcolor-diagnostics
+        )
+    else()
+        list(APPEND GENERAL_COMPILE_FLAGS
+            -fcolor-diagnostics
+        )
+    endif()
+endif()
+
+#-------------------------------------------------------------------------------
+# LTO Configuration
+#-------------------------------------------------------------------------------
+
+if(ZIV_ENABLE_LTO)
+    # ThinLTO is available since Clang 3.9
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 3.9 AND ZIV_USE_THIN_LTO)
+        add_compile_options(-flto=thin)
+        add_link_options(
+            -fuse-ld=lld
+            -flto=thin
+            LINKER:--thinlto-jobs=8
+            LINKER:--gc-sections
+            LINKER:--icf=all
+        )
+        message(STATUS "Using ThinLTO with lld")
+    else()
+        add_compile_options(-flto)
+        add_link_options(
+            -fuse-ld=lld
+            -flto
+            LINKER:--gc-sections
+            LINKER:--icf=all
+        )
+        message(STATUS "Using Full LTO with lld")
+    endif()
+endif()
+
+#-------------------------------------------------------------------------------
+# Precompiled Headers Configuration
+#-------------------------------------------------------------------------------
+if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 11.0)
+    if(ZIV_ENABLE_PCH)
+        set(CMAKE_PCH_INSTANTIATE_TEMPLATES ON)
+    endif()
+endif()
+
+#-------------------------------------------------------------------------------
+# Visibility Configuration
+#-------------------------------------------------------------------------------
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
+add_compile_options(-fvisibility=hidden)
+
+#-------------------------------------------------------------------------------
+# LLVM Setup
+#-------------------------------------------------------------------------------
 # LLVM configuration
 set(LLVM_ENABLE_RTTI OFF)
 set(LLVM_ENABLE_EH OFF)
@@ -152,6 +209,9 @@ include_directories(
     ${LLVM_INCLUDE_DIRS}
 )
 
+#-------------------------------------------------------------------------------
+# Source & Target Configuration
+#-------------------------------------------------------------------------------
 # Define source collection function
 function(collect_sources RESULT PATH)
     file(GLOB_RECURSE _SOURCES
@@ -193,6 +253,9 @@ target_include_directories(zivc PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+#-------------------------------------------------------------------------------
+# Dependencies & Linking
+#-------------------------------------------------------------------------------
 # Link LLVM libraries
 llvm_map_components_to_libnames(LLVM_LIBS
     Core
@@ -204,13 +267,18 @@ target_link_libraries(zivc PRIVATE
     ${LLVM_LIBS}
 )
 
-# Testing
+#-------------------------------------------------------------------------------
+# Testing Setup
+#-------------------------------------------------------------------------------
 if(ZIV_ENABLE_TESTING)
     enable_testing()
     find_package(GTest REQUIRED)
     add_subdirectory(tests)
 endif()
 
+#-------------------------------------------------------------------------------
+# Build Information
+#-------------------------------------------------------------------------------
 # Print build configuration
 include(CMakePrintHelpers)
 message(STATUS "=== Build Configuration ===")
