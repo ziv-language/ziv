@@ -6,6 +6,21 @@
 
 namespace ziv::toolchain::lex {
 
+void Lexer::update_location(char c) {
+    if (c == '\n') {
+        current_loc_.line++;
+        current_loc_.column = 1;
+    } else {
+        current_loc_.column++;
+    }
+    current_loc_.offset++;
+}
+
+void Lexer::save_location() {
+    start_loc_ = current_loc_;
+}
+
+
 void Lexer::initialize_handlers() {
     // Single line comments
     handlers_['#'] = &Lexer::consume_comment;
@@ -58,8 +73,10 @@ void Lexer::track_indentation() {
 
     // Each indentation level must be exactly indent_width_ spaces
     if (spaces % indent_width_ != 0) {
-        add_token(TokenKind::Error(),
-                  "Indentation must be a multiple of " + std::to_string(indent_width_) + " spaces");
+        emitter_.emit(diagnostics::DiagnosticKind::InvalidIndentation(),
+                      get_location(current_loc_),
+                      "Indentation must be a multiple of {0} spaces",
+                      indent_width_);
         return;
     }
 
@@ -68,7 +85,9 @@ void Lexer::track_indentation() {
     if (level > indent_level_) {
         // Only allow single level increases
         if (level != indent_level_ + 1) {
-            add_token(TokenKind::Error(), "Too many indentation levels at once");
+            emitter_.emit(diagnostics::DiagnosticKind::InvalidIndentation(),
+                          get_location(current_loc_),
+                          "Too many indentation levels at once");
             return;
         }
         indent_stack_.push_back(indent_level_);
@@ -81,7 +100,9 @@ void Lexer::track_indentation() {
             add_token(TokenKind::Dedent(), "");
         }
         if (level != indent_level_) {
-            add_token(TokenKind::Error(), "Inconsistent indentation");
+            emitter_.emit(diagnostics::DiagnosticKind::InvalidIndentation(),
+                          get_location(current_loc_),
+                          "Inconsistent indentation");
         }
     }
 }
@@ -144,14 +165,15 @@ char Lexer::peek() const {
     return cursor_ < source_.get_contents().size() ? source_.get_contents()[cursor_] : '\0';
 }
 
+char Lexer::peek_next() const {
+    if (cursor_ + 1 >= source_.get_contents().size())
+        return '\0';
+    return source_.get_contents()[cursor_ + 1];
+}
+
 char Lexer::consume() {
     char current = peek();
-    if (current == '\n') {
-        line_++;
-        column_ = 1;
-    } else {
-        column_++;
-    }
+    update_location(current);
     cursor_++;
     return current;
 }
@@ -165,7 +187,7 @@ bool Lexer::is_line_terminator() const {
 }
 
 void Lexer::add_token(TokenKind kind, llvm::StringRef spelling) {
-    buffer_.add_token(kind, spelling, line_, column_);
+    buffer_.add_token(kind, spelling, current_loc_.line, current_loc_.column);
 }
 
 void Lexer::consume_whitespace() {
@@ -175,6 +197,7 @@ void Lexer::consume_whitespace() {
 }
 
 void Lexer::consume_comment() {
+    save_location();
     consume();  // Initial '#'
 
     if (peek() == '-' && source_.get_contents()[cursor_ + 1] == '-') {
@@ -194,8 +217,9 @@ void Lexer::consume_comment() {
             consume();
         }
 
-        // Error: Unterminated multi-line comment
-        add_token(TokenKind::Error(), "Unterminated multi-line comment");
+        emitter_.emit(diagnostics::DiagnosticKind::UnterminatedComment(),
+                      get_location(start_loc_),
+                      "Unterminated multi-line comment");
     } else {
         // Single-line comment
         while (!is_eof() && peek() != '\n') {
@@ -214,9 +238,44 @@ void Lexer::consume_identifier() {
 }
 
 void Lexer::consume_number() {
+    save_location();
     std::string spelling;
     bool is_float = false;
     bool has_exponent = false;
+
+    // Handle hex numbers
+    if (peek() == '0' && (peek_next() == 'x' || peek_next() == 'X')) {
+        spelling += consume();  // '0'
+        spelling += consume();  // 'x'
+        if (!std::isxdigit(peek())) {
+            emitter_.emit(diagnostics::DiagnosticKind::InvalidNumber(),
+                          get_location(start_loc_),
+                          "Expected hexadecimal digit after '0x'");
+            return;
+        }
+        while (std::isxdigit(peek())) {
+            spelling += consume();
+        }
+        add_token(TokenKind::IntLiteral(), spelling);
+        return;
+    }
+
+    // Handle binary numbers
+    if (peek() == '0' && (peek_next() == 'b' || peek_next() == 'B')) {
+        spelling += consume();  // '0'
+        spelling += consume();  // 'b'
+        if (peek() != '0' && peek() != '1') {
+            emitter_.emit(diagnostics::DiagnosticKind::InvalidNumber(),
+                          get_location(start_loc_),
+                          "Expected binary digit after '0b'");
+            return;
+        }
+        while (peek() == '0' || peek() == '1') {
+            spelling += consume();
+        }
+        add_token(TokenKind::IntLiteral(), spelling);
+        return;
+    }
 
     // Handle leading sign
     if (peek() == '-' || peek() == '+') {
@@ -235,7 +294,9 @@ void Lexer::consume_number() {
 
         // Must have at least one digit after decimal
         if (!std::isdigit(peek())) {
-            add_token(TokenKind::Error(), "Expected digit after decimal point");
+            emitter_.emit(diagnostics::DiagnosticKind::InvalidNumber(),
+                          get_location(start_loc_),
+                          "Expected digit after decimal point");
             return;
         }
 
@@ -256,7 +317,9 @@ void Lexer::consume_number() {
         }
 
         if (!std::isdigit(peek())) {
-            add_token(TokenKind::Error(), "Expected digit in exponent");
+            emitter_.emit(diagnostics::DiagnosticKind::InvalidNumber(),
+                          get_location(start_loc_),
+                          "Expected digit in exponent");
             return;
         }
 
@@ -267,7 +330,9 @@ void Lexer::consume_number() {
 
     // Check for invalid suffixes
     if (std::isalpha(peek()) || peek() == '_') {
-        add_token(TokenKind::Error(), "Invalid number suffix");
+        emitter_.emit(diagnostics::DiagnosticKind::InvalidNumber(),
+                      get_location(start_loc_),
+                      "Invalid number suffix");
         return;
     }
 
@@ -275,6 +340,7 @@ void Lexer::consume_number() {
 }
 
 void Lexer::consume_string() {
+    save_location();
     consume();  // Initial quote
     std::string spelling;
     bool escaped = false;
@@ -282,8 +348,9 @@ void Lexer::consume_string() {
     while (!is_eof()) {
         char c = peek();
         if (c == '\n') {
-            // Error: unterminated string
-            add_token(TokenKind::Error(), "Unterminated string literal");
+            emitter_.emit(diagnostics::DiagnosticKind::UnterminatedString(),
+                          get_location(start_loc_),
+                          "unterminated string literal");
             return;
         }
 
@@ -295,6 +362,13 @@ void Lexer::consume_string() {
             }
             if (c == '\\') {
                 escaped = true;
+                auto escape_loc = current_loc_;
+                if (peek_next() == '\0') {
+                    emitter_.emit(diagnostics::DiagnosticKind::InvalidEscapeSequence(),
+                                  get_location(escape_loc),
+                                  "incomplete escape sequence");
+                    return;
+                }
                 consume();
                 continue;
             }
@@ -317,6 +391,10 @@ void Lexer::consume_string() {
                 spelling += '"';
                 break;
             default:
+                emitter_.emit(diagnostics::DiagnosticKind::InvalidEscapeSequence(),
+                              get_location(current_loc_),
+                              "invalid escape sequence '\\{0}'",
+                              c);
                 spelling += '\\';
                 spelling += c;
             }
@@ -326,17 +404,20 @@ void Lexer::consume_string() {
         spelling += consume();
     }
 
-    // Error: EOF in string
-    add_token(TokenKind::Error(), "EOF in string literal");
+    emitter_.emit(diagnostics::DiagnosticKind::UnterminatedString(),
+                  get_location(start_loc_),
+                  "EOF in string literal");
 }
 
 void Lexer::consume_char() {
+    save_location();
     consume();  // Initial quote
     std::string spelling;
-    bool escaped = false;
 
     if (is_eof()) {
-        add_token(TokenKind::Error(), "Empty character literal");
+        emitter_.emit(diagnostics::DiagnosticKind::UnterminatedCharacter(),
+                      get_location(start_loc_),
+                      "Empty character literal");
         return;
     }
 
@@ -344,7 +425,9 @@ void Lexer::consume_char() {
     if (c == '\\') {
         consume();
         if (is_eof()) {
-            add_token(TokenKind::Error(), "Incomplete escape sequence");
+            emitter_.emit(diagnostics::DiagnosticKind::InvalidEscapeSequence(),
+                          get_location(start_loc_),
+                          "Incomplete escape sequence");
             return;
         }
         c = peek();
@@ -365,7 +448,10 @@ void Lexer::consume_char() {
             spelling = "'";
             break;
         default:
-            add_token(TokenKind::Error(), "Invalid escape sequence");
+            emitter_.emit(diagnostics::DiagnosticKind::InvalidEscapeSequence(),
+                          get_location(current_loc_),
+                          "Invalid escape sequence '\\{0}'",
+                          c);
             return;
         }
         consume();
@@ -374,7 +460,9 @@ void Lexer::consume_char() {
     }
 
     if (peek() != '\'') {
-        add_token(TokenKind::Error(), "Multi-character char literal or unterminated char literal");
+        emitter_.emit(diagnostics::DiagnosticKind::UnterminatedCharacter(),
+                      get_location(start_loc_),
+                      "Multi-character char literal or unterminated char literal");
         return;
     }
     consume();  // Closing quote
@@ -411,8 +499,12 @@ void Lexer::consume_operator() {
 }
 
 void Lexer::consume_unknown() {
-    consume();
-    add_token(TokenKind::Unknown(), "");
+    save_location();
+    char c = consume();
+    emitter_.emit(diagnostics::DiagnosticKind::InvalidCharacter(),
+                  get_location(start_loc_),
+                  "Invalid character '{0}'",
+                  c);
 }
 
 bool Lexer::skip_whitespace() {

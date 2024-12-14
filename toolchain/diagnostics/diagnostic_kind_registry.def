@@ -1,0 +1,31 @@
+// Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+// See /LICENSE for license details.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+#ifndef ZIV_DIAGNOSTIC_KIND
+#define ZIV_DIAGNOSTIC_KIND(NAME)
+#endif
+
+#include "kinds/lexer.def"
+
+#undef ZIV_DIAGNOSTIC_KIND
+
+
+#ifndef ZIV_DIAGNOSTIC_INFO
+#define ZIV_DIAGNOSTIC_INFO(NAME, CODE, SEVERITY, MESSAGE, HINT, NOTES, PATH)
+#endif
+
+#include "metadata/lexer.def"
+
+#undef ZIV_DIAGNOSTIC_INFO
+
+#ifndef ZIV_DIAGNOSTIC_SEVERITY
+#define ZIV_DIAGNOSTIC_SEVERITY(SEVERITY)
+#endif
+
+ZIV_DIAGNOSTIC_SEVERITY(Error)
+ZIV_DIAGNOSTIC_SEVERITY(Warning)
+ZIV_DIAGNOSTIC_SEVERITY(Info)
+ZIV_DIAGNOSTIC_SEVERITY(Note)
+
+#undef ZIV_DIAGNOSTIC_SEVERITY

@@ -15,17 +15,15 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 #### Added
 - updated dependencies manager [12-11-2024]
-- #5 add do while expression recognition at parser (#6) [25-11-2024]
-- #2 automatic semicolon insertion (#4) [25-11-2024]
+- add do while expression recognition at parser (#6) [25-11-2024]
+- automatic semicolon insertion (#4) [25-11-2024]
 - updated pre commits to check message [29-11-2024]
-- #3 initial test implementation with gtest [29-11-2024]
-- #3 initial test implementation with gtest (#8) [30-11-2024]
-- #7 updated lexer to include indentation levels (#9) [30-11-2024]
+- initial test implementation with gtest [29-11-2024]
+- updated lexer to include indentation levels (#9) [30-11-2024]
 
 #### Changed
 - included support for semicolon delimiter [22-11-2024]
 - updated contribution information [25-11-2024]
-
 
 ### October 2024
 
