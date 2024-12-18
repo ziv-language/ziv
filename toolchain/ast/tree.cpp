@@ -9,17 +9,14 @@
 
 namespace ziv::toolchain::ast {
 
-// AST Core Methods
 AST::Node AST::get_root() const noexcept {
     return empty() ? Node() : Node(1, this);
 }
 
 ziv::toolchain::lex::TokenBuffer::Token AST::get_token(Node node) const noexcept {
     return is_valid_node(node) ? nodes_[node.index_].token
-                               : ziv::toolchain::lex::TokenBuffer::Token(
-                                   ziv::toolchain::lex::TokenKind::Sof(), llvm::StringRef(), 0, 0);
+                               : toolchain::lex::TokenBuffer::Token::create_empty();
 }
-
 bool AST::is_valid_node(Node node) const noexcept {
     return node.index_ > 0 && node.index_ < nodes_.size()
            && nodes_[node.index_].kind != NodeKind::Invalid();

@@ -70,18 +70,16 @@ bool Parser::consume_match(lex::TokenKind kind) {
 
 void Parser::expect(lex::TokenKind kind, const llvm::StringRef& message) {
     if (!consume_match(kind)) {
-        llvm::errs() << message << "\n"
-                     << "Expected token: " << kind.get_name()
-                     << "Got token: " << peek().kind.get_name() << "\n";
+        emitter_.emit(diagnostics::DiagnosticKind::UnexpectedToken(),
+                      peek().get_location(),
+                      peek().get_spelling(),
+                      message);
     }
 }
-// receive a message and the node that caused the error
-void Parser::parse_error(const ziv::toolchain::ast::AST::Node& node,
-                         const llvm::StringRef& message) {
-    llvm::errs() << "Parse error: " << message << " at line: " << peek().line
-                 << " column: " << peek().column << "\n";
-    // mark the most recent node as having an error
+
+void Parser::parse_error(const ast::AST::Node& node, const llvm::StringRef& message) {
     ast_.mark_error(node);
+    llvm::outs() << "Error: " << message << "\n";
 }
 
 }  // namespace ziv::toolchain::parser

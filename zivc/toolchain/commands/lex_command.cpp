@@ -13,12 +13,13 @@ namespace ziv::cli::toolchain {
 void LexerCommand::execute(const std::string& arg) {
     llvm::vfs::FileSystem& fs = *llvm::vfs::getRealFileSystem();
     auto source = ziv::toolchain::source::SourceBuffer::from_file(fs, arg);
-    ziv::toolchain::lex::TokenBuffer buffer;
+    ziv::toolchain::lex::TokenBuffer buffer = ziv::toolchain::lex::TokenBuffer(*source);
     auto diagnostics = std::make_shared<ziv::toolchain::diagnostics::ConsoleDiagnosticConsumer>(
         *source);
-    ziv::toolchain::lex::Lexer lexer(*source, buffer, diagnostics);
+    ziv::toolchain::lex::Lexer lexer(*source, diagnostics);
 
     lexer.lex();  // Lex the source file
+    diagnostics->print_summary();
 
     const auto& tokens = lexer.get_tokens();
 

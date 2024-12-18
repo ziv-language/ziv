@@ -16,19 +16,21 @@ namespace ziv::cli::toolchain {
 void ParserCommand::execute(const std::string& args) {
     llvm::vfs::FileSystem& fs = *llvm::vfs::getRealFileSystem();
     auto source = ziv::toolchain::source::SourceBuffer::from_file(fs, args);
-    ziv::toolchain::lex::TokenBuffer buffer;
+    ziv::toolchain::lex::TokenBuffer buffer = ziv::toolchain::lex::TokenBuffer(*source);
     auto consumer = std::make_shared<ziv::toolchain::diagnostics::ConsoleDiagnosticConsumer>(
         *source);
-    ziv::toolchain::lex::Lexer lexer(*source, buffer, consumer);
+    ziv::toolchain::lex::Lexer lexer(*source, consumer);
 
     lexer.lex();  // Lex the source file
+    consumer->print_summary();
 
     const auto& tokens = lexer.get_tokens();
 
     ziv::toolchain::ast::AST ast;
-    ziv::toolchain::parser::Parser parser(tokens, ast);
+    ziv::toolchain::parser::Parser parser(tokens, ast, consumer, *source);
 
     parser.parse();  // Parse the token buffer
+    consumer->print_summary();
 
     ziv::toolchain::ast::Printer printer(ast);
     printer.print(llvm::outs());

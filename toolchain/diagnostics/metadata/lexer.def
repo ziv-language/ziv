@@ -15,7 +15,7 @@ ZIV_DIAGNOSTIC_INFO(
     UnterminatedString,
     1002,
     Error,
-    "Unterminated string",
+    "Unterminated string literal",
     "Add a closing quote to terminate the string",
     "Strings must be enclosed in double quotes",
     "lexer/unterminated-string"
@@ -87,8 +87,8 @@ ZIV_DIAGNOSTIC_INFO(
     InvalidIndentation,
     1010,
     Error,
-    "Invalid indentation: {}",
+    "Each line must be indented by {} spaces",
     "Indentation must be consistent",
-    "Each indent level must be exactly {} spaces",
+    "Indentation must be consistent throughout the file",
     "lexer/invalid-indentation"
 )

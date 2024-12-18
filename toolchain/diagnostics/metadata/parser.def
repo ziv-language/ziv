@@ -1,0 +1,13 @@
+// Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+// See /LICENSE for license details.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+ZIV_DIAGNOSTIC_INFO(
+    UnexpectedToken,
+    2001,
+    Error,
+    "Unexpected token {0}",
+    "Remove or replace the unexpected token",
+    "Unexpected tokens can cause parsing errors",
+    "parser/unexpected-token"
+)

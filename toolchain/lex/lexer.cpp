@@ -4,6 +4,8 @@
 
 #include "lexer.hpp"
 
+#include "toolchain/diagnostics/compilation_phase.hpp"
+
 namespace ziv::toolchain::lex {
 
 void Lexer::update_location(char c) {
@@ -14,6 +16,7 @@ void Lexer::update_location(char c) {
         current_loc_.column++;
     }
     current_loc_.offset++;
+    current_loc_.length = 1;
 }
 
 void Lexer::save_location() {
@@ -74,8 +77,7 @@ void Lexer::track_indentation() {
     // Each indentation level must be exactly indent_width_ spaces
     if (spaces % indent_width_ != 0) {
         emitter_.emit(diagnostics::DiagnosticKind::InvalidIndentation(),
-                      get_location(current_loc_),
-                      "Indentation must be a multiple of {0} spaces",
+                      current_loc_,
                       indent_width_);
         return;
     }
@@ -86,8 +88,8 @@ void Lexer::track_indentation() {
         // Only allow single level increases
         if (level != indent_level_ + 1) {
             emitter_.emit(diagnostics::DiagnosticKind::InvalidIndentation(),
-                          get_location(current_loc_),
-                          "Too many indentation levels at once");
+                          current_loc_,
+                          "Invalid indentation level");
             return;
         }
         indent_stack_.push_back(indent_level_);
@@ -101,13 +103,14 @@ void Lexer::track_indentation() {
         }
         if (level != indent_level_) {
             emitter_.emit(diagnostics::DiagnosticKind::InvalidIndentation(),
-                          get_location(current_loc_),
-                          "Inconsistent indentation");
+                          current_loc_,
+                          "Invalid indentation level");
         }
     }
 }
 
 void Lexer::lex() {
+    toolchain::diagnostics::PhaseGuard guard(toolchain::diagnostics::CompilationPhase::Lexing);
     add_token(TokenKind::Sof(), "");  // Start of file
 
     auto last_token = TokenKind::Sof();
@@ -218,8 +221,8 @@ void Lexer::consume_comment() {
         }
 
         emitter_.emit(diagnostics::DiagnosticKind::UnterminatedComment(),
-                      get_location(start_loc_),
-                      "Unterminated multi-line comment");
+                      current_loc_,
+                      "EOF in multi-line comment");
     } else {
         // Single-line comment
         while (!is_eof() && peek() != '\n') {
@@ -249,7 +252,7 @@ void Lexer::consume_number() {
         spelling += consume();  // 'x'
         if (!std::isxdigit(peek())) {
             emitter_.emit(diagnostics::DiagnosticKind::InvalidNumber(),
-                          get_location(start_loc_),
+                          start_loc_,
                           "Expected hexadecimal digit after '0x'");
             return;
         }
@@ -266,7 +269,7 @@ void Lexer::consume_number() {
         spelling += consume();  // 'b'
         if (peek() != '0' && peek() != '1') {
             emitter_.emit(diagnostics::DiagnosticKind::InvalidNumber(),
-                          get_location(start_loc_),
+                          start_loc_,
                           "Expected binary digit after '0b'");
             return;
         }
@@ -295,7 +298,7 @@ void Lexer::consume_number() {
         // Must have at least one digit after decimal
         if (!std::isdigit(peek())) {
             emitter_.emit(diagnostics::DiagnosticKind::InvalidNumber(),
-                          get_location(start_loc_),
+                          start_loc_,
                           "Expected digit after decimal point");
             return;
         }
@@ -318,7 +321,7 @@ void Lexer::consume_number() {
 
         if (!std::isdigit(peek())) {
             emitter_.emit(diagnostics::DiagnosticKind::InvalidNumber(),
-                          get_location(start_loc_),
+                          start_loc_,
                           "Expected digit in exponent");
             return;
         }
@@ -331,7 +334,7 @@ void Lexer::consume_number() {
     // Check for invalid suffixes
     if (std::isalpha(peek()) || peek() == '_') {
         emitter_.emit(diagnostics::DiagnosticKind::InvalidNumber(),
-                      get_location(start_loc_),
+                      start_loc_,
                       "Invalid number suffix");
         return;
     }
@@ -349,7 +352,7 @@ void Lexer::consume_string() {
         char c = peek();
         if (c == '\n') {
             emitter_.emit(diagnostics::DiagnosticKind::UnterminatedString(),
-                          get_location(start_loc_),
+                          start_loc_,
                           "unterminated string literal");
             return;
         }
@@ -365,7 +368,7 @@ void Lexer::consume_string() {
                 auto escape_loc = current_loc_;
                 if (peek_next() == '\0') {
                     emitter_.emit(diagnostics::DiagnosticKind::InvalidEscapeSequence(),
-                                  get_location(escape_loc),
+                                  escape_loc,
                                   "incomplete escape sequence");
                     return;
                 }
@@ -392,7 +395,7 @@ void Lexer::consume_string() {
                 break;
             default:
                 emitter_.emit(diagnostics::DiagnosticKind::InvalidEscapeSequence(),
-                              get_location(current_loc_),
+                              current_loc_,
                               "invalid escape sequence '\\{0}'",
                               c);
                 spelling += '\\';
@@ -405,7 +408,7 @@ void Lexer::consume_string() {
     }
 
     emitter_.emit(diagnostics::DiagnosticKind::UnterminatedString(),
-                  get_location(start_loc_),
+                  start_loc_,
                   "EOF in string literal");
 }
 
@@ -416,7 +419,7 @@ void Lexer::consume_char() {
 
     if (is_eof()) {
         emitter_.emit(diagnostics::DiagnosticKind::UnterminatedCharacter(),
-                      get_location(start_loc_),
+                      start_loc_,
                       "Empty character literal");
         return;
     }
@@ -426,7 +429,7 @@ void Lexer::consume_char() {
         consume();
         if (is_eof()) {
             emitter_.emit(diagnostics::DiagnosticKind::InvalidEscapeSequence(),
-                          get_location(start_loc_),
+                          start_loc_,
                           "Incomplete escape sequence");
             return;
         }
@@ -449,7 +452,7 @@ void Lexer::consume_char() {
             break;
         default:
             emitter_.emit(diagnostics::DiagnosticKind::InvalidEscapeSequence(),
-                          get_location(current_loc_),
+                          current_loc_,
                           "Invalid escape sequence '\\{0}'",
                           c);
             return;
@@ -461,7 +464,7 @@ void Lexer::consume_char() {
 
     if (peek() != '\'') {
         emitter_.emit(diagnostics::DiagnosticKind::UnterminatedCharacter(),
-                      get_location(start_loc_),
+                      start_loc_,
                       "Multi-character char literal or unterminated char literal");
         return;
     }
@@ -502,7 +505,7 @@ void Lexer::consume_unknown() {
     save_location();
     char c = consume();
     emitter_.emit(diagnostics::DiagnosticKind::InvalidCharacter(),
-                  get_location(start_loc_),
+                  start_loc_,
                   "Invalid character '{0}'",
                   c);
 }

@@ -7,6 +7,7 @@
 #endif
 
 #include "kinds/lexer.def"
+#include "kinds/parser.def"
 
 #undef ZIV_DIAGNOSTIC_KIND
 
@@ -16,6 +17,7 @@
 #endif
 
 #include "metadata/lexer.def"
+#include "metadata/parser.def"
 
 #undef ZIV_DIAGNOSTIC_INFO
 

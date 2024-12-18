@@ -12,7 +12,7 @@
 #include "diagnostic_metadata.hpp"
 
 namespace ziv::toolchain::diagnostics {
-class DiagnosticKind;  // Forward declaration
+class DiagnosticKind;
 
 class DiagnosticRegistry {
 public:

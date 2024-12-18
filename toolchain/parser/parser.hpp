@@ -13,15 +13,19 @@
     #include "llvm/ADT/StringRef.h"
     #include "llvm/Support/raw_ostream.h"
     #include "toolchain/ast/tree.hpp"
+    #include "toolchain/diagnostics/diagnostic_consumer.hpp"
     #include "toolchain/lex/lexer.hpp"
     #include "toolchain/lex/token_buffer.hpp"
+    #include "toolchain/source/source_buffer.hpp"
 
 namespace ziv::toolchain::parser {
 class Parser {
 public:
     Parser(std::vector<ziv::toolchain::lex::TokenBuffer::Token> tokens,
-           ziv::toolchain::ast::AST& ast)
-        : tokens_(std::move(tokens)), ast_(ast), current_(0) {}
+           ziv::toolchain::ast::AST& ast,
+           std::shared_ptr<diagnostics::DiagnosticConsumer> consumer,
+           const source::SourceBuffer& source)
+        : tokens_(std::move(tokens)), ast_(ast), current_(0), emitter_(consumer, source) {}
 
     void parse();
 
@@ -109,7 +113,7 @@ private:
 
     // Utility functions
     void synchronize();  // Error recovery
-    void expect(ziv::toolchain::lex::TokenKind kind, const llvm::StringRef& message);
+    void expect(lex::TokenKind kind, const llvm::StringRef& message);
     void parse_error(const ziv::toolchain::ast::AST::Node& node, const llvm::StringRef& message);
     void parse_code_block();
     ziv::toolchain::ast::AST::Node parse_identifier();
@@ -118,6 +122,7 @@ private:
     std::vector<ziv::toolchain::lex::TokenBuffer::Token> tokens_;
     ziv::toolchain::ast::AST& ast_;
     size_t current_;
+    diagnostics::DiagnosticEmitter emitter_;
 };
 
 }  // namespace ziv::toolchain::parser

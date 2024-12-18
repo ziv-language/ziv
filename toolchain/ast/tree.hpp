@@ -34,21 +34,18 @@ public:
 
         NodeData()
             : kind(NodeKind::Invalid()),
-              token(ziv::toolchain::lex::TokenKind::Sof(), llvm::StringRef(), 0, 0),
+              token(toolchain::lex::TokenBuffer::Token::create_empty()),
               parent(0),
               has_error(false),
               visited(false) {}
 
-        NodeData(NodeKind kind, ziv::toolchain::lex::TokenBuffer::Token token)
+        NodeData(NodeKind kind, toolchain::lex::TokenBuffer::Token token)
             : kind(kind), token(token), parent(0), has_error(false), visited(false) {}
     };
 
     AST() {
-        // Reserve index 0 for sentinel
         nodes_.emplace_back(
-            NodeData(NodeKind::Invalid(),
-                     ziv::toolchain::lex::TokenBuffer::Token(
-                         ziv::toolchain::lex::TokenKind::Sof(), llvm::StringRef(), 0, 0)));
+            NodeData(NodeKind::Invalid(), toolchain::lex::TokenBuffer::Token::create_empty()));
     }
 
     // Core tree operations

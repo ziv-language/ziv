@@ -7,11 +7,13 @@
 #include "expression_parser.hpp"
 #include "parser_utils.hpp"
 #include "statement_parser.hpp"
+#include "toolchain/diagnostics/compilation_phase.hpp"
 #include "top_level_parser.hpp"
 
 namespace ziv::toolchain::parser {
 
 void Parser::parse() {
+    diagnostics::PhaseGuard guard(diagnostics::CompilationPhase::Parsing);
     // Create TranslationUnit as root
     auto root = ast_.add_node(ast::NodeKind::FileStart(), consume());
 
@@ -27,7 +29,8 @@ void Parser::parse() {
         }
     }
     auto eof = ast_.add_node(ast::NodeKind::FileEnd(),
-                             lex::TokenBuffer::Token(lex::TokenKind::Eof(), "", 0, 0));
+                             toolchain::lex::TokenBuffer::Token::create_empty(
+                                 toolchain::lex::TokenKind::Eof()));
     ast_.add_child(root, eof);
 }
 

@@ -6,7 +6,6 @@
 #define ZIV_TOOLCHAIN_LEX_LEXER_HPP
 
 #include <unordered_map>
-#include <unordered_set>
 #include <vector>
 
 #include "llvm/ADT/StringRef.h"
@@ -20,13 +19,12 @@ namespace ziv::toolchain::lex {
 class Lexer {
 public:
     Lexer(const source::SourceBuffer& source,
-          TokenBuffer& buffer,
           std::shared_ptr<diagnostics::DiagnosticConsumer> consumer)
         : source_(source),
-          buffer_(buffer),
+          buffer_(source),
           cursor_(0),
-          emitter_(consumer),
-          current_loc_{1, 1, 0, 1} {
+          emitter_(consumer, source),
+          current_loc_{source.get_filename(), 1, 1, 0, 0} {
         initialize_handlers();
     }
 
@@ -36,47 +34,27 @@ public:
     }
 
 private:
-    const source::SourceBuffer& source_;
-    TokenBuffer& buffer_;
-    size_t cursor_;
-    diagnostics::DiagnosticEmitter emitter_;
-
-    struct Location {
-        size_t line;
-        size_t column;
-        size_t offset;
-        size_t length;
-    };
-
-    Location current_loc_;
-    Location start_loc_;
-
     void update_location(char c);
 
     void save_location();
 
-    source::SourceLocation get_location(const Location& loc, size_t len = 1) const {
-        return {source_.get_filename(), loc.line, loc.column, loc.offset, len};
-    }
+    const source::SourceBuffer& source_;
+    TokenBuffer buffer_;
+    size_t cursor_;
+    diagnostics::DiagnosticEmitter emitter_;
+    source::SourceLocation current_loc_;
+    source::SourceLocation start_loc_;
 
-    // Indentation
+    // Indentation tracking
     size_t indent_level_ = 0;
     std::vector<size_t> indent_stack_;
     size_t indent_width_ = 4;
-
-    void track_indentation();
 
     using Handler = void (Lexer::*)();
     std::unordered_map<char, Handler> handlers_;
     void initialize_handlers();
 
-    char peek() const;
-    char peek_next() const;
-    char consume();
-    bool is_eof() const;
-    bool is_line_terminator() const;
-    void add_token(TokenKind kind, llvm::StringRef spelling);
-
+    // Token consumption methods
     void consume_whitespace();
     void consume_comment();
     void consume_identifier();
@@ -86,8 +64,16 @@ private:
     void consume_punctuation();
     void consume_operator();
     void consume_unknown();
-    bool skip_whitespace();
+    void track_indentation();
 
+    // Utility methods
+    char peek() const;
+    char peek_next() const;
+    char consume();
+    bool is_eof() const;
+    bool is_line_terminator() const;
+    void add_token(TokenKind kind, llvm::StringRef spelling);
+    bool skip_whitespace();
     bool is_identifier_start(char c) const;
     bool is_identifier_char(char c) const;
     bool can_terminate_expression(const TokenKind& kind) const;

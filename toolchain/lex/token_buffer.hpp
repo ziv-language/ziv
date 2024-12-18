@@ -11,24 +11,41 @@
 #include "llvm/ADT/StringRef.h"
 #include "toolchain/lex/token_kind.hpp"
 #include "toolchain/source/source_buffer.hpp"
+#include "toolchain/source/source_location.hpp"
 
 namespace ziv::toolchain::lex {
 
 class TokenBuffer {
 public:
+    explicit TokenBuffer(const source::SourceBuffer& source_buffer)
+        : source_buffer_(source_buffer) {}
     struct Token {
         TokenKind kind;
         std::string spelling_value;
         llvm::StringRef spelling;
         size_t line;
         size_t column;
+        llvm::StringRef filename;
 
-        Token(TokenKind kind, llvm::StringRef spelling, size_t line, size_t column)
+        Token(TokenKind kind,
+              llvm::StringRef spelling,
+              llvm::StringRef filename,
+              size_t line,
+              size_t column)
             : kind(kind),
               spelling_value(spelling.str()),
               spelling(spelling_value),
               line(line),
-              column(column){};
+              column(column),
+              filename(filename){};
+
+        static Token create_empty(TokenKind kind = TokenKind::Sof()) {
+            return Token(kind, "", "", 0, 0);
+        }
+
+        ziv::toolchain::source::SourceLocation get_location() const {
+            return {filename, line, column, /* offset */ 0, spelling.size()};
+        };
 
         TokenKind get_kind() const {
             return kind;
@@ -67,6 +84,7 @@ public:
     const std::vector<Token>& get_tokens() const;
 
 private:
+    const ziv::toolchain::source::SourceBuffer& source_buffer_;
     std::vector<Token> tokens_;
 };
 
