@@ -10,14 +10,14 @@ void Parser::synchronize() {
     consume();
 
     while (!is_eof()) {
-        if (previous().kind == lex::TokenKind::Semicolon())
+        if (previous().kind == lex::TokenKind::Semicolon()
+            || previous().kind == lex::TokenKind::RBrace())
             return;
 
         switch (peek().kind) {
         case lex::TokenKind::Fn():
         case lex::TokenKind::Let():
-        case lex::TokenKind::Mut():
-        case lex::TokenKind::Class():
+        case lex::TokenKind::Var():
         case lex::TokenKind::If():
         case lex::TokenKind::While():
         case lex::TokenKind::Return():
@@ -70,16 +70,12 @@ bool Parser::consume_match(lex::TokenKind kind) {
 
 void Parser::expect(lex::TokenKind kind, const llvm::StringRef& message) {
     if (!consume_match(kind)) {
+        ast_.mark_error(ast_.add_node(ast::NodeKind::Error(), peek()));
         emitter_.emit(diagnostics::DiagnosticKind::UnexpectedToken(),
                       peek().get_location(),
                       peek().get_spelling(),
                       message);
     }
-}
-
-void Parser::parse_error(const ast::AST::Node& node, const llvm::StringRef& message) {
-    ast_.mark_error(node);
-    llvm::outs() << "Error: " << message << "\n";
 }
 
 }  // namespace ziv::toolchain::parser

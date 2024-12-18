@@ -57,13 +57,13 @@ public:
 
 private:
     // Top-level parsing
-    ziv::toolchain::ast::AST::Node parse_top_level();
+    ziv::toolchain::ast::AST::Node parse_node();
     ziv::toolchain::ast::AST::Node parse_module_declaration();
     ziv::toolchain::ast::AST::Node parse_module_import();
 
-
     // Function parsing
     ziv::toolchain::ast::AST::Node parse_function_declaration();
+    ziv::toolchain::ast::AST::Node parse_generic_parameters();
     ziv::toolchain::ast::AST::Node parse_function_signature();
     ziv::toolchain::ast::AST::Node parse_parameter_list();
     ziv::toolchain::ast::AST::Node parse_function_body();
@@ -114,8 +114,6 @@ private:
     // Utility functions
     void synchronize();  // Error recovery
     void expect(lex::TokenKind kind, const llvm::StringRef& message);
-    void parse_error(const ziv::toolchain::ast::AST::Node& node, const llvm::StringRef& message);
-    void parse_code_block();
     ziv::toolchain::ast::AST::Node parse_identifier();
 
     // Class members

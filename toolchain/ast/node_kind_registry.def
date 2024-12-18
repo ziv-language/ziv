@@ -46,6 +46,10 @@ ZIV_NODE_KIND(FunctionDecl)        // Function declaration
 ZIV_NODE_KIND(FunctionName)        // Function name
 ZIV_NODE_KIND(FunctionSignature)   // Function signature
 ZIV_NODE_KIND(FunctionBody)        // Function body
+ZIV_NODE_KIND(GenericParameters)   // Generic parameters
+ZIV_NODE_KIND(GenericParameter)    // Individual generic parameter
+ZIV_NODE_KIND(GenericConstraint)  // Generic constraints
+ZIV_NODE_KIND(TypeConstraint)     // Type constraint
 ZIV_NODE_KIND(StructDecl)         // Struct declaration
 ZIV_NODE_KIND(ClassDecl)          // Class declaration
 ZIV_NODE_KIND(EnumDecl)           // Enum declaration
@@ -54,6 +58,8 @@ ZIV_NODE_KIND(MethodDecl)         // Class method declaration
 // Parameters and Arguments
 ZIV_NODE_KIND(ParameterList)       // Function parameters
 ZIV_NODE_KIND(Parameter)           // Individual parameter
+ZIV_NODE_KIND(ParameterName)       // Parameter name
+ZIV_NODE_KIND(ParameterModifier)   // Parameter modifier
 ZIV_NODE_KIND(ArgumentList)        // Function call arguments
 ZIV_NODE_KIND(Argument)           // Individual argument
 

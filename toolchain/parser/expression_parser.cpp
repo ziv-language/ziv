@@ -38,8 +38,6 @@ ast::AST::Node Parser::parse_binary_expression(int min_precedence) {
 
             if (prec == Precedence::Ambiguous) {
                 auto error_node = ast_.add_node(ast::NodeKind::Error(), peek());
-                parse_error(error_node,
-                            "Ambiguous operator precedence. Please use parentheses to clarify.");
                 return error_node;
             }
 
@@ -107,7 +105,6 @@ ziv::toolchain::ast::AST::Node Parser::parse_primary() {
 
     // Handle errors
     auto error_node = ast_.add_node(ast::NodeKind::Error(), peek());
-    parse_error(error_node, "Expected expression");
     return error_node;
 }
 

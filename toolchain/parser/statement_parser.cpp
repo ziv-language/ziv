@@ -8,9 +8,10 @@ namespace ziv::toolchain::parser {
 
 ziv::toolchain::ast::AST::Node Parser::parse_statement() {
     switch (peek().kind) {
+    case lex::TokenKind::Return():
+        return parse_return_statement();
     case lex::TokenKind::Let():
-    case lex::TokenKind::Mut():
-    case lex::TokenKind::Const():
+    case lex::TokenKind::Var():
         return parse_variable_declaration();
     case lex::TokenKind::If():
         return parse_if_statement();
@@ -22,8 +23,6 @@ ziv::toolchain::ast::AST::Node Parser::parse_statement() {
         return parse_for_statement();
     case lex::TokenKind::Match():
         return parse_match_statement();
-    case lex::TokenKind::Return():
-        return parse_return_statement();
     default:
         auto expr = parse_expression();
         expect(lex::TokenKind::Semicolon(), "Expected ';' after expression");
@@ -32,25 +31,20 @@ ziv::toolchain::ast::AST::Node Parser::parse_statement() {
 }
 
 ziv::toolchain::ast::AST::Node Parser::parse_block() {
-    // First check if it's a block
-    if (!match(ziv::toolchain::lex::TokenKind::LBrace())) {
-        auto invalid_node = ast_.add_node(ast::NodeKind::Invalid(), peek());
-        parse_error(invalid_node, "Expected '{' at start of block");
-        return invalid_node;
-    }
-
+    // Consume the indent token
     auto block_node = ast_.add_node(ast::NodeKind::CodeBlock(), consume());
 
-    while (!is_eof() && !match(ziv::toolchain::lex::TokenKind::RBrace())) {
+    // Parse statements until we hit a dedent
+    while (!is_eof() && !match(lex::TokenKind::Dedent())) {
         auto statement = parse_statement();
         if (statement.is_valid()) {
             ast_.add_child(block_node, statement);
         }
     }
-    expect(ziv::toolchain::lex::TokenKind::RBrace(), "Expected '}' at end of block");
+
+    expect(lex::TokenKind::Dedent(), "Expected dedent at end of block");
     return block_node;
 }
-
 
 ziv::toolchain::ast::AST::Node Parser::parse_if_statement() {
     auto if_node = ast_.add_node(ast::NodeKind::IfStatement(), consume());
@@ -220,17 +214,17 @@ ziv::toolchain::ast::AST::Node Parser::parse_for_statement() {
 }
 
 ziv::toolchain::ast::AST::Node Parser::parse_return_statement() {
-    auto return_node = ast_.add_node(ast::NodeKind::ReturnStmt(), consume());
+    expect(lex::TokenKind::Return(), "return");
+    auto return_node = ast_.add_node(ast::NodeKind::ReturnStmt(), previous());
 
-    // Parse return value
-    if (!match(lex::TokenKind::Semicolon())) {
-        auto value = parse_expression();
-        if (value.is_valid()) {
-            ast_.add_child(return_node, value);
-        }
+    // Parse return value if there is one
+    auto value = parse_expression();
+    if (value.is_valid()) {
+        ast_.add_child(return_node, value);
     }
 
     expect(lex::TokenKind::Semicolon(), "Expected ';' after return statement");
     return return_node;
 }
+
 }  // namespace ziv::toolchain::parser

@@ -125,11 +125,11 @@ void Lexer::lex() {
 
         // Handle indentation at start of line
         if (new_line) {
-            track_indentation();
             // Add implicit semicolon if needed
             if (can_terminate_expression(last_token)) {
                 add_token(TokenKind::Semicolon(), ";");
             }
+            track_indentation();
         }
 
         char current = peek();
@@ -540,7 +540,10 @@ TokenKind Lexer::lookup_keyword(const std::string& spelling) {
     static const std::unordered_map<std::string, TokenKind> keyword_map = {
         // General Keywords
         {"let", TokenKind::Let()},
+        {"var", TokenKind::Var()},
         {"mut", TokenKind::Mut()},
+        {"ref", TokenKind::Ref()},
+        {"take", TokenKind::Take()},
         {"fn", TokenKind::Fn()},
         {"class", TokenKind::Class()},
         {"interface", TokenKind::Interface()},
@@ -556,7 +559,7 @@ TokenKind Lexer::lookup_keyword(const std::string& spelling) {
         {"break", TokenKind::Break()},
         {"continue", TokenKind::Continue()},
         {"do", TokenKind::Do()},
-        {"return", TokenKind::Return()},
+        {"ret", TokenKind::Return()},
         // Logical Keywords
         {"and", TokenKind::And()},
         {"or", TokenKind::Or()},

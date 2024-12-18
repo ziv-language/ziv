@@ -4,26 +4,20 @@
 
 #include "parser.hpp"
 
-#include "expression_parser.hpp"
-#include "parser_utils.hpp"
-#include "statement_parser.hpp"
 #include "toolchain/diagnostics/compilation_phase.hpp"
-#include "top_level_parser.hpp"
 
 namespace ziv::toolchain::parser {
 
 void Parser::parse() {
     diagnostics::PhaseGuard guard(diagnostics::CompilationPhase::Parsing);
-    // Create TranslationUnit as root
     auto root = ast_.add_node(ast::NodeKind::FileStart(), consume());
 
     // Parse all declarations
     while (!is_eof()) {
-        auto node = parse_top_level();
+        auto node = parse_node();
         if (node.is_valid()) {
             ast_.add_child(root, node);
         }
-        // Skip any extra semicolons
         while (match(lex::TokenKind::Semicolon())) {
             consume();
         }

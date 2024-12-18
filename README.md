@@ -80,8 +80,8 @@ Welcome to the Ziv programming language project! Ziv is designed to combine the 
 ### Hello World
 
 ```ziv
-fn main() -> unit:
-    println!("Hello, Ziv!")
+fn main():
+    println("Hello, Ziv!")
 ```
 
 ## Project Structure
