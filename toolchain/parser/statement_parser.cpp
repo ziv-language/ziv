@@ -23,6 +23,8 @@ ziv::toolchain::ast::AST::Node Parser::parse_statement() {
         return parse_for_statement();
     case lex::TokenKind::Match():
         return parse_match_statement();
+    case lex::TokenKind::Identifier():
+        return parse_identifier();
     default:
         auto expr = parse_expression();
         expect(lex::TokenKind::Semicolon(), "Expected ';' after expression");
@@ -62,9 +64,11 @@ ziv::toolchain::ast::AST::Node Parser::parse_if_statement() {
     }
 
     // Parse block
-    auto block = parse_block();
-    if (block.is_valid()) {
-        ast_.add_child(if_node, block);
+    if (consume_match(lex::TokenKind::Colon())) {
+        auto block = parse_block();
+        if (block.is_valid()) {
+            ast_.add_child(if_node, block);
+        }
     }
 
     // Handle else-if and else
@@ -87,11 +91,12 @@ ziv::toolchain::ast::AST::Node Parser::parse_if_statement() {
 ziv::toolchain::ast::AST::Node Parser::parse_else_statement() {
     auto else_node = ast_.add_node(ast::NodeKind::ElseStatement(), consume());
 
-    auto block = parse_block();
-    if (block.is_valid()) {
-        ast_.add_child(else_node, block);
+    if (consume_match(lex::TokenKind::Colon())) {
+        auto block = parse_block();
+        if (block.is_valid()) {
+            ast_.add_child(else_node, block);
+        }
     }
-
     return else_node;
 }
 
@@ -112,11 +117,12 @@ ziv::toolchain::ast::AST::Node Parser::parse_while_statement() {
     }
 
     // Parse block
-    auto block = parse_block();
-    if (block.is_valid()) {
-        ast_.add_child(while_node, block);
+    if (consume_match(lex::TokenKind::Colon())) {
+        auto block = parse_block();
+        if (block.is_valid()) {
+            ast_.add_child(while_node, block);
+        }
     }
-
     return while_node;
 }
 

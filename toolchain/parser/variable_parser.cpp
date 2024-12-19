@@ -37,7 +37,7 @@ ziv::toolchain::ast::AST::Node Parser::parse_variable_declaration() {
 }
 
 ziv::toolchain::ast::AST::Node Parser::parse_type_specifier() {
-    if (!match(lex::TokenKind::Int())) {
+    if (!match(lex::TokenKind::Int()) && !match(lex::TokenKind::Float())) {
         emitter_.emit(diagnostics::DiagnosticKind::UnexpectedToken(),
                       peek().get_location(),
                       peek().get_name());

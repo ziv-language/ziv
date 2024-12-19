@@ -10,6 +10,15 @@ ziv::toolchain::ast::AST::Node Parser::parse_node() {
     switch (peek().kind) {
     case ziv::toolchain::lex::TokenKind::Fn():
         return parse_function_declaration();
+    case ziv::toolchain::lex::TokenKind::Let():
+    case ziv::toolchain::lex::TokenKind::Var():
+        return parse_variable_declaration();
+    case ziv::toolchain::lex::TokenKind::Identifier():
+        return parse_identifier();
+    case ziv::toolchain::lex::TokenKind::If():
+        return parse_if_statement();
+    case ziv::toolchain::lex::TokenKind::While():
+        return parse_while_statement();
     default:
         auto invalid_node = ast_.add_node(ast::NodeKind::Invalid(), consume());
         return invalid_node;

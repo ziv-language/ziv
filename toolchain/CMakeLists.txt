@@ -28,9 +28,9 @@ file(GLOB_RECURSE PARSER_SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/parser/*.hpp"
 )
 
-file(GLOB_RECURSE CHECKER_SOURCES
-    "${CMAKE_CURRENT_SOURCE_DIR}/checker/*.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/checker/*.hpp"
+file(GLOB_RECURSE SEMANTICS_SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/semantics/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/semantics/*.hpp"
 )
 
 # Add them to parent scope
@@ -40,7 +40,7 @@ set(TOOLCHAIN_SOURCES
     ${LEX_SOURCES}
     ${AST_SOURCES}
     ${PARSER_SOURCES}
-    ${CHECKER_SOURCES}
+    ${SEMANTICS_SOURCES}
     PARENT_SCOPE
 )
 
@@ -51,5 +51,5 @@ target_include_directories(zivc PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/lex
     ${CMAKE_CURRENT_SOURCE_DIR}/ast
     ${CMAKE_CURRENT_SOURCE_DIR}/parser
-    ${CMAKE_CURRENT_SOURCE_DIR}/checker
+    ${CMAKE_CURRENT_SOURCE_DIR}/semantics
 )

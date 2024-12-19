@@ -1,0 +1,19 @@
+// Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+// See /LICENSE for license details.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+#ifndef ZIV_TYPE_KIND
+#define ZIV_TYPE_KIND(NAME)
+#endif
+
+ZIV_TYPE_KIND(None)
+ZIV_TYPE_KIND(Int)
+ZIV_TYPE_KIND(Float)
+ZIV_TYPE_KIND(Bool)
+ZIV_TYPE_KIND(Char)
+ZIV_TYPE_KIND(String)
+ZIV_TYPE_KIND(Function)
+ZIV_TYPE_KIND(Struct)
+ZIV_TYPE_KIND(Error)
+
+#undef ZIV_TYPE_KIND
