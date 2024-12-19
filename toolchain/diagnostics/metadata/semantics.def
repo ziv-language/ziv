@@ -1,0 +1,41 @@
+// Part of the Ziv Programming Language, under the Apache License v2.0 with LLVM
+// See /LICENSE for license details.
+// SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+
+
+ZIV_DIAGNOSTIC_INFO(
+    VariableMissingType,
+    3001,
+    Error,
+    "Variable {0} is missing a type",
+    "Add a type to the variable",
+    "Variables must have a type",
+    "semantics/variable-missing-type"
+)
+ZIV_DIAGNOSTIC_INFO(
+    VariableRedeclaration,
+    3002,
+    Error,
+    "Variable {0} is redeclared",
+    "Remove the redeclaration",
+    "Variables cannot be redeclared",
+    "semantics/variable-redeclaration"
+)
+ZIV_DIAGNOSTIC_INFO(
+    FunctionMissingName,
+    3003,
+    Error,
+    "Function is missing a name",
+    "Add a name to the function",
+    "Functions must have a name",
+    "semantics/function-missing-name"
+)
+ZIV_DIAGNOSTIC_INFO(
+    FunctionRedeclaration,
+    3004,
+    Error,
+    "Function {0} is redeclared",
+    "Remove the redeclaration",
+    "Functions cannot be redeclared",
+    "semantics/function-redeclaration"
+)

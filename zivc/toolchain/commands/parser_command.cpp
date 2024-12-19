@@ -10,7 +10,7 @@
 #include "toolchain/ast/tree.hpp"
 #include "toolchain/diagnostics/diagnostic_consumer.hpp"
 #include "toolchain/parser/parser.hpp"
-
+#include "toolchain/semantics/checker.hpp"
 namespace ziv::cli::toolchain {
 
 void ParserCommand::execute(const std::string& args) {
@@ -34,6 +34,15 @@ void ParserCommand::execute(const std::string& args) {
 
     ziv::toolchain::ast::Printer printer(ast);
     printer.print(llvm::outs());
+
+    ziv::toolchain::semantics::SemanticChecker checker(ast, consumer, *source);
+    bool success = checker.check();
+
+    consumer->print_summary();
+
+    if (!success) {
+        llvm::errs() << "Semantic analysis failed\n";
+    }
 }
 
 }  // namespace ziv::cli::toolchain

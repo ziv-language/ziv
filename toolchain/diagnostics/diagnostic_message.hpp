@@ -29,7 +29,7 @@ struct DiagnosticMessage {
     std::string path;
 
     std::string get_doc_url() const {
-        return "https://ziv-language.github.io/book/diagnostics/";
+        return "https://ziv-language.github.io/book/diagnostics/" + path;
     }
 };
 

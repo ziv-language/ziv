@@ -15,6 +15,7 @@
 #include "node_kind.hpp"
 #include "toolchain/ast/node_kind.hpp"
 #include "toolchain/lex/token_buffer.hpp"
+#include "toolchain/source/source_location.hpp"
 
 namespace ziv::toolchain::ast {
 
@@ -115,6 +116,16 @@ public:
 
     static Node create_end_node(const AST* ast) {
         return Node(ast->nodes_.size(), ast);
+    }
+
+    source::SourceLocation get_location() const noexcept {
+        return {
+            ast_->get_token(*this).filename,
+            ast_->get_line(*this),
+            ast_->get_token(*this).get_column(),
+            0,
+            get_spelling().size(),
+        };
     }
 
     size_t get_index() const noexcept {
