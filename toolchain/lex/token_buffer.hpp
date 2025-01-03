@@ -39,6 +39,14 @@ public:
               column(column),
               filename(filename){};
 
+        Token(const Token& token)
+            : kind(token.kind),
+              spelling_value(token.spelling.str()),
+              spelling(spelling_value),
+              line(token.line),
+              column(token.column),
+              filename(token.filename){}
+
         static Token create_empty(TokenKind kind = TokenKind::Sof()) {
             return Token(kind, "", "", 0, 0);
         }
