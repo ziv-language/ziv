@@ -37,7 +37,7 @@ public:
               spelling(spelling_value),
               line(line),
               column(column),
-              filename(filename) {};
+              filename(filename){};
 
         Token(const Token& token)
             : kind(token.kind),
