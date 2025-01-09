@@ -124,7 +124,7 @@ set(DEVELOPMENT_FLAGS
 if(ZIV_ENABLE_HARDENING)
     set(HARDENING_FLAGS
         -fstack-protector-strong
-        -Wformat 
+        -Wformat
         -Wformat-security
         -fPIC
         $<$<CXX_COMPILER_ID:Clang>:-fsanitize-cfi-cross-dso>
@@ -137,7 +137,7 @@ endif()
 if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 2.6)
     if(CMAKE_HOST_WIN32 AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 3.7)
         list(APPEND GENERAL_COMPILE_FLAGS
-            -fansi-escape-codes 
+            -fansi-escape-codes
             -fcolor-diagnostics
         )
     else()
